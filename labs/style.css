@@ -3,6 +3,8 @@ body {
 }
 
 canvas {
+  left: 0;
+  top: 0;
+  position: absolute;
   image-rendering: pixelated;
-  background: black;
 }
