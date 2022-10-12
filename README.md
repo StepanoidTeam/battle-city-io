@@ -4,7 +4,15 @@ battle city from nes remake
 
 # Demo
 
-todo: put demo link here
+## svetlana - main menu
+
+https://stepanoidteam.github.io/battle-city-io/
+
+## bob labs - editor
+
+https://stepanoidteam.github.io/battle-city-io/labs
+
+# Resources
 
 # NES Demo reference
 
