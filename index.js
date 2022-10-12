@@ -1,7 +1,7 @@
-import {canvas, ctx, width_$, height_$,initialSprite} from './consts.js'
+import { canvas, ctx, width_$, height_$, initialSprite } from "./consts.js";
 import Field from "./field.js";
 import Text from "./text.js";
-import {Sprite} from "./sprites.js";
+import { Sprite } from "./sprites.js";
 import { SpriteUser } from "./sprites.js";
 canvas.width = width_$;
 canvas.height = height_$;
@@ -12,10 +12,11 @@ const user = new SpriteUser(10, "general");
 
 const field = new Field(ctx);
 const fieldLevelOne = new Image();
-fieldLevelOne.src = "./sprites/BattleCity-reskin/bg01.png";
+fieldLevelOne.src = "./sprites/reskin/bg01.png";
 const levelOneBcg = new Field(ctx, 0, 0, 256, 240, fieldLevelOne);
 const paragraph = 50;
-const initialTitles = new Text(ctx,
+const initialTitles = new Text(
+  ctx,
   "I-   00   HI-  2000",
   "18px 'Press Start 2P'",
   "white",
@@ -23,23 +24,33 @@ const initialTitles = new Text(ctx,
   730
 );
 
-const battle = new Text(ctx,"BATTLE", "60px 'Press Start 2P'", "white", 370, 830);
-const city = new Text(ctx,"CITY", "60px 'Press Start 2P'", "white", 420, 930);
-const chosePlayer1 = new Text(ctx,
+const battle = new Text(
+  ctx,
+  "BATTLE",
+  "60px 'Press Start 2P'",
+  "white",
+  370,
+  830
+);
+const city = new Text(ctx, "CITY", "60px 'Press Start 2P'", "white", 420, 930);
+const chosePlayer1 = new Text(
+  ctx,
   "1 PLAYER",
   "20px 'Press Start 2P'",
   "white",
   470,
   980
 );
-const chosePlayer2 = new Text(ctx,
+const chosePlayer2 = new Text(
+  ctx,
   "2 PLAYERS",
   "20px 'Press Start 2P'",
   "white",
   470,
   1030
 );
-const choseConstruction = new Text(ctx,
+const choseConstruction = new Text(
+  ctx,
   "CONSTRUCTION",
   "20px 'Press Start 2P'",
   "white",
@@ -47,15 +58,24 @@ const choseConstruction = new Text(ctx,
   1080
 );
 
-const namcot = new Text(ctx,"namcot", "45px 'Press Start 2P'", "red", 470, 1130);
-const brand = new Text(ctx,
+const namcot = new Text(
+  ctx,
+  "namcot",
+  "45px 'Press Start 2P'",
+  "red",
+  470,
+  1130
+);
+const brand = new Text(
+  ctx,
   "ⓒ   1980   1985  NAMCO LTD.",
   "20px 'Press Start 2P'",
   "white",
   270,
   1180
 );
-const permission = new Text(ctx,
+const permission = new Text(
+  ctx,
   "ALL RIGHTS RESERVED",
   "20px 'Press Start 2P'",
   "white",
