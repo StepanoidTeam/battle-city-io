@@ -1,30 +1,39 @@
 import { Sprite } from "./sprite.js";
 
-const spritemap = new Image();
-spritemap.src = "../sprites/spritemap2.png";
+function loadImage(src) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.src = src;
 
-spritemap.addEventListener("load", () => {
-  init();
-});
+    img.addEventListener("load", () => resolve(img));
+  });
+}
+
+const spritemap = await loadImage("../sprites/spritemap2.png");
+const background = await loadImage("../sprites/reskin/bgblank.png");
+
+init();
 
 function init() {
   const spritemapSize = [400, 256];
+
   const spriteSize = 16; //px
 
   const [nesWidth, nesHeight] = [256, 224]; // from NES
-  const scale = 4;
+  const scale = 3.5;
 
-  const canvas = canvasGame;
+  const ctx = initCanvas(canvasGame, nesWidth, nesHeight);
+  const ctxBg = initCanvas(canvasBg, background.width, background.height);
 
-  const ctx = canvas.getContext("2d");
-  canvas.width = nesWidth * scale;
-  canvas.height = nesHeight * scale;
+  function initCanvas(canvas, width, height) {
+    const ctx = canvas.getContext("2d");
+    canvas.width = width * scale;
+    canvas.height = height * scale;
+    ctx.scale(scale, scale);
+    ctx.imageSmoothingEnabled = false; // pixelated
 
-  ctx.scale(scale, scale);
-  ctx.imageSmoothingEnabled = false; // pixelated
-
-  ctx.fillStyle = "black";
-  ctx.fillRect(0, 0, 1, 1);
+    return ctx;
+  }
 
   function createSprite16(spritemap, x, y) {
     return new Sprite({
@@ -39,6 +48,10 @@ function init() {
       height: spriteSize,
     });
   }
+
+  const bgSprite = new Sprite({
+    spritemap: background,
+  });
 
   const emptySprite = createSprite16(spritemap, 21, 0);
   const tankSprite1 = createSprite16(spritemap, 0, 0);
@@ -87,7 +100,7 @@ function init() {
 
   const fieldMatrix = [];
 
-  const [cols, rows] = [13, 14]; // field size in cells
+  const [cols, rows] = [13, 13]; // field size in cells
 
   for (let row = 0; row < rows; row++) {
     fieldMatrix[row] = [];
@@ -107,7 +120,7 @@ function init() {
 
         if (!tool) continue;
 
-        tool.draw(ctx, row * spriteSize, col * spriteSize);
+        tool.draw(ctx, (row + 1) * spriteSize, (col + 1) * spriteSize);
       }
     }
   }
@@ -121,19 +134,19 @@ function init() {
     // todo(vmyshko): add proverki bounds
     switch (event.code) {
       case "ArrowLeft": {
-        tankPos[0]--;
+        tankPos[0] = Math.max(tankPos[0] - 1, 0);
         break;
       }
       case "ArrowRight": {
-        tankPos[0]++;
+        tankPos[0] = Math.min(tankPos[0] + 1, cols - 1);
         break;
       }
       case "ArrowUp": {
-        tankPos[1]--;
+        tankPos[1] = Math.max(tankPos[1] - 1, 0);
         break;
       }
       case "ArrowDown": {
-        tankPos[1]++;
+        tankPos[1] = Math.min(tankPos[1] + 1, rows - 1);
         break;
       }
 
@@ -151,6 +164,8 @@ function init() {
     }
   });
 
+  bgSprite.draw(ctxBg, 0, 0, background.width, background.height);
+
   //drawing
   (function draw(timestamp) {
     ctx.clearRect(0, 0, nesWidth, nesHeight);
@@ -162,7 +177,7 @@ function init() {
     if (Math.floor(timestamp / 250) % 2 === 0) {
       tankSprite1.draw(
         ctx,
-        ...tankPos.map((x) => x * spriteSize),
+        ...tankPos.map((x) => (x + 1) * spriteSize),
         spriteSize,
         spriteSize
       );
