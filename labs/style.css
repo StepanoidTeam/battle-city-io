@@ -1,6 +1,13 @@
 body {
   margin: 0;
   background-color: #424242;
+
+  height: 100vh;
+  width: 100vw;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 canvas {
@@ -8,4 +15,21 @@ canvas {
   top: 0;
   position: absolute;
   image-rendering: pixelated;
+}
+
+#canvasContainer {
+  position: relative;
+  width: var(--width);
+  height: var(--height);
+}
+
+.sidebar {
+  position: relative;
+  margin-left: auto;
+
+  width: calc(var(--spriteSize) * var(--scale) * 2px);
+  height: 100%;
+
+  border: 1px solid;
+  box-sizing: border-box;
 }
