@@ -11,6 +11,7 @@ function loadImage(src) {
 
 const spritemap = await loadImage("../sprites/spritemap2.png");
 const background = await loadImage("../sprites/reskin/bgblank.png");
+const reskinTanks = await loadImage("../sprites/reskin/Chr_00_0.png");
 
 init();
 
@@ -56,6 +57,8 @@ function init() {
   const emptySprite = createSprite16(spritemap, 21, 0);
   const tankSprite1 = createSprite16(spritemap, 0, 0);
   const tankSprite2 = createSprite16(spritemap, 1, 0);
+
+  const tankSprite3 = createSprite16(reskinTanks, 0, 0);
 
   const wallBrickFullSprite = createSprite16(spritemap, 16, 0);
   const wallBrickRightSprite = createSprite16(spritemap, 17, 0);
@@ -160,6 +163,19 @@ function init() {
         }
 
         fieldMatrix[tankPos[0]][tankPos[1]] = currentTool;
+        break;
+      }
+      case "KeyX": {
+        if (fieldMatrix[tankPos[0]][tankPos[1]] === currentTool) {
+          if (currentTool === 0) {
+            currentTool = tools.length - 1;
+          } else {
+            currentTool--;
+          }
+        }
+
+        fieldMatrix[tankPos[0]][tankPos[1]] = currentTool;
+        break;
       }
     }
   });
@@ -175,7 +191,7 @@ function init() {
 
     // blinking tank
     if (Math.floor(timestamp / 250) % 2 === 0) {
-      tankSprite1.draw(
+      tankSprite3.draw(
         ctx,
         ...tankPos.map((x) => (x + 1) * spriteSize),
         spriteSize,
