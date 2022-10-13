@@ -20,8 +20,13 @@ function init() {
 
   const spriteSize = 16; //px
 
-  const [nesWidth, nesHeight] = [256, 224]; // from NES
+  const [nesWidth, nesHeight] = [256, 240];
   const scale = 3.5;
+
+  canvasContainer.style.setProperty("--width", `${nesWidth * scale}px`);
+  canvasContainer.style.setProperty("--height", `${nesHeight * scale}px`);
+  canvasContainer.style.setProperty("--spriteSize", spriteSize);
+  canvasContainer.style.setProperty("--scale", scale);
 
   const ctx = initCanvas(canvasGame, nesWidth, nesHeight);
   const ctxBg = initCanvas(canvasBg, background.width, background.height);
@@ -103,16 +108,46 @@ function init() {
 
   const fieldMatrix = [];
 
-  const [cols, rows] = [13, 13]; // field size in cells
+  btnSave.addEventListener("click", saveMap);
+  btnLoad.addEventListener("click", loadMap);
+  btnClear.addEventListener("click", clearMap);
 
-  for (let row = 0; row < rows; row++) {
-    fieldMatrix[row] = [];
-    for (let col = 0; col < cols; col++) {
-      fieldMatrix[row][col] = 0;
+  function saveMap() {
+    const jsonMap = JSON.stringify(fieldMatrix);
+
+    console.log(jsonMap);
+  }
+
+  function loadMap() {
+    const jsonMap = prompt("input map as json array", "null");
+    try {
+      const mapObj = JSON.parse(jsonMap);
+
+      if (!Array.isArray(mapObj)) throw Error("not an array");
+
+      fieldMatrix.splice(0);
+      fieldMatrix.push(...mapObj);
+    } catch (error) {
+      alert(`bad data: ${error}`);
     }
   }
 
-  console.log({ fieldMatrix });
+  function clearMap() {
+    initMap();
+  }
+
+  const [cols, rows] = [13, 13]; // field size in cells
+
+  function initMap() {
+    for (let row = 0; row < rows; row++) {
+      fieldMatrix[row] = [];
+      for (let col = 0; col < cols; col++) {
+        fieldMatrix[row][col] = 0;
+      }
+    }
+  }
+
+  initMap();
 
   function drawField() {
     for (let row = 0; row < rows; row++) {
