@@ -239,7 +239,8 @@ function init() {
     drawField();
 
     // blinking tank
-    if (Math.floor(timestamp / 250) % 2 === 0) {
+    const blinkingDelayMs = 250;
+    if (Math.floor(timestamp / blinkingDelayMs) % 2 === 0) {
       tankSprite3.draw(
         ctx,
         ...tankPos.map((x) => (x + 1) * spriteSize),
