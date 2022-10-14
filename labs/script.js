@@ -168,8 +168,9 @@ function init() {
   let currentTool = 1;
 
   //controls
+
+  let paintKeyDown = false;
   document.addEventListener("keydown", function (event) {
-    // todo(vmyshko): add proverki bounds
     switch (event.code) {
       case "ArrowLeft": {
         tankPos[0] = Math.max(tankPos[0] - 1, 0);
@@ -189,6 +190,8 @@ function init() {
       }
 
       case "KeyZ": {
+        if (event.repeat) break;
+        paintKeyDown = true;
         if (fieldMatrix[tankPos[0]][tankPos[1]] === currentTool) {
           if (currentTool === tools.length - 1) {
             currentTool = 0;
@@ -196,11 +199,11 @@ function init() {
             currentTool++;
           }
         }
-
-        fieldMatrix[tankPos[0]][tankPos[1]] = currentTool;
         break;
       }
       case "KeyX": {
+        if (event.repeat) break;
+        paintKeyDown = true;
         if (fieldMatrix[tankPos[0]][tankPos[1]] === currentTool) {
           if (currentTool === 0) {
             currentTool = tools.length - 1;
@@ -208,9 +211,20 @@ function init() {
             currentTool--;
           }
         }
-
-        fieldMatrix[tankPos[0]][tankPos[1]] = currentTool;
         break;
+      }
+    }
+
+    if (paintKeyDown) {
+      fieldMatrix[tankPos[0]][tankPos[1]] = currentTool;
+    }
+  });
+
+  document.addEventListener("keyup", function (event) {
+    switch (event.code) {
+      case "KeyZ":
+      case "KeyX": {
+        paintKeyDown = false;
       }
     }
   });
