@@ -3,6 +3,7 @@ import Field from "./field.js";
 import Text from "./text.js";
 import { Sprite } from "./sprites.js";
 import { SpriteUser } from "./sprites.js";
+
 canvas.width = width_$;
 canvas.height = height_$;
 initialSprite.src = "./sprites/isTMrKg.gif";
@@ -15,9 +16,13 @@ const fieldLevelOne = new Image();
 fieldLevelOne.src = "./sprites/reskin/bg01.png";
 const levelOneBcg = new Field(ctx, 0, 0, 256, 240, fieldLevelOne);
 const paragraph = 50;
+
+// todo(vmyshko): do not pass context into components,
+// pass it on draw loop, see -- labs/script.js:235
 const initialTitles = new Text(
   ctx,
   "I-   00   HI-  2000",
+  // todo(vmyshko): set this font as default in text class
   "18px 'Press Start 2P'",
   "white",
   150,
@@ -25,6 +30,8 @@ const initialTitles = new Text(
 );
 
 const battle = new Text(
+  // todo(vmyshko): if there are 3 or more arguments -- use object to pass those,
+  // like: new Text({text:'battle', color:'white', x: 10, y: 20, size: 40})
   ctx,
   "BATTLE",
   "60px 'Press Start 2P'",
@@ -58,6 +65,7 @@ const choseConstruction = new Text(
   1080
 );
 
+// todo(vmyshko): change namco branding to ours -- stepanoid team, or Svetlana,
 const namcot = new Text(
   ctx,
   "namcot",
@@ -68,7 +76,7 @@ const namcot = new Text(
 );
 const brand = new Text(
   ctx,
-  "ⓒ   1980   1985  NAMCO LTD.",
+  "ⓒ   1980   1985  NAMCO LTD.", // todo(vmyshko): update dates, and naming
   "20px 'Press Start 2P'",
   "white",
   270,
@@ -101,7 +109,7 @@ const components = [
 ];
 document.addEventListener("keydown", function (event) {
   console.log(newSpritePositionY);
-
+  // todo(vmyshko): use switch, see labs/script.js:174
   if (event.code == "ArrowUp" && sprite.positionY != newSpritePositionY) {
     newPositionY = sprite.positionY -= 50;
   } else if (
@@ -114,15 +122,18 @@ document.addEventListener("keydown", function (event) {
     initial = false;
   }
 });
+// todo(vmyshko): use requestAnimationFrame instead, see: labs/script.js:235
 let playGame = setInterval(function () {
   ctx.clearRect(0, 0, field.width, field.height);
 
   if (initial) {
     components.forEach(function (component) {
+      // todo(vmyshko): probably rename render to draw, for consistency (not important for now)
       component.render();
     });
 
     if (initialTitles.positionY > paragraph) {
+      // todo(vmyshko): refac magic numbers
       initialTitles.positionY -= 5;
       battle.positionY -= 5;
       city.positionY -= 5;
@@ -136,6 +147,7 @@ let playGame = setInterval(function () {
       newSpritePositionY = sprite.positionY;
     }
   } else {
+    // todo(vmyshko): for all render/draw calls -- pass ctx as argument, see labs/script.js:235
     levelOneBcg.render();
     user.render();
   }

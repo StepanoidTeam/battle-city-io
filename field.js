@@ -9,6 +9,11 @@ class Field {
     this._height = height;
     this._imageSrc = imageSrc;
   }
+
+  // todo(vmyshko): remove redundant getters
+  // todo(vmyshko): make getters only if they change the value
+  // for example:
+  // get square(){ return this.x*this.y  };
   get ctx() {
     return this._ctx;
   }
