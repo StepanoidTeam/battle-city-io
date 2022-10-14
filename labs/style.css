@@ -27,6 +27,10 @@ canvas {
   position: relative;
   margin-left: auto;
 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
   width: calc(var(--spriteSize) * var(--scale) * 2px);
   height: 100%;
 
