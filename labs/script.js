@@ -262,9 +262,19 @@ function init() {
 
   const menuText1 = new TextSprite({
     x: 0,
-    y: 50,
+    y: 150,
     lineSpacing: 4,
     text: ">svetlana impl. numbers!\n© bob..\n kekekekeke",
+  });
+
+  const menuText2 = new TextSprite({
+    x: 0,
+    y: 6,
+    lineSpacing: 8,
+    text: `
+    >1 player
+     2 players
+     construction`,
   });
 
   function drawMenu(ctx, timestamp) {
@@ -276,6 +286,7 @@ function init() {
     );
 
     menuText1.draw(ctx, timestamp);
+    menuText2.draw(ctx, timestamp);
   }
 
   //
