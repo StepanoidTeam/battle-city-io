@@ -109,7 +109,7 @@ function init() {
 
   initMap();
 
-  function drawField() {
+  function drawField(ctx) {
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < cols; col++) {
         const toolIndex = fieldMatrix[row][col];
@@ -190,6 +190,8 @@ function init() {
   });
 
   function drawGrid(ctx) {
+    if (!chkGrid.checked) return;
+
     ctx.strokeStyle = "rgba(0,0,0,0.2)";
     ctx.beginPath();
     for (let col = 0; col <= cols; col++) {
@@ -205,28 +207,7 @@ function init() {
     ctx.stroke();
   }
 
-  //drawing
-  bgSprite.draw(ctxBg, 0, 0, nesWidth, nesHeight);
-
-  (function draw(timestamp) {
-    ctx.clearRect(0, 0, nesWidth, nesHeight);
-    //
-
-    drawField();
-
-    // blinking tank
-    const blinkingDelayMs = 250;
-    if (Math.floor(timestamp / blinkingDelayMs) % 2 === 0) {
-      tankSprite3.draw(
-        ctx,
-        ...tankPos.map((x) => (x + 1) * cellSize * 2),
-        cellSize * 2,
-        cellSize * 2
-      );
-    }
-
-    // draw current tool
-
+  function drawCurrentTool(ctx) {
     const toolSprite = tools[currentTool];
 
     ctx.fillRect(
@@ -242,8 +223,31 @@ function init() {
       cellSize * 2 * 14 + cellSize,
       cellSize
     );
+  }
 
-    if (chkGrid.checked) drawGrid(ctx);
+  function drawCursor(ctx, timestamp) {
+    // blinking tank
+    const blinkingDelayMs = 250;
+    if (Math.floor(timestamp / blinkingDelayMs) % 2 === 0) {
+      tankSprite3.draw(
+        ctx,
+        ...tankPos.map((x) => (x + 1) * cellSize * 2),
+        cellSize * 2,
+        cellSize * 2
+      );
+    }
+  }
+
+  //drawing
+  bgSprite.draw(ctxBg, 0, 0, nesWidth, nesHeight);
+
+  const sceneEditor = [drawField, drawCursor, drawCurrentTool, drawGrid];
+
+  //
+  (function draw(timestamp) {
+    ctx.clearRect(0, 0, nesWidth, nesHeight);
+
+    sceneEditor.forEach((component) => component(ctx, timestamp));
 
     requestAnimationFrame(draw);
   })();
