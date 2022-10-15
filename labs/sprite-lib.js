@@ -58,3 +58,45 @@ export const wallStoneTopSprite = createSprite16(spritemap, 20, 1);
 export const waterSprite = createSprite16(spritemap, 16, 2);
 export const woodSprite = createSprite16(spritemap, 17, 2);
 export const iceSprite = createSprite16(spritemap, 18, 2);
+
+// todo(vmyshko): extract to abc?
+const charSize = 8;
+
+function loadLetter({ img, offsetX, offsetY }) {
+  return new Sprite({
+    spritemap: img,
+    sx: offsetX,
+    sy: offsetY,
+    sHeight: charSize,
+    sWidth: charSize,
+    // canvas
+    width: charSize,
+    height: charSize,
+  });
+}
+
+export const abcSpriteDictionary = Object.fromEntries([
+  // todo(vmyshko): svetlana, impl. numbers
+  // ..."0123456789"
+
+  ..."abcdefghijklmno".split("").map((letter, index) => {
+    return [
+      letter,
+      loadLetter({
+        img: spritemap,
+        offsetX: charSize * index + 424,
+        offsetY: charSize * 6,
+      }),
+    ];
+  }),
+  ..."pqrstuvwxyz".split("").map((letter, index) => {
+    return [
+      letter,
+      loadLetter({
+        img: spritemap,
+        offsetX: index * charSize + 424 - charSize,
+        offsetY: charSize * 7,
+      }),
+    ];
+  }),
+]);

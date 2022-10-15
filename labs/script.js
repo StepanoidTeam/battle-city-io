@@ -1,4 +1,5 @@
 import {
+  abcSpriteDictionary,
   bgSprite,
   emptySprite,
   iceSprite,
@@ -130,6 +131,7 @@ function init() {
   //controls
 
   let paintKeyDown = false;
+  let showMenu = false;
   document.addEventListener("keydown", function (event) {
     switch (event.code) {
       case "ArrowLeft": {
@@ -171,6 +173,11 @@ function init() {
             currentTool--;
           }
         }
+        break;
+      }
+
+      case "Escape": {
+        showMenu = !showMenu;
         break;
       }
     }
@@ -239,15 +246,47 @@ function init() {
   }
 
   //drawing
-  bgSprite.draw(ctxBg, 0, 0, nesWidth, nesHeight);
+  function drawBg(ctx) {
+    bgSprite.draw(ctx, 0, 0, nesWidth, nesHeight);
+  }
 
-  const sceneEditor = [drawField, drawCursor, drawCurrentTool, drawGrid];
+  const sceneEditor = [
+    drawBg,
+    drawField,
+    drawCursor,
+    drawCurrentTool,
+    drawGrid,
+  ];
+
+  const menuCursorPos = 0;
+  function drawMenu(ctx, timestamp) {
+    tankSprite3.draw(
+      ctx,
+      ...tankPos.map((x) => (x + 1) * cellSize * 2),
+      cellSize * 2,
+      cellSize * 2
+    );
+
+    "svetlana good night".split("").forEach((letter, index) => {
+      if (letter === " ") return;
+      // console.log(abcSpriteDictionary);
+
+      if (!abcSpriteDictionary[letter]) return;
+      abcSpriteDictionary[letter].draw(ctx, 20 + 8 * index, 50, 8, 8);
+    });
+  }
 
   //
   (function draw(timestamp) {
     ctx.clearRect(0, 0, nesWidth, nesHeight);
 
-    sceneEditor.forEach((component) => component(ctx, timestamp));
+    // todo(vmyshko): refac to use different scenes? how to manage/switch them?
+    if (showMenu) {
+      // drawBg(ctx, timestamp);
+      drawMenu(ctx, timestamp);
+    } else {
+      sceneEditor.forEach((component) => component(ctx, timestamp));
+    }
 
     requestAnimationFrame(draw);
   })();
