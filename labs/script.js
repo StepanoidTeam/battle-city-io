@@ -2,6 +2,7 @@ import {
   bgSprite,
   emptySprite,
   iceSprite,
+  spriteSize,
   tankSprite3,
   wallBrickDownSprite,
   wallBrickFullSprite,
@@ -188,9 +189,25 @@ function init() {
     }
   });
 
-  bgSprite.draw(ctxBg, 0, 0, nesWidth, nesHeight);
+  function drawGrid(ctx) {
+    ctx.strokeStyle = "rgba(0,0,0,0.2)";
+    ctx.beginPath();
+    for (let col = 0; col <= cols; col++) {
+      ctx.moveTo((col + 1) * spriteSize, spriteSize);
+      ctx.lineTo((col + 1) * spriteSize, (cols + 1) * spriteSize);
+    }
+
+    for (let row = 0; row <= rows; row++) {
+      ctx.moveTo(spriteSize, (row + 1) * spriteSize);
+      ctx.lineTo((rows + 1) * spriteSize, (row + 1) * spriteSize);
+    }
+
+    ctx.stroke();
+  }
 
   //drawing
+  bgSprite.draw(ctxBg, 0, 0, nesWidth, nesHeight);
+
   (function draw(timestamp) {
     ctx.clearRect(0, 0, nesWidth, nesHeight);
     //
@@ -218,21 +235,15 @@ function init() {
       cellSize * 2,
       cellSize * 2
     );
+
     toolSprite.draw(
       ctx,
-      //
+
       cellSize * 2 * 14 + cellSize,
       cellSize
     );
 
-    // anim tank
-
-    // (Math.floor(timestamp / 500) % 2 === 0 ? tankSprite1 : tankSprite2).draw(
-    //   ctx,
-    //   ...tankPos.map((x) => x * spriteSize),
-    //   spriteSize,
-    //   spriteSize
-    // );
+    if (chkGrid.checked) drawGrid(ctx);
 
     requestAnimationFrame(draw);
   })();
