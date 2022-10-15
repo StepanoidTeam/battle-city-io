@@ -2,7 +2,19 @@
 
 export class Sprite {
   defaultSpriteSize = 16;
-
+  static createSprite(spritemap, x, y, spriteSize) {
+    return new Sprite({
+      // spritemap
+      spritemap,
+      sx: spriteSize * x,
+      sy: spriteSize * y,
+      sHeight: spriteSize,
+      sWidth: spriteSize,
+      // canvas
+      width: spriteSize,
+      height: spriteSize,
+    });
+  }
   constructor({
     // spritemap params
     spritemap,
