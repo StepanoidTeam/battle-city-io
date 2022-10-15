@@ -13,7 +13,7 @@ function loadImage(src) {
 }
 
 // load images
-const spritemap = await loadImage("../sprites/spritemap2.png");
+export const spritemap = await loadImage("../sprites/spritemap2.png");
 const background = await loadImage("../sprites/reskin/bgblank.png");
 const reskinTanks = await loadImage("../sprites/reskin/Chr_00_0.png");
 
