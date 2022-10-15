@@ -1,35 +1,37 @@
-import { Sprite } from "./sprite.js";
-
-function loadImage(src) {
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.src = src;
-
-    img.addEventListener("load", () => resolve(img));
-  });
-}
-
-const spritemap = await loadImage("../sprites/spritemap2.png");
-const background = await loadImage("../sprites/reskin/bgblank.png");
-const reskinTanks = await loadImage("../sprites/reskin/Chr_00_0.png");
+import {
+  bgSprite,
+  emptySprite,
+  iceSprite,
+  tankSprite3,
+  wallBrickDownSprite,
+  wallBrickFullSprite,
+  wallBrickLeftSprite,
+  wallBrickRightSprite,
+  wallBrickTopSprite,
+  wallStoneDownSprite,
+  wallStoneFullSprite,
+  wallStoneLeftSprite,
+  wallStoneRightSprite,
+  wallStoneTopSprite,
+  waterSprite,
+  woodSprite,
+} from "./sprite-lib.js";
 
 init();
 
 function init() {
-  const spritemapSize = [400, 256];
-
-  const spriteSize = 16; //px
+  const cellSize = 8; //px
 
   const [nesWidth, nesHeight] = [256, 240];
   const scale = 3.5;
 
   canvasContainer.style.setProperty("--width", `${nesWidth * scale}px`);
   canvasContainer.style.setProperty("--height", `${nesHeight * scale}px`);
-  canvasContainer.style.setProperty("--spriteSize", spriteSize);
+  canvasContainer.style.setProperty("--spriteSize", cellSize * 2);
   canvasContainer.style.setProperty("--scale", scale);
 
   const ctx = initCanvas(canvasGame, nesWidth, nesHeight);
-  const ctxBg = initCanvas(canvasBg, background.width, background.height);
+  const ctxBg = initCanvas(canvasBg, nesWidth, nesHeight);
 
   function initCanvas(canvas, width, height) {
     const ctx = canvas.getContext("2d");
@@ -40,46 +42,6 @@ function init() {
 
     return ctx;
   }
-
-  function createSprite16(spritemap, x, y) {
-    return new Sprite({
-      // spritemap
-      spritemap,
-      sx: spriteSize * x,
-      sy: spriteSize * y,
-      sHeight: spriteSize,
-      sWidth: spriteSize,
-      // canvas
-      width: spriteSize,
-      height: spriteSize,
-    });
-  }
-
-  const bgSprite = new Sprite({
-    spritemap: background,
-  });
-
-  const emptySprite = createSprite16(spritemap, 21, 0);
-  const tankSprite1 = createSprite16(spritemap, 0, 0);
-  const tankSprite2 = createSprite16(spritemap, 1, 0);
-
-  const tankSprite3 = createSprite16(reskinTanks, 0, 0);
-
-  const wallBrickFullSprite = createSprite16(spritemap, 16, 0);
-  const wallBrickRightSprite = createSprite16(spritemap, 17, 0);
-  const wallBrickDownSprite = createSprite16(spritemap, 18, 0);
-  const wallBrickLeftSprite = createSprite16(spritemap, 19, 0);
-  const wallBrickTopSprite = createSprite16(spritemap, 20, 0);
-
-  const wallStoneFullSprite = createSprite16(spritemap, 16, 1);
-  const wallStoneRightSprite = createSprite16(spritemap, 17, 1);
-  const wallStoneDownSprite = createSprite16(spritemap, 18, 1);
-  const wallStoneLeftSprite = createSprite16(spritemap, 19, 1);
-  const wallStoneTopSprite = createSprite16(spritemap, 20, 1);
-
-  const waterSprite = createSprite16(spritemap, 16, 2);
-  const woodSprite = createSprite16(spritemap, 17, 2);
-  const iceSprite = createSprite16(spritemap, 18, 2);
 
   const tools = [
     emptySprite,
@@ -102,9 +64,6 @@ function init() {
     woodSprite,
     iceSprite,
   ];
-
-  // wallBrickSprite.draw(ctx, spriteSize, spriteSize);
-  // wallStoneSprite.draw(ctx, 100, 100, spriteSize);
 
   const fieldMatrix = [];
 
@@ -158,7 +117,7 @@ function init() {
 
         if (!tool) continue;
 
-        tool.draw(ctx, (row + 1) * spriteSize, (col + 1) * spriteSize);
+        tool.draw(ctx, (row + 1) * cellSize * 2, (col + 1) * cellSize * 2);
       }
     }
   }
@@ -229,7 +188,7 @@ function init() {
     }
   });
 
-  bgSprite.draw(ctxBg, 0, 0, background.width, background.height);
+  bgSprite.draw(ctxBg, 0, 0, nesWidth, nesHeight);
 
   //drawing
   (function draw(timestamp) {
@@ -243,9 +202,9 @@ function init() {
     if (Math.floor(timestamp / blinkingDelayMs) % 2 === 0) {
       tankSprite3.draw(
         ctx,
-        ...tankPos.map((x) => (x + 1) * spriteSize),
-        spriteSize,
-        spriteSize
+        ...tankPos.map((x) => (x + 1) * cellSize * 2),
+        cellSize * 2,
+        cellSize * 2
       );
     }
 
