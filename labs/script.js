@@ -208,6 +208,23 @@ function init() {
       );
     }
 
+    // draw current tool
+
+    const toolSprite = tools[currentTool];
+
+    ctx.fillRect(
+      cellSize * 2 * 14 + cellSize,
+      cellSize,
+      cellSize * 2,
+      cellSize * 2
+    );
+    toolSprite.draw(
+      ctx,
+      //
+      cellSize * 2 * 14 + cellSize,
+      cellSize
+    );
+
     // anim tank
 
     // (Math.floor(timestamp / 500) % 2 === 0 ? tankSprite1 : tankSprite2).draw(
