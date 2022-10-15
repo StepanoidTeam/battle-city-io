@@ -1,5 +1,4 @@
 import {
-  abcSpriteDictionary,
   bgSprite,
   emptySprite,
   iceSprite,
@@ -18,6 +17,7 @@ import {
   waterSprite,
   woodSprite,
 } from "./sprite-lib.js";
+import { TextSprite } from "./text.js";
 
 init();
 
@@ -259,6 +259,14 @@ function init() {
   ];
 
   const menuCursorPos = 0;
+
+  const menuText1 = new TextSprite({
+    x: 0,
+    y: 50,
+    lineSpacing: 4,
+    text: ">svetlana impl. numbers!\n© bob..\n kekekekeke",
+  });
+
   function drawMenu(ctx, timestamp) {
     tankSprite3.draw(
       ctx,
@@ -267,13 +275,7 @@ function init() {
       cellSize * 2
     );
 
-    "svetlana good night".split("").forEach((letter, index) => {
-      if (letter === " ") return;
-      // console.log(abcSpriteDictionary);
-
-      if (!abcSpriteDictionary[letter]) return;
-      abcSpriteDictionary[letter].draw(ctx, 20 + 8 * index, 50, 8, 8);
-    });
+    menuText1.draw(ctx, timestamp);
   }
 
   //
