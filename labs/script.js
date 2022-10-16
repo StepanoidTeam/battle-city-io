@@ -25,7 +25,7 @@ function init() {
   const cellSize = 8; //px
 
   const [nesWidth, nesHeight] = [256, 240];
-  const scale = 3.5;
+  const scale = 3;
 
   canvasContainer.style.setProperty("--width", `${nesWidth * scale}px`);
   canvasContainer.style.setProperty("--height", `${nesHeight * scale}px`);
@@ -276,7 +276,7 @@ function init() {
      2 players
      construction`,
   });
- 
+  console.log(menuText2);
   function drawMenu(ctx, timestamp) {
     tankSprite3.draw(
       ctx,

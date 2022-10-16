@@ -23,7 +23,6 @@ const unsupportedChar = "❌";
 const emptyChar = " ";
 
 const abcSpriteDictionary = Object.fromEntries([
- 
   [
     unsupportedChar,
     loadLetter({ img: spritemap, offsetX: 464, offsetY: 72, charSize }),
@@ -99,19 +98,29 @@ export class TextSprite {
 
   draw(ctx) {
     // todo(vmyshko): bake to one image? for performance
+           
     this.#lines.forEach((line, lineIndex) => {
       line.forEach((char, charIndex) => {
         const charExists = Object.hasOwn(abcSpriteDictionary, char);
-
+       // ctx.globalCompositeOperation = "xor";
+       // ctx.fillStyle = "blue";
+       // ctx.fillRect(
+       //   this.x,
+       //   this.y,
+       //   ctx.canvas.attributes[1].nodeValue,
+       //   ctx.canvas.attributes[2].nodeValue
+      // );
         const letterSprite = abcSpriteDictionary[charExists ? char : "❌"];
 
         letterSprite.draw(
+          
           ctx,
           this.x + charIndex * this.#charSize,
           this.y + lineIndex * (this.#charSize + this.#lineSpacing),
           this.#charSize,
           this.#charSize
         );
+
 
         // todo(vmyshko): impl  text colors and text bg
 
@@ -133,4 +142,5 @@ export class TextSprite {
       });
     });
   }
+  
 }
