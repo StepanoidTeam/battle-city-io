@@ -103,6 +103,24 @@ export class TextSprite {
           this.#charSize,
           this.#charSize
         );
+
+        // todo(vmyshko): impl  text colors and text bg
+
+        // set composite mode
+        // ctx.globalCompositeOperation = "source-in"; // todo(vmyshko): play with composition
+
+        // // draw color
+        // ctx.fillStyle = "red";
+        // ctx.fillRect(
+        //   this.x + charIndex * this.#charSize,
+        //   this.y + lineIndex * (this.#charSize + this.#lineSpacing),
+        //   this.#charSize,
+        //   this.#charSize
+        // );
+
+        // // reset comp. mode
+        // ctx.globalCompositeOperation = "source-over";
+        // ctx.fillStyle = "black";
       });
     });
   }
