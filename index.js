@@ -4,52 +4,6 @@ import { BrickWallBlock } from "./brickWallBlock.js";
 import { Sprite } from "./labs/sprite.js";
 import { spritemap } from "./labs/sprite-lib.js";
 
-/*canvas.width = width_$;
-canvas.height = height_$;
-initialSprite.src = "./sprites/isTMrKg.gif";
-
-const spriteMy = new SpriteMy(ctx, 420, 955, 25, 25, initialSprite);
-
-const fieldLevelOne = new Image();
-fieldLevelOne.src = "./sprites/reskin/bg01.png";
-const levelOneBcg = new Field(ctx, 0, 0, 256, 240, fieldLevelOne);
-const paragraph = 50;
-// todo(vmyshko): do not pass context into components,
-// pass it on draw loop, see -- labs/script.js:235
-
-
-
-let newPositionY;
-let initial = true;
-let newSpritePositionY;
-/*const components = [
-  field,
-  initialTitles,
-  battle,
-  city,
-  chosePlayer1,
-  chosePlayer2,
-  choseConstruction,
-  namcot,
-  brand,
-  permission,
-
-];
-document.addEventListener("keydown", function (event) {
-  console.log(newSpritePositionY);
-  // todo(vmyshko): use switch, see labs/script.js:174
-  if (event.code == "ArrowUp" && sprite.positionY != newSpritePositionY) {
-    newPositionY = sprite.positionY -= 50;
-  } else if (
-    event.code == "ArrowDown" &&
-    sprite.positionY != newSpritePositionY + 100
-  ) {
-    newPositionY = sprite.positionY += 50;
-  }
-  if (event.code == "Enter") {
-    initial = false;
-  }
-});*/
 function loadImage(src) {
   return new Promise((resolve) => {
     const img = new Image();
@@ -235,49 +189,45 @@ function init() {
   const brickWall = new BrickWallBlock({ x: 0, y: 0 });
   const brickWallOne = new BrickWallBlock({ x: 16, y: 16 });
 
- 
+  //drawing
+  (function draw() {
+    ctx.clearRect(0, 0, nesWidth, nesHeight);
+    //
+    ctx.beginPath();
+    subtitles.forEach((subtitle) => {
+      subtitle.draw(ctx);
+    });
 
-  (
-    //drawing
-    function draw() {
-      ctx.clearRect(0, 0, nesWidth, nesHeight);
-      //
-      ctx.beginPath();
+    if (initialTitles._positionY > paragraph) {
       subtitles.forEach((subtitle) => {
-        subtitle.draw(ctx);
+        subtitle._positionY -= 1;
       });
-
-      if (initialTitles._positionY > paragraph) {
-        subtitles.forEach((subtitle) => {
-          subtitle._positionY -= 1;
-        });
-      }
-
-      drawBullet = function (position) {
-        bullet.draw(
-          ctx,
-          ...position.map((x) => x * spriteSize + spriteSize),
-          spriteSize,
-          spriteSize
-        );
-      };
-      if (currentPosForBullet && shot) {
-        console.log(currentPosForBullet);
-        drawBullet(currentPosForBullet);
-      }
-      bullet.draw(ctx, 50, 25, spriteSize, spriteSize);
-
-      tankSprite3.draw(
-        ctx,
-        ...tankPos.map((x) => (x + 1) * spriteSize),
-        spriteSize * 4,
-        spriteSize * 4
-      );
-
-      brickWall.draw(ctx);
-brickWallOne.draw(ctx)
-      ctx.closePath();
-      requestAnimationFrame(draw);
     }
-  )();
+
+    drawBullet = function (position) {
+      bullet.draw(
+        ctx,
+        ...position.map((x) => x * spriteSize + spriteSize),
+        spriteSize,
+        spriteSize
+      );
+    };
+    if (currentPosForBullet && shot) {
+      console.log(currentPosForBullet);
+      drawBullet(currentPosForBullet);
+    }
+    bullet.draw(ctx, 50, 25, spriteSize, spriteSize);
+
+    tankSprite3.draw(
+      ctx,
+      ...tankPos.map((x) => (x + 1) * spriteSize),
+      spriteSize * 4,
+      spriteSize * 4
+    );
+
+    brickWall.draw(ctx);
+    brickWallOne.draw(ctx);
+    ctx.closePath();
+    requestAnimationFrame(draw);
+  })();
 }
