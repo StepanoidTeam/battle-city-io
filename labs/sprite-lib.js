@@ -55,6 +55,9 @@ export const wallStoneDownSprite = createSprite16(spritemap, 18, 1);
 export const wallStoneLeftSprite = createSprite16(spritemap, 19, 1);
 export const wallStoneTopSprite = createSprite16(spritemap, 20, 1);
 
-export const waterSprite = createSprite16(spritemap, 16, 2);
+export const waterSprite = createSprite16(spritemap, 16, 2); //orig
+// export const waterSprite = createSprite16(spritemap, 19, 3); //wc2
+export const iceSprite = createSprite16(spritemap, 18, 2); //orig
+// export const iceSprite = createSprite16(spritemap, 18, 3); //wc2
+
 export const woodSprite = createSprite16(spritemap, 17, 2);
-export const iceSprite = createSprite16(spritemap, 18, 2);
