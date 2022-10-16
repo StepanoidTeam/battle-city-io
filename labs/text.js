@@ -23,9 +23,7 @@ const unsupportedChar = "❌";
 const emptyChar = " ";
 
 const abcSpriteDictionary = Object.fromEntries([
-  // todo(vmyshko): svetlana, impl. numbers
-  // ..."0123456789"
-
+ 
   [
     unsupportedChar,
     loadLetter({ img: spritemap, offsetX: 464, offsetY: 72, charSize }),
@@ -57,6 +55,17 @@ const abcSpriteDictionary = Object.fromEntries([
         img: spritemap,
         offsetX: index * charSize + 424 - charSize,
         offsetY: charSize * 7,
+        charSize,
+      }),
+    ];
+  }),
+  ..."0123456789".split("").map((letter, index) => {
+    return [
+      letter,
+      loadLetter({
+        img: spritemap,
+        offsetX: charSize * index + 424 - charSize,
+        offsetY: charSize * 5,
         charSize,
       }),
     ];

@@ -276,7 +276,7 @@ function init() {
      2 players
      construction`,
   });
-
+ 
   function drawMenu(ctx, timestamp) {
     tankSprite3.draw(
       ctx,
