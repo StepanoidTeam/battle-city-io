@@ -1,4 +1,4 @@
-import { drawSettings } from "./settings.js";
+import { initSettings } from "./settings.js";
 import {
   bgSprite,
   emptySprite,
@@ -18,8 +18,7 @@ import {
   waterSprite,
   woodSprite,
 } from "./sprite-lib.js";
-import { TextSprite } from "./text.js";
-
+import { TextSprite } from "./textSprite.js";
 init();
 
 function init() {
@@ -133,6 +132,8 @@ function init() {
 
   let paintKeyDown = false;
   let showMenu = false;
+  const drawSettings = initSettings({onExit:()=>showMenu=false});
+
   document.addEventListener("keydown", function (event) {
     switch (event.code) {
       case "ArrowLeft": {
@@ -268,17 +269,8 @@ function init() {
     color: "white",
     multiplyText: 2,
   });
-  const menuText1 = new TextSprite({
-    x: 0,
-    y: 150,
-    lineSpacing: 4,
-    text: ">svetlana impl. numbers!\n© bob..\n kekekekeke",
-    color: "red",
-  });
 
   const menuText2 = new TextSprite({
-    x: 0,
-    y: 26,
     lineSpacing: 8,
     text: `
     >1 player
@@ -286,12 +278,10 @@ function init() {
      construction`,
     color: "yellow",
   });
-  console.log(menuText2);
   function drawMenu(ctx, timestamp) {
     ctx.clearRect(0, 0, nesWidth, nesHeight);
-    header.draw(ctx, timestamp);
-    menuText1.draw(ctx, timestamp);
-    menuText2.draw(ctx, timestamp);
+    header.draw(ctx, 40, 25);
+    menuText2.draw(ctx, 0, 26);
   }
   function drawSprites(ctx, timestamp) {
     ctx.clearRect(0, 0, nesWidth, nesHeight);
@@ -305,7 +295,7 @@ function init() {
 
   //
   (function draw(timestamp) {
-        ctx.clearRect(0, 0, nesWidth, nesHeight);
+    ctx.clearRect(0, 0, nesWidth, nesHeight);
 
     // todo(vmyshko): refac to use different scenes? how to manage/switch them?
     if (showMenu) {
