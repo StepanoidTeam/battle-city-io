@@ -77,16 +77,12 @@ export class TextSprite {
   #lineSpacing;
   // todo(vmyshko): reuse charSize const
   constructor({
-    x,
-    y,
     text,
     charSize = 8,
     lineSpacing = 0,
     color = null,
     multiplyText = 1,
   }) {
-    this.x = x;
-    this.y = y;
     this.#charSize = charSize;
     this.#lineSpacing = lineSpacing;
     this.text = text;
@@ -109,7 +105,7 @@ export class TextSprite {
     this.#lines.map((line) => line.join()).join("\n");
   }
 
-  draw(ctx, timestamp) {
+  draw(ctx, x, y) {
     // todo(vmyshko): bake to one image? for performance
 
     this.#lines.forEach((line, lineIndex) => {
@@ -123,8 +119,8 @@ export class TextSprite {
 
         letterSprite.draw(
           ctx,
-          this.x + charIndex * this.#charSize,
-          this.y + lineIndex * (this.#charSize + this.#lineSpacing),
+          x + charIndex * this.#charSize,
+          y + lineIndex * (this.#charSize + this.#lineSpacing),
           this.#charSize,
           this.#charSize
         );
