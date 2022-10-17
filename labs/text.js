@@ -76,12 +76,13 @@ export class TextSprite {
   #lines;
   #lineSpacing;
   // todo(vmyshko): reuse charSize const
-  constructor({ x, y, text, charSize = 8, lineSpacing = 0 }) {
+  constructor({ x, y, text, charSize = 8, lineSpacing = 0, color = null }) {
     this.x = x;
     this.y = y;
     this.#charSize = charSize;
     this.#lineSpacing = lineSpacing;
     this.text = text;
+    this.color = color;
   }
 
   set text(value) {
@@ -96,24 +97,19 @@ export class TextSprite {
     this.#lines.map((line) => line.join()).join("\n");
   }
 
-  draw(ctx) {
+  draw(ctx, timestamp) {
     // todo(vmyshko): bake to one image? for performance
-           
+
     this.#lines.forEach((line, lineIndex) => {
       line.forEach((char, charIndex) => {
         const charExists = Object.hasOwn(abcSpriteDictionary, char);
-       // ctx.globalCompositeOperation = "xor";
-       // ctx.fillStyle = "blue";
-       // ctx.fillRect(
-       //   this.x,
-       //   this.y,
-       //   ctx.canvas.attributes[1].nodeValue,
-       //   ctx.canvas.attributes[2].nodeValue
-      // );
-        const letterSprite = abcSpriteDictionary[charExists ? char : "❌"];
+
+        const letterSprite =
+          abcSpriteDictionary[charExists ? char : unsupportedChar];
+
+        // todo(vmyshko): use buffer canvas, to fix issue with mixing text with other sprites
 
         letterSprite.draw(
-          
           ctx,
           this.x + charIndex * this.#charSize,
           this.y + lineIndex * (this.#charSize + this.#lineSpacing),
@@ -121,26 +117,32 @@ export class TextSprite {
           this.#charSize
         );
 
-
         // todo(vmyshko): impl  text colors and text bg
 
-        // set composite mode
-        // ctx.globalCompositeOperation = "source-in"; // todo(vmyshko): play with composition
+        // todo(vmyshko): dynamic color change prikol -- remove
+        // const blinkingDelayMs = 10;
+        // const colorHue = Math.floor(timestamp / blinkingDelayMs) % 360;
 
-        // // draw color
-        // ctx.fillStyle = "red";
-        // ctx.fillRect(
-        //   this.x + charIndex * this.#charSize,
-        //   this.y + lineIndex * (this.#charSize + this.#lineSpacing),
-        //   this.#charSize,
-        //   this.#charSize
-        // );
+        // this.color = `hsl(${colorHue}deg 50% 40%)`;
 
-        // // reset comp. mode
-        // ctx.globalCompositeOperation = "source-over";
-        // ctx.fillStyle = "black";
+        if (this.color) {
+          // set composite mode
+          ctx.globalCompositeOperation = "source-atop";
+
+          // draw color
+          ctx.fillStyle = this.color;
+          ctx.fillRect(
+            this.x + charIndex * this.#charSize,
+            this.y + lineIndex * (this.#charSize + this.#lineSpacing),
+            this.#charSize,
+            this.#charSize
+          );
+
+          // reset comp. mode
+          ctx.globalCompositeOperation = "source-over";
+          ctx.fillStyle = "black";
+        }
       });
     });
   }
-  
 }

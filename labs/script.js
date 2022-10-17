@@ -265,6 +265,7 @@ function init() {
     y: 150,
     lineSpacing: 4,
     text: ">svetlana impl. numbers!\n© bob..\n kekekekeke",
+    color: "red",
   });
 
   const menuText2 = new TextSprite({
@@ -275,6 +276,7 @@ function init() {
     >1 player
      2 players
      construction`,
+    color: "yellow",
   });
   console.log(menuText2);
   function drawMenu(ctx, timestamp) {
