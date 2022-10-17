@@ -76,13 +76,25 @@ export class TextSprite {
   #lines;
   #lineSpacing;
   // todo(vmyshko): reuse charSize const
-  constructor({ x, y, text, charSize = 8, lineSpacing = 0, color = null }) {
+  constructor({
+    x,
+    y,
+    text,
+    charSize = 8,
+    lineSpacing = 0,
+    color = null,
+    multiplyText = 1,
+  }) {
     this.x = x;
     this.y = y;
     this.#charSize = charSize;
     this.#lineSpacing = lineSpacing;
     this.text = text;
     this.color = color;
+    this.multiplyText = multiplyText;
+    if (this.multiplyText) {
+      this.#charSize = charSize * this.multiplyText;
+    }
   }
 
   set text(value) {

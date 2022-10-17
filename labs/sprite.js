@@ -41,6 +41,7 @@ export class Sprite {
     width = this.defaultSpriteSize,
     height = this.defaultSpriteSize
   ) {
+    
     ctx.drawImage(
       this.spritemap,
       // spritemap

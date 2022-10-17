@@ -1,3 +1,4 @@
+import { drawSettings } from "./settings.js";
 import {
   bgSprite,
   emptySprite,
@@ -34,7 +35,7 @@ function init() {
 
   const ctx = initCanvas(canvasGame, nesWidth, nesHeight);
   const ctxBg = initCanvas(canvasBg, nesWidth, nesHeight);
-
+  const ctxSprites = initCanvas(sprites, nesWidth, nesHeight);
   function initCanvas(canvas, width, height) {
     const ctx = canvas.getContext("2d");
     canvas.width = width * scale;
@@ -259,7 +260,14 @@ function init() {
   ];
 
   const menuCursorPos = 0;
-
+  const header = new TextSprite({
+    x: 40,
+    y: 25,
+    text: `BATTLE
+ CITY`,
+    color: "white",
+    multiplyText: 2,
+  });
   const menuText1 = new TextSprite({
     x: 0,
     y: 150,
@@ -270,7 +278,7 @@ function init() {
 
   const menuText2 = new TextSprite({
     x: 0,
-    y: 6,
+    y: 26,
     lineSpacing: 8,
     text: `
     >1 player
@@ -280,25 +288,31 @@ function init() {
   });
   console.log(menuText2);
   function drawMenu(ctx, timestamp) {
+    ctx.clearRect(0, 0, nesWidth, nesHeight);
+    header.draw(ctx, timestamp);
+    menuText1.draw(ctx, timestamp);
+    menuText2.draw(ctx, timestamp);
+  }
+  function drawSprites(ctx, timestamp) {
+    ctx.clearRect(0, 0, nesWidth, nesHeight);
     tankSprite3.draw(
       ctx,
       ...tankPos.map((x) => (x + 1) * cellSize * 2),
       cellSize * 2,
       cellSize * 2
     );
-
-    menuText1.draw(ctx, timestamp);
-    menuText2.draw(ctx, timestamp);
   }
 
   //
   (function draw(timestamp) {
-    ctx.clearRect(0, 0, nesWidth, nesHeight);
+        ctx.clearRect(0, 0, nesWidth, nesHeight);
 
     // todo(vmyshko): refac to use different scenes? how to manage/switch them?
     if (showMenu) {
+      drawSprites(ctxSprites);
       // drawBg(ctx, timestamp);
-      drawMenu(ctx, timestamp);
+      drawSettings(ctx);
+      // drawMenu(ctx, timestamp);
     } else {
       sceneEditor.forEach((component) => component(ctx, timestamp));
     }

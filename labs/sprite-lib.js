@@ -42,7 +42,7 @@ export const tankSprite1 = createSprite16(spritemap, 0, 0);
 export const tankSprite2 = createSprite16(spritemap, 1, 0);
 
 export const tankSprite3 = createSprite16(reskinTanks, 0, 0);
-
+export const tankCursor = createSprite16(reskinTanks, 6, 0);
 export const wallBrickFullSprite = createSprite16(spritemap, 16, 0);
 export const wallBrickRightSprite = createSprite16(spritemap, 17, 0);
 export const wallBrickDownSprite = createSprite16(spritemap, 18, 0);
