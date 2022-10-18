@@ -70,6 +70,10 @@ const abcSpriteDictionary = Object.fromEntries([
     ];
   }),
 ]);
+const ctxBuffer = document.createElement("canvas").getContext("2d");
+ctxBuffer.imageSmoothingEnabled = false; // pixelated
+
+
 
 export class TextSprite {
   #charSize;
@@ -80,13 +84,13 @@ export class TextSprite {
     text,
     charSize = 8,
     lineSpacing = 0,
-    color = null,
+    fillStyle = null,
     multiplyText = 1,
   }) {
     this.#charSize = charSize;
     this.#lineSpacing = lineSpacing;
     this.text = text;
-    this.color = color;
+    this.fillStyle = fillStyle;
     this.multiplyText = multiplyText;
     if (this.multiplyText) {
       this.#charSize = charSize * this.multiplyText;
@@ -116,14 +120,8 @@ export class TextSprite {
           abcSpriteDictionary[charExists ? char : unsupportedChar];
 
         // todo(vmyshko): use buffer canvas, to fix issue with mixing text with other sprites
-
-        letterSprite.draw(
-          ctx,
-          x + charIndex * this.#charSize,
-          y + lineIndex * (this.#charSize + this.#lineSpacing),
-          this.#charSize,
-          this.#charSize
-        );
+        ctxBuffer.clearRect(0, 0, this.#charSize, this.#charSize);
+        letterSprite.draw(ctxBuffer, 0, 0, this.#charSize, this.#charSize);
 
         // todo(vmyshko): impl  text colors and text bg
 
@@ -132,31 +130,29 @@ export class TextSprite {
         // const colorHue = Math.floor(timestamp / blinkingDelayMs) % 360;
 
         // this.color = `hsl(${colorHue}deg 50% 40%)`;
-        if (this.color) {
+        if (this.fillStyle) {
           // set composite mode
 
-          ctx.globalCompositeOperation = "source-atop";
+          ctxBuffer.globalCompositeOperation = "source-atop";
+          ctxBuffer.fillStyle = this.fillStyle;
+          ctxBuffer.fillRect(0, 0, this.#charSize, this.#charSize);
+          // reset comp. mode
+          ctxBuffer.fillStyle = "black";
 
-          if (typeof this.color === "string") {
-            // just color
-
-            // draw color
-            ctx.fillStyle = this.color;
-            ctx.fillRect(
-              x + charIndex * this.#charSize,
-              y + lineIndex * (this.#charSize + this.#lineSpacing),
-              this.#charSize,
-              this.#charSize
-            );
-
-            // reset comp. mode
-            ctx.globalCompositeOperation = "source-over";
-            ctx.fillStyle = "black";
-          } else if (this.color instanceof Sprite) {
-            // todo(vmyshko): impl
-            //
-          }
+          ctxBuffer.globalCompositeOperation = "source-over";
         }
+
+        ctx.drawImage(
+          ctxBuffer.canvas,
+          0,
+          0,
+          this.#charSize,
+          this.#charSize,
+          x + charIndex * this.#charSize,
+          y + lineIndex * (this.#charSize + this.#lineSpacing),
+          this.#charSize,
+          this.#charSize
+        );
       });
     });
   }
