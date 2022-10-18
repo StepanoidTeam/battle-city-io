@@ -9,6 +9,7 @@ import {
   wallBrickDownSprite,
   wallBrickFullSprite,
   wallBrickLeftSprite,
+  wallBrickRedFullSprite,
   wallBrickRightSprite,
   wallBrickTopSprite,
   wallStoneDownSprite,
@@ -33,9 +34,10 @@ function init() {
   canvasContainer.style.setProperty("--spriteSize", cellSize * 2);
   canvasContainer.style.setProperty("--scale", scale);
 
-  const ctx = initCanvas(canvasGame, nesWidth, nesHeight);
+  const ctxGame = initCanvas(canvasGame, nesWidth, nesHeight);
   const ctxBg = initCanvas(canvasBg, nesWidth, nesHeight);
   const ctxSprites = initCanvas(sprites, nesWidth, nesHeight);
+
   function initCanvas(canvas, width, height) {
     const ctx = canvas.getContext("2d");
     canvas.width = width * scale;
@@ -263,11 +265,10 @@ function init() {
 
   const menuCursorPos = 0;
   const header = new TextSprite({
-    x: 40,
-    y: 25,
-    text: `BATTLE\nCITY`,
-    color: "white",
-    multiplyText: 2,
+    text: `BATTLE\n CITY`,
+    lineSpacing:8,
+    fillStyle: wallBrickRedFullSprite.getPattern(),
+    multiplyText: 4,
   });
 
   const menuText2 = new TextSprite({
@@ -276,12 +277,12 @@ function init() {
     >1 player
      2 players
      construction`,
-    color: "yellow",
+    fillStyle: "yellow",
   });
   function drawMenu(ctx, timestamp) {
     ctx.clearRect(0, 0, nesWidth, nesHeight);
-    header.draw(ctx, 40, 25);
-    menuText2.draw(ctx, 0, 26);
+    header.draw(ctx, 32, 25);
+    menuText2.draw(ctx, 32, 96);
   }
 
   function drawSprites(ctx, timestamp) {
@@ -298,17 +299,17 @@ function init() {
   //     const brickWall = new BrickWallBlock({ x: 0, y: 0 });
 
   (function draw(timestamp) {
-    ctx.clearRect(0, 0, nesWidth, nesHeight);
+    ctxGame.clearRect(0, 0, nesWidth, nesHeight);
 
     // todo(vmyshko): refac to use different scenes? how to manage/switch them?
     if (showMenu) {
       drawSprites(ctxSprites);
       // drawBg(ctx, timestamp);
-      drawSettings(ctx);
-      // drawMenu(ctx, timestamp);
+      drawSettings(ctxGame);
+       //drawMenu(ctxGame, timestamp);
     } else {
-      sceneEditor.forEach((component) => component(ctx, timestamp));
-      brickWall.draw(ctx);
+      sceneEditor.forEach((component) => component(ctxGame, timestamp));
+      brickWall.draw(ctxGame);
     }
 
     requestAnimationFrame(draw);

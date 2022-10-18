@@ -1,9 +1,19 @@
-import { tankCursor } from "./sprite-lib.js";
+import {
+  tankCursor,
+  wallBrickFullSprite,
+  wallBrickRedFullSprite,
+  woodSprite,
+} from "./sprite-lib.js";
 import { TextSprite } from "./textSprite.js";
 
 export function initSettings({ onExit }) {
   const menuPos = [4, 4].map((x) => x * 16);
-  const valueYes = new TextSprite({ x: 0, y: 0, text: "yes", color: "red" });
+  const valueYes = new TextSprite({
+    x: 0,
+    y: 0,
+    text: "yes",
+    fillStyle: "red",
+  });
   const valueNo = new TextSprite({ x: 0, y: 0, text: "no" });
   const optionsText = [
     "friendly fire",
@@ -28,7 +38,7 @@ export function initSettings({ onExit }) {
     return {
       textSprite: new TextSprite({
         text: text,
-        color: "grey",
+        fillStyle: "grey",
       }),
       value: false,
       draw(ctx) {
@@ -92,6 +102,7 @@ export function initSettings({ onExit }) {
   const optionsTitle = new TextSprite({
     text: "options",
     multiplyText: 4,
+    fillStyle: wallBrickRedFullSprite.getPattern(),
   });
 
   return function drawSettings(ctx) {
