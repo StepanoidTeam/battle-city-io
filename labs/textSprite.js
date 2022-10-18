@@ -133,23 +133,29 @@ export class TextSprite {
 
         // this.color = `hsl(${colorHue}deg 50% 40%)`;
         if (this.color) {
-         
-
           // set composite mode
+
           ctx.globalCompositeOperation = "source-atop";
 
-          // draw color
-          ctx.fillStyle = this.color;
-          ctx.fillRect(
-            x + charIndex * this.#charSize,
-            y + lineIndex * (this.#charSize + this.#lineSpacing),
-            this.#charSize,
-            this.#charSize
-          );
+          if (typeof this.color === "string") {
+            // just color
 
-          // reset comp. mode
-          ctx.globalCompositeOperation = "source-over";
-          ctx.fillStyle = "black";
+            // draw color
+            ctx.fillStyle = this.color;
+            ctx.fillRect(
+              x + charIndex * this.#charSize,
+              y + lineIndex * (this.#charSize + this.#lineSpacing),
+              this.#charSize,
+              this.#charSize
+            );
+
+            // reset comp. mode
+            ctx.globalCompositeOperation = "source-over";
+            ctx.fillStyle = "black";
+          } else if (this.color instanceof Sprite) {
+            // todo(vmyshko): impl
+            //
+          }
         }
       });
     });
