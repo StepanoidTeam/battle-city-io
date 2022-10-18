@@ -265,8 +265,7 @@ function init() {
   const header = new TextSprite({
     x: 40,
     y: 25,
-    text: `BATTLE
- CITY`,
+    text: `BATTLE\nCITY`,
     color: "white",
     multiplyText: 2,
   });
