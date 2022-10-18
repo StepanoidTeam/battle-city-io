@@ -2,8 +2,8 @@ import { tankCursor } from "./sprite-lib.js";
 import { TextSprite } from "./textSprite.js";
 
 export function initSettings({ onExit }) {
-  const menuPos = [80, 32];
-  const valueYes = new TextSprite({ x: 0, y: 0, text: "yes" });
+  const menuPos = [4, 4].map((x) => x * 16);
+  const valueYes = new TextSprite({ x: 0, y: 0, text: "yes", color: "red" });
   const valueNo = new TextSprite({ x: 0, y: 0, text: "no" });
   const optionsText = [
     "friendly fire",
@@ -47,7 +47,7 @@ export function initSettings({ onExit }) {
   });
 
   options.push({
-    textSprite: new TextSprite({ text: "main menu"}),
+    textSprite: new TextSprite({ text: "main menu" }),
     value: null,
     draw(ctx) {
       this.textSprite.draw(
@@ -89,8 +89,18 @@ export function initSettings({ onExit }) {
     }
   });
 
+  const optionsTitle = new TextSprite({
+    text: "options",
+    multiplyText: 4,
+  });
+
   return function drawSettings(ctx) {
-  
+    //bg
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+    // title
+    optionsTitle.draw(ctx, 16, 16);
 
     options.forEach((option) => option.draw(ctx));
 
