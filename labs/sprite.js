@@ -41,7 +41,6 @@ export class Sprite {
     width = this.defaultSpriteSize,
     height = this.defaultSpriteSize
   ) {
-    
     ctx.drawImage(
       this.spritemap,
       // spritemap
@@ -55,5 +54,17 @@ export class Sprite {
       width,
       height
     );
+  }
+  getPattern({
+    width = this.defaultSpriteSize,
+    height = this.defaultSpriteSize,
+  } = {}) {
+    const ctxBuffer = document.createElement("canvas").getContext("2d");
+    ctxBuffer.canvas.width = width;
+    ctxBuffer.canvas.height = height;
+    ctxBuffer.imageSmoothingEnabled = false; // pixelated
+    this.draw(ctxBuffer, 0, 0);
+    const pattern = ctxBuffer.createPattern(ctxBuffer.canvas, "repeat");
+    return pattern;
   }
 }
