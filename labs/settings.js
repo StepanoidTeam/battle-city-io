@@ -1,7 +1,7 @@
 import { tankCursor } from "./sprite-lib.js";
 import { TextSprite } from "./textSprite.js";
 
-export function initSettings({onExit}) {
+export function initSettings({ onExit }) {
   const menuPos = [80, 32];
   const valueYes = new TextSprite({ x: 0, y: 0, text: "yes" });
   const valueNo = new TextSprite({ x: 0, y: 0, text: "no" });
@@ -28,7 +28,7 @@ export function initSettings({onExit}) {
     return {
       textSprite: new TextSprite({
         text: text,
-        //color: "grey",
+        color: "grey",
       }),
       value: false,
       draw(ctx) {
@@ -47,7 +47,7 @@ export function initSettings({onExit}) {
   });
 
   options.push({
-    textSprite: new TextSprite({ text: "main menu" }),
+    textSprite: new TextSprite({ text: "main menu"}),
     value: null,
     draw(ctx) {
       this.textSprite.draw(
@@ -70,7 +70,6 @@ export function initSettings({onExit}) {
         if (currentOptionIndex > 0) {
           currentOptionIndex--;
         }
-
         break;
       }
       case "ArrowDown": {
@@ -79,13 +78,11 @@ export function initSettings({onExit}) {
         }
         break;
       }
-
       case "KeyZ": {
         if (event.repeat) break;
-        options[currentOptionIndex].select()
+        options[currentOptionIndex].select();
         break;
       }
-
       case "Escape": {
         break;
       }
@@ -93,8 +90,7 @@ export function initSettings({onExit}) {
   });
 
   return function drawSettings(ctx) {
-    ctx.fillStyle = "black";
-    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  
 
     options.forEach((option) => option.draw(ctx));
 

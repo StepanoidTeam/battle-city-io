@@ -132,16 +132,17 @@ export class TextSprite {
         // const colorHue = Math.floor(timestamp / blinkingDelayMs) % 360;
 
         // this.color = `hsl(${colorHue}deg 50% 40%)`;
-
         if (this.color) {
+         
+
           // set composite mode
           ctx.globalCompositeOperation = "source-atop";
 
           // draw color
           ctx.fillStyle = this.color;
           ctx.fillRect(
-            this.x + charIndex * this.#charSize,
-            this.y + lineIndex * (this.#charSize + this.#lineSpacing),
+            x + charIndex * this.#charSize,
+            y + lineIndex * (this.#charSize + this.#lineSpacing),
             this.#charSize,
             this.#charSize
           );

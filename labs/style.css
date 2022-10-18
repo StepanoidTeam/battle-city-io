@@ -21,6 +21,7 @@ canvas {
   position: relative;
   width: var(--width);
   height: var(--height);
+  background-color: black;
 }
 
 .sidebar {

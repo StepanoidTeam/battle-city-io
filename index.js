@@ -186,7 +186,7 @@ function init() {
   let drawBullet;
 
   bgSprite.draw(ctxBg, 0, 0);
-  const brickWall = new BrickWallBlock({ x: 0, y: 0 });
+   const brickWall = new BrickWallBlock({ x: 0, y: 0 });
   const brickWallOne = new BrickWallBlock({ x: 16, y: 16 });
 
   //drawing

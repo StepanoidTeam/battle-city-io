@@ -1,3 +1,4 @@
+import { BrickWallBlock } from "../brickWallBlock.js";
 import { initSettings } from "./settings.js";
 import {
   bgSprite,
@@ -132,7 +133,7 @@ function init() {
 
   let paintKeyDown = false;
   let showMenu = false;
-  const drawSettings = initSettings({onExit:()=>showMenu=false});
+  const drawSettings = initSettings({ onExit: () => (showMenu = false) });
 
   document.addEventListener("keydown", function (event) {
     switch (event.code) {
@@ -283,6 +284,7 @@ function init() {
     header.draw(ctx, 40, 25);
     menuText2.draw(ctx, 0, 26);
   }
+
   function drawSprites(ctx, timestamp) {
     ctx.clearRect(0, 0, nesWidth, nesHeight);
     tankSprite3.draw(
@@ -292,8 +294,10 @@ function init() {
       cellSize * 2
     );
   }
+  const brickWall = new BrickWallBlock({ x: 0, y: 0 });
 
-  //
+  //     const brickWall = new BrickWallBlock({ x: 0, y: 0 });
+
   (function draw(timestamp) {
     ctx.clearRect(0, 0, nesWidth, nesHeight);
 
@@ -305,6 +309,7 @@ function init() {
       // drawMenu(ctx, timestamp);
     } else {
       sceneEditor.forEach((component) => component(ctx, timestamp));
+      brickWall.draw(ctx);
     }
 
     requestAnimationFrame(draw);

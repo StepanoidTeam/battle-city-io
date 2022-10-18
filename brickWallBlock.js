@@ -24,7 +24,12 @@ for (let col = 0; col < cols; col++) {
 
 export class BrickWallBlock {
   static sprites = bricksWallSprites;
-
+  brickPieces = [
+    [1, 1, 0, 1],
+    [0, 1, 0, 1],
+    [1, 0, 1, 1],
+    [1, 1, 1, 0],
+  ];
   constructor({
     // spritemap params
     x,
@@ -36,7 +41,14 @@ export class BrickWallBlock {
 
   draw(ctx) {
     BrickWallBlock.sprites.forEach(({ sprite, col, row }) => {
-      sprite.draw(ctx, this.x + col * brickSize, this.y + row * brickSize, brickSize, brickSize);
+      if (this.brickPieces[row][col] === 0) return;
+      sprite.draw(
+        ctx,
+        this.x + col * brickSize,
+        this.y + row * brickSize,
+        brickSize,
+        brickSize
+      );
     });
   }
 }
