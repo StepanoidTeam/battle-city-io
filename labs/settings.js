@@ -152,6 +152,7 @@ export function initSettings({ onExit }) {
     text: "options",
     multiplyText: 4,
     fillStyle: wallBrickRedFullSprite.getPattern(),
+    shadowFill: true,
   });
 
   return function drawSettings(ctx) {

@@ -1,5 +1,5 @@
-import { spritemap } from "./labs/sprite-lib.js";
-import { Sprite } from "./labs/sprite.js";
+import { spritemap } from "./sprite-lib.js";
+import { Sprite } from "./sprite.js";
 
 const bricksWallSprites = [];
 const brickSize = 4;
