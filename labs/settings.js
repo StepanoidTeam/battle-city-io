@@ -45,7 +45,7 @@ export function initSettings({ onExit }) {
     cursorOffsetX: 24,
   });
 
-  document.addEventListener("keydown", function (event) {
+  function onKeyDown(event) {
     switch (event.code) {
       case "ArrowUp": {
         menuSettings.prev();
@@ -61,11 +61,13 @@ export function initSettings({ onExit }) {
         break;
       }
       case "Escape": {
+        if (event.repeat) break;
+
+        onExit();
         break;
       }
     }
-  });
-
+  }
   const optionsTitle = new TextSprite({
     text: "options",
     multiplyText: 4,
@@ -74,14 +76,22 @@ export function initSettings({ onExit }) {
   });
   const menuPos = [2, 4].map((x) => x * 16);
 
-  return function drawSettings(ctx) {
-    //bg
-    ctx.fillStyle = "black";
-    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  return {
+    draw(ctx) {
+      //bg
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    // title
-    optionsTitle.draw(ctx, 16, 16);
-    menuSettings.draw(ctx, ...menuPos);
-    // draw list
+      // title
+      optionsTitle.draw(ctx, 16, 16);
+      menuSettings.draw(ctx, ...menuPos);
+      // draw list
+    },
+    load() {
+      document.addEventListener("keydown", onKeyDown);
+    },
+    unload() {
+      document.removeEventListener("keydown", onKeyDown);
+    },
   };
 }
