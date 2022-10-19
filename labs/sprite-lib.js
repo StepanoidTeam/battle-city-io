@@ -15,7 +15,6 @@ function loadImage(src) {
 // load images
 export const spritemap = await loadImage("../sprites/spritemap2.png");
 const background = await loadImage("../sprites/reskin/bgblank.png");
-const reskinTanks = await loadImage("../sprites/reskin/Chr_00_0.png");
 
 // create sprites
 
@@ -41,8 +40,8 @@ export const emptySprite = createSprite16(spritemap, 21, 0);
 export const tankSprite1 = createSprite16(spritemap, 0, 0);
 export const tankSprite2 = createSprite16(spritemap, 1, 0);
 
-export const tankSprite3 = createSprite16(reskinTanks, 0, 0);
-export const tankCursor = createSprite16(reskinTanks, 6, 0);
+export const tankSprite3 = createSprite16(spritemap, 0, 0);
+export const tankCursor = createSprite16(spritemap, 6, 0);
 export const wallBrickFullSprite = createSprite16(spritemap, 16, 0);
 export const wallBrickRightSprite = createSprite16(spritemap, 17, 0);
 export const wallBrickDownSprite = createSprite16(spritemap, 18, 0);
