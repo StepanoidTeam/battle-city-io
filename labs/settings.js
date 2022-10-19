@@ -72,9 +72,65 @@ class ListItemSelect extends ListItem {
     selectedOption.draw(ctx, x + this.valueOffsetX, y);
   }
 }
+class MenuList {
+  constructor({
+    listItems,
+    cursor,
+    lineSpacing = 0,
+    cursorOffsetX,
+    selectedIndex = 0,
+  }) {
+    this.listItems = listItems;
+    this.cursor = cursor;
+    this.lineSpacing = lineSpacing;
+    this.cursorOffsetX = cursorOffsetX;
+    this.selectedIndex = selectedIndex;
+  }
+
+  get selectedItem() {
+    return this.listItems[this.selectedIndex];
+  }
+
+  select() {
+    this.selectedItem.select();
+  }
+
+  prev() {
+    this.selectedIndex--;
+    if (this.selectedIndex < 0) {
+      this.selectedIndex = this.listItems.length - 1;
+    }
+  }
+
+  next() {
+    this.selectedIndex++;
+    if (this.selectedIndex >= this.listItems.length) {
+      this.selectedIndex = 0;
+    }
+  }
+
+  draw(ctx, x, y) {
+    this.listItems.forEach((listItem, index) =>
+      listItem.draw(
+        ctx,
+        x,
+        y + index * (listItem.textSprite.charSize + this.lineSpacing)
+      )
+    );
+    const cursorHeight = this.cursor.sHeight;
+    const itemHeight = this.selectedItem.textSprite.charSize;
+
+    this.cursor.draw(
+      ctx,
+      x - this.cursorOffsetX,
+      y +
+        this.selectedIndex * (itemHeight + this.lineSpacing) +
+        (itemHeight - cursorHeight) / 2
+    );
+  }
+}
 
 export function initSettings({ onExit }) {
-  const menuPos = [2, 4].map((x) => x * 16);
   const yesNo = ["yes", "no"];
 
   //max items 10
@@ -90,7 +146,7 @@ export function initSettings({ onExit }) {
 
   const maxTextLength = Math.max(...optionsText.map(([text]) => text.length));
 
-  const options = optionsText.map(([text, options]) => {
+  const settingsItems = optionsText.map(([text, options]) => {
     return new ListItemSelect({
       text,
       itemColor: "greenyellow",
@@ -101,38 +157,33 @@ export function initSettings({ onExit }) {
       valueOffsetX: (maxTextLength + 1) * 8,
     });
   });
-  options.push(
+  settingsItems.push(
     new ListItem({
       text: "main menu",
       itemColor: "blueviolet",
       onSelect: onExit,
     })
   );
-
-  const cursor = tankCursor;
-  let currentOptionIndex = 0;
+  const menuSettings = new MenuList({
+    listItems: settingsItems,
+    cursor: tankCursor,
+    lineSpacing: 8,
+    cursorOffsetX: 24,
+  });
 
   document.addEventListener("keydown", function (event) {
     switch (event.code) {
       case "ArrowUp": {
-        currentOptionIndex--;
-
-        if (currentOptionIndex < 0) {
-          currentOptionIndex = options.length - 1;
-        }
-
+        menuSettings.prev();
         break;
       }
       case "ArrowDown": {
-        currentOptionIndex++;
-        if (currentOptionIndex >= options.length) {
-          currentOptionIndex = 0;
-        }
+        menuSettings.next();
         break;
       }
       case "KeyZ": {
         if (event.repeat) break;
-        options[currentOptionIndex].select();
+        menuSettings.select();
         break;
       }
       case "Escape": {
@@ -147,6 +198,7 @@ export function initSettings({ onExit }) {
     fillStyle: wallBrickRedFullSprite.getPattern(),
     shadowFill: true,
   });
+  const menuPos = [2, 4].map((x) => x * 16);
 
   return function drawSettings(ctx) {
     //bg
@@ -155,12 +207,7 @@ export function initSettings({ onExit }) {
 
     // title
     optionsTitle.draw(ctx, 16, 16);
-
+    menuSettings.draw(ctx, ...menuPos);
     // draw list
-    options.forEach((option, index) =>
-      option.draw(ctx, menuPos[0], menuPos[1] + index * (8 + 8))
-    );
-
-    cursor.draw(ctx, menuPos[0] - 24, menuPos[1] - 4 + currentOptionIndex * 16);
   };
 }
