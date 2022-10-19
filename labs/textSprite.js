@@ -73,12 +73,14 @@ const abcSpriteDictionary = Object.fromEntries([
 const ctxBuffer = document.createElement("canvas").getContext("2d");
 ctxBuffer.imageSmoothingEnabled = false; // pixelated
 
-
-
 export class TextSprite {
   #charSize;
   #lines;
   #lineSpacing;
+
+  get charSize() {
+    return this.#charSize;
+  }
   // todo(vmyshko): reuse charSize const
   constructor({
     text,

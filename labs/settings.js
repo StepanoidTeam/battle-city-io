@@ -1,20 +1,84 @@
-import {
-  tankCursor,
-  wallBrickFullSprite,
-  wallBrickRedFullSprite,
-  woodSprite,
-} from "./sprite-lib.js";
+import { tankCursor, wallBrickRedFullSprite } from "./sprite-lib.js";
 import { TextSprite } from "./textSprite.js";
+
+// todo(vmyshko): extract?
+const noOp = () => void 0;
+
+class ListItem {
+  text = "list item";
+  onSelect = noOp;
+  textSprite;
+
+  constructor({ text, itemColor, onSelect = noOp }) {
+    this.text = text;
+    this.onSelect = onSelect;
+
+    this.textSprite = new TextSprite({
+      text: text,
+      fillStyle: itemColor,
+    });
+  }
+
+  draw(ctx, x, y) {
+    this.textSprite.draw(ctx, x, y);
+  }
+}
+
+class ListItemSelect extends ListItem {
+  //
+  value = null;
+  options = [false];
+  selectedIndex = 0;
+
+  get value() {
+    return this.options[this.selectedIndex];
+  }
+
+  constructor({
+    text,
+    itemColor,
+    valueColor,
+    value,
+    options,
+    valueOffsetX,
+    onSelect = noOp,
+  }) {
+    super({ text, itemColor, onSelect });
+
+    this.value = value;
+    this.selectedIndex = options.includes(value) ? options.indexOf(value) : 0;
+    this.options = options;
+
+    this.valueOffsetX = valueOffsetX ?? text.length * super.textSprite.charSize;
+
+    this.optionSprites = this.options.map(
+      (option) =>
+        new TextSprite({
+          text: option.toString(),
+          fillStyle: valueColor ?? itemColor,
+        })
+    );
+  }
+
+  select() {
+    this.selectedIndex++;
+    if (this.selectedIndex >= this.options.length) {
+      this.selectedIndex = 0;
+    }
+  }
+
+  draw(ctx, x, y) {
+    super.draw(ctx, x, y);
+
+    const selectedOption = this.optionSprites[this.selectedIndex];
+
+    selectedOption.draw(ctx, x + this.valueOffsetX, y);
+  }
+}
 
 export function initSettings({ onExit }) {
   const menuPos = [4, 4].map((x) => x * 16);
-  const valueYes = new TextSprite({
-    x: 0,
-    y: 0,
-    text: "yes",
-    fillStyle: "red",
-  });
-  const valueNo = new TextSprite({ x: 0, y: 0, text: "no" });
+
   const optionsText = [
     "friendly fire",
     "ai use bonus",
@@ -27,33 +91,18 @@ export function initSettings({ onExit }) {
     "new bonuses",
   ];
 
-  let maxTextLength = 0;
-  for (let textIndex = 0; textIndex < optionsText.length; textIndex++) {
-    if (maxTextLength < optionsText[textIndex].length) {
-      maxTextLength = optionsText[textIndex].length;
-    }
-  }
+  const maxTextLength = Math.max(...optionsText.map((text) => text.length));
 
   const options = optionsText.map((text, textIndex) => {
-    return {
-      textSprite: new TextSprite({
-        text: text,
-        fillStyle: "grey",
-      }),
-      value: false,
-      draw(ctx) {
-        this.textSprite.draw(ctx, menuPos[0], menuPos[1] + textIndex * (8 + 8));
+    return new ListItemSelect({
+      text: text,
+      itemColor: "greenyellow",
+      valueColor: "red",
 
-        (this.value ? valueYes : valueNo).draw(
-          ctx,
-          menuPos[0] + maxTextLength * 8 + 8,
-          menuPos[1] + textIndex * (8 + 8)
-        );
-      },
-      select() {
-        this.value = !this.value;
-      },
-    };
+      options: ["no", "yes"],
+
+      valueOffsetX: maxTextLength * 8 + 8,
+    });
   });
 
   options.push({
@@ -113,7 +162,10 @@ export function initSettings({ onExit }) {
     // title
     optionsTitle.draw(ctx, 16, 16);
 
-    options.forEach((option) => option.draw(ctx));
+    // draw list
+    options.forEach((option, index) =>
+      option.draw(ctx, menuPos[0], menuPos[1] + index * (8 + 8))
+    );
 
     cursor.draw(ctx, menuPos[0] - 24, menuPos[1] - 4 + currentOptionIndex * 16);
   };
