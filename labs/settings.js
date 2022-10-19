@@ -1,145 +1,63 @@
+import { ListItem, ListItemSelect, MenuList } from "./menuList.js";
 import { tankCursor, wallBrickRedFullSprite } from "./sprite-lib.js";
 import { TextSprite } from "./textSprite.js";
 
 // todo(vmyshko): extract?
-const noOp = () => void 0;
-
-class ListItem {
-  text = "list item";
-  onSelect = noOp;
-  textSprite;
-
-  constructor({ text, itemColor, onSelect = noOp }) {
-    this.text = text;
-    this.onSelect = onSelect;
-
-    this.textSprite = new TextSprite({
-      text: text,
-      fillStyle: itemColor,
-    });
-  }
-
-  draw(ctx, x, y) {
-    this.textSprite.draw(ctx, x, y);
-  }
-}
-
-class ListItemSelect extends ListItem {
-  //
-  value = null;
-  options = [false];
-  selectedIndex = 0;
-
-  get value() {
-    return this.options[this.selectedIndex];
-  }
-
-  constructor({
-    text,
-    itemColor,
-    valueColor,
-    value,
-    options,
-    valueOffsetX,
-    onSelect = noOp,
-  }) {
-    super({ text, itemColor, onSelect });
-
-    this.value = value;
-    this.selectedIndex = options.includes(value) ? options.indexOf(value) : 0;
-    this.options = options;
-
-    this.valueOffsetX = valueOffsetX ?? text.length * super.textSprite.charSize;
-
-    this.optionSprites = this.options.map(
-      (option) =>
-        new TextSprite({
-          text: option.toString(),
-          fillStyle: valueColor ?? itemColor,
-        })
-    );
-  }
-
-  select() {
-    this.selectedIndex++;
-    if (this.selectedIndex >= this.options.length) {
-      this.selectedIndex = 0;
-    }
-  }
-
-  draw(ctx, x, y) {
-    super.draw(ctx, x, y);
-
-    const selectedOption = this.optionSprites[this.selectedIndex];
-
-    selectedOption.draw(ctx, x + this.valueOffsetX, y);
-  }
-}
 
 export function initSettings({ onExit }) {
-  const menuPos = [4, 4].map((x) => x * 16);
+  const yesNo = ["yes", "no"];
 
+  //max items 10
   const optionsText = [
-    "friendly fire",
-    "ai use bonus",
-    "5 bonus tanks",
-    "bonus shots",
-    "8 ai tanks",
-    "40 ai total",
-    "ai tank armor",
-    "swap palettes",
-    "new bonuses",
+    ["pl.friendly fire", yesNo],
+    ["ai friendly fire", yesNo],
+    ["ai use bonus", yesNo],
+    ["bonus ship and gun", yesNo],
+    ["additional lives", [1, 2, 3, 4, 5]],
+    ["level pack", ["classic", "1990"]],
+    ["skin", yesNo],
   ];
 
-  const maxTextLength = Math.max(...optionsText.map((text) => text.length));
+  const maxTextLength = Math.max(...optionsText.map(([text]) => text.length));
 
-  const options = optionsText.map((text, textIndex) => {
+  const settingsItems = optionsText.map(([text, options]) => {
     return new ListItemSelect({
-      text: text,
+      text,
       itemColor: "greenyellow",
       valueColor: "red",
 
-      options: ["no", "yes"],
+      options,
 
-      valueOffsetX: maxTextLength * 8 + 8,
+      valueOffsetX: (maxTextLength + 1) * 8,
     });
   });
-
-  options.push({
-    textSprite: new TextSprite({ text: "main menu" }),
-    value: null,
-    draw(ctx) {
-      this.textSprite.draw(
-        ctx,
-        menuPos[0],
-        menuPos[1] + (options.length - 1) * (8 + 8)
-      );
-    },
-    select() {
-      onExit();
-    },
+  settingsItems.push(
+    new ListItem({
+      text: "main menu",
+      itemColor: "blueviolet",
+      onSelect: onExit,
+    })
+  );
+  const menuSettings = new MenuList({
+    listItems: settingsItems,
+    cursor: tankCursor,
+    lineSpacing: 8,
+    cursorOffsetX: 24,
   });
-
-  const cursor = tankCursor;
-  let currentOptionIndex = 0;
 
   document.addEventListener("keydown", function (event) {
     switch (event.code) {
       case "ArrowUp": {
-        if (currentOptionIndex > 0) {
-          currentOptionIndex--;
-        }
+        menuSettings.prev();
         break;
       }
       case "ArrowDown": {
-        if (currentOptionIndex < options.length - 1) {
-          currentOptionIndex++;
-        }
+        menuSettings.next();
         break;
       }
       case "KeyZ": {
         if (event.repeat) break;
-        options[currentOptionIndex].select();
+        menuSettings.select();
         break;
       }
       case "Escape": {
@@ -154,6 +72,7 @@ export function initSettings({ onExit }) {
     fillStyle: wallBrickRedFullSprite.getPattern(),
     shadowFill: true,
   });
+  const menuPos = [2, 4].map((x) => x * 16);
 
   return function drawSettings(ctx) {
     //bg
@@ -162,12 +81,7 @@ export function initSettings({ onExit }) {
 
     // title
     optionsTitle.draw(ctx, 16, 16);
-
+    menuSettings.draw(ctx, ...menuPos);
     // draw list
-    options.forEach((option, index) =>
-      option.draw(ctx, menuPos[0], menuPos[1] + index * (8 + 8))
-    );
-
-    cursor.draw(ctx, menuPos[0] - 24, menuPos[1] - 4 + currentOptionIndex * 16);
   };
 }

@@ -309,7 +309,7 @@ function init() {
       drawSprites(ctxSprites);
       // drawBg(ctx, timestamp);
       drawSettings(ctxGame);
-       drawMenu(ctxGame, timestamp);
+      // drawMenu(ctxGame, timestamp);
     } else {
       sceneEditor.forEach((component) => component(ctxGame, timestamp));
       brickWall.draw(ctxGame);
