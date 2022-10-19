@@ -4,7 +4,7 @@ import {
   bgSprite,
   emptySprite,
   iceSprite,
-  spriteSize,
+  blockSize,
   tankSprite3,
   wallBrickDownSprite,
   wallBrickFullSprite,
@@ -207,13 +207,13 @@ function init() {
     ctx.strokeStyle = "rgba(0,0,0,0.2)";
     ctx.beginPath();
     for (let col = 0; col <= cols; col++) {
-      ctx.moveTo((col + 1) * spriteSize, spriteSize);
-      ctx.lineTo((col + 1) * spriteSize, (cols + 1) * spriteSize);
+      ctx.moveTo((col + 1) * blockSize, blockSize);
+      ctx.lineTo((col + 1) * blockSize, (cols + 1) * blockSize);
     }
 
     for (let row = 0; row <= rows; row++) {
-      ctx.moveTo(spriteSize, (row + 1) * spriteSize);
-      ctx.lineTo((rows + 1) * spriteSize, (row + 1) * spriteSize);
+      ctx.moveTo(blockSize, (row + 1) * blockSize);
+      ctx.lineTo((rows + 1) * blockSize, (row + 1) * blockSize);
     }
 
     ctx.stroke();
@@ -266,7 +266,7 @@ function init() {
   const menuCursorPos = 0;
   const header = new TextSprite({
     text: `BATTLE\n CITY`,
-    lineSpacing:8,
+    lineSpacing: 8,
     fillStyle: wallBrickRedFullSprite.getPattern(),
     multiplyText: 4,
   });
@@ -306,7 +306,7 @@ function init() {
       drawSprites(ctxSprites);
       // drawBg(ctx, timestamp);
       drawSettings(ctxGame);
-       //drawMenu(ctxGame, timestamp);
+      //drawMenu(ctxGame, timestamp);
     } else {
       sceneEditor.forEach((component) => component(ctxGame, timestamp));
       brickWall.draw(ctxGame);

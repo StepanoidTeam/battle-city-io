@@ -1,7 +1,7 @@
 import { Sprite } from "./sprite.js";
 
 // todo(vmyshko): rename
-export const spriteSize = 16; //px
+export const blockSize = 16; //px
 
 function loadImage(src) {
   return new Promise((resolve) => {
@@ -23,13 +23,13 @@ function createSprite16(spritemap, x, y) {
   return new Sprite({
     // spritemap
     spritemap,
-    sx: spriteSize * x,
-    sy: spriteSize * y,
-    sHeight: spriteSize,
-    sWidth: spriteSize,
+    sx: blockSize * x,
+    sy: blockSize * y,
+    sHeight: blockSize,
+    sWidth: blockSize,
     // canvas
-    width: spriteSize,
-    height: spriteSize,
+    width: blockSize,
+    height: blockSize,
   });
 }
 
@@ -62,4 +62,4 @@ export const iceSprite = createSprite16(spritemap, 18, 2); //orig
 
 export const woodSprite = createSprite16(spritemap, 17, 2);
 
-export const wallBrickRedFullSprite= createSprite16(spritemap,18,14)
+export const wallBrickRedFullSprite = createSprite16(spritemap, 18, 14);
