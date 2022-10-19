@@ -1,4 +1,5 @@
-import { BrickWallBlock } from "../brickWallBlock.js";
+import { BrickWallBlock } from "./brickWallBlock.js";
+import { maps_data } from "../maps_data.js";
 import { initSettings } from "./settings.js";
 import {
   bgSprite,
@@ -266,9 +267,10 @@ function init() {
   const menuCursorPos = 0;
   const header = new TextSprite({
     text: `BATTLE\n CITY`,
-    lineSpacing:8,
+    lineSpacing: 8,
     fillStyle: wallBrickRedFullSprite.getPattern(),
     multiplyText: 4,
+    shadowFill: true,
   });
 
   const menuText2 = new TextSprite({
@@ -278,6 +280,7 @@ function init() {
      2 players
      construction`,
     fillStyle: "yellow",
+    shadowFill: true,
   });
   function drawMenu(ctx, timestamp) {
     ctx.clearRect(0, 0, nesWidth, nesHeight);
@@ -295,7 +298,7 @@ function init() {
     );
   }
   const brickWall = new BrickWallBlock({ x: 0, y: 0 });
-
+  maps_data.forEach((item) => console.log(item.length));
   //     const brickWall = new BrickWallBlock({ x: 0, y: 0 });
 
   (function draw(timestamp) {
@@ -306,7 +309,7 @@ function init() {
       drawSprites(ctxSprites);
       // drawBg(ctx, timestamp);
       drawSettings(ctxGame);
-       //drawMenu(ctxGame, timestamp);
+       drawMenu(ctxGame, timestamp);
     } else {
       sceneEditor.forEach((component) => component(ctxGame, timestamp));
       brickWall.draw(ctxGame);

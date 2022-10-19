@@ -39,6 +39,7 @@ export function initSettings({ onExit }) {
       textSprite: new TextSprite({
         text: text,
         fillStyle: "grey",
+        shadowFill:true
       }),
       value: false,
       draw(ctx) {
@@ -103,6 +104,7 @@ export function initSettings({ onExit }) {
     text: "options",
     multiplyText: 4,
     fillStyle: wallBrickRedFullSprite.getPattern(),
+    shadowFill: true
   });
 
   return function drawSettings(ctx) {
