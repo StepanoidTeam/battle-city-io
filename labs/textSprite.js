@@ -73,12 +73,11 @@ const abcSpriteDictionary = Object.fromEntries([
 const ctxBuffer = document.createElement("canvas").getContext("2d");
 ctxBuffer.imageSmoothingEnabled = false; // pixelated
 
-
-
 export class TextSprite {
   #charSize;
   #lines;
   #lineSpacing;
+
   // todo(vmyshko): reuse charSize const
   constructor({
     text,
@@ -86,12 +85,14 @@ export class TextSprite {
     lineSpacing = 0,
     fillStyle = null,
     multiplyText = 1,
+    shadowFill = false,
   }) {
     this.#charSize = charSize;
     this.#lineSpacing = lineSpacing;
     this.text = text;
     this.fillStyle = fillStyle;
     this.multiplyText = multiplyText;
+    this.shadowFill = shadowFill;
     if (this.multiplyText) {
       this.#charSize = charSize * this.multiplyText;
     }
@@ -123,6 +124,20 @@ export class TextSprite {
         ctxBuffer.clearRect(0, 0, this.#charSize, this.#charSize);
         letterSprite.draw(ctxBuffer, 0, 0, this.#charSize, this.#charSize);
 
+        this.shadowFill
+          ? ctx.drawImage(
+              ctxBuffer.canvas,
+              0,
+              -1,
+              this.#charSize,
+              this.#charSize,
+              x + charIndex * this.#charSize,
+              y + lineIndex * (this.#charSize + this.#lineSpacing),
+              this.#charSize,
+              this.#charSize
+            )
+          : null;
+
         // todo(vmyshko): impl  text colors and text bg
 
         // todo(vmyshko): dynamic color change prikol -- remove
@@ -130,6 +145,7 @@ export class TextSprite {
         // const colorHue = Math.floor(timestamp / blinkingDelayMs) % 360;
 
         // this.color = `hsl(${colorHue}deg 50% 40%)`;
+
         if (this.fillStyle) {
           // set composite mode
 
