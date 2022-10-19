@@ -31,6 +31,10 @@ https://www.emu-land.net/forum/index.php?topic=79824.0
 
 https://shedevr.org.ru/cgi-bin/parse.cgi?id=BinaryCity
 
+## walkthrough
+
+https://strategywiki.org/wiki/Battle_City/Walkthrough
+
 # other similar games
 
 ## tank force - colorful sequel
