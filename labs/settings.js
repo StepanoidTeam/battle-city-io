@@ -2,13 +2,9 @@ import { tankCursor, wallBrickRedFullSprite } from "./sprite-lib.js";
 import { TextSprite } from "./textSprite.js";
 
 // todo(vmyshko): extract?
-const noOp = () => void 0;
+const noOp = () => console.log("no");
 
 class ListItem {
-  text = "list item";
-  onSelect = noOp;
-  textSprite;
-
   constructor({ text, itemColor, onSelect = noOp }) {
     this.text = text;
     this.onSelect = onSelect;
@@ -18,7 +14,9 @@ class ListItem {
       fillStyle: itemColor,
     });
   }
-
+  select() {
+    this.onSelect();
+  }
   draw(ctx, x, y) {
     this.textSprite.draw(ctx, x, y);
   }
@@ -26,9 +24,6 @@ class ListItem {
 
 class ListItemSelect extends ListItem {
   //
-  value = null;
-  options = [false];
-  selectedIndex = 0;
 
   get value() {
     return this.options[this.selectedIndex];
@@ -45,11 +40,12 @@ class ListItemSelect extends ListItem {
   }) {
     super({ text, itemColor, onSelect });
 
-    this.value = value;
+    // this.value = value;
     this.selectedIndex = options.includes(value) ? options.indexOf(value) : 0;
     this.options = options;
 
-    this.valueOffsetX = valueOffsetX ?? text.length * super.textSprite.charSize;
+    this.valueOffsetX =
+      valueOffsetX ?? (text.length + 1) * this.textSprite.charSize;
 
     this.optionSprites = this.options.map(
       (option) =>
@@ -65,6 +61,7 @@ class ListItemSelect extends ListItem {
     if (this.selectedIndex >= this.options.length) {
       this.selectedIndex = 0;
     }
+    super.onSelect();
   }
 
   draw(ctx, x, y) {
@@ -77,48 +74,40 @@ class ListItemSelect extends ListItem {
 }
 
 export function initSettings({ onExit }) {
-  const menuPos = [4, 4].map((x) => x * 16);
+  const menuPos = [2, 4].map((x) => x * 16);
+  const yesNo = ["yes", "no"];
 
+  //max items 10
   const optionsText = [
-    "friendly fire",
-    "ai use bonus",
-    "5 bonus tanks",
-    "bonus shots",
-    "8 ai tanks",
-    "40 ai total",
-    "ai tank armor",
-    "swap palettes",
-    "new bonuses",
+    ["pl.friendly fire", yesNo],
+    ["ai friendly fire", yesNo],
+    ["ai use bonus", yesNo],
+    ["bonus ship and gun", yesNo],
+    ["additional lives", [1, 2, 3, 4, 5]],
+    ["level pack", ["classic", "1990"]],
+    ["skin", yesNo],
   ];
 
-  const maxTextLength = Math.max(...optionsText.map((text) => text.length));
+  const maxTextLength = Math.max(...optionsText.map(([text]) => text.length));
 
-  const options = optionsText.map((text, textIndex) => {
+  const options = optionsText.map(([text, options]) => {
     return new ListItemSelect({
-      text: text,
+      text,
       itemColor: "greenyellow",
       valueColor: "red",
 
-      options: ["no", "yes"],
+      options,
 
-      valueOffsetX: maxTextLength * 8 + 8,
+      valueOffsetX: (maxTextLength + 1) * 8,
     });
   });
-
-  options.push({
-    textSprite: new TextSprite({ text: "main menu" }),
-    value: null,
-    draw(ctx) {
-      this.textSprite.draw(
-        ctx,
-        menuPos[0],
-        menuPos[1] + (options.length - 1) * (8 + 8)
-      );
-    },
-    select() {
-      onExit();
-    },
-  });
+  options.push(
+    new ListItem({
+      text: "main menu",
+      itemColor: "blueviolet",
+      onSelect: onExit,
+    })
+  );
 
   const cursor = tankCursor;
   let currentOptionIndex = 0;
@@ -126,14 +115,18 @@ export function initSettings({ onExit }) {
   document.addEventListener("keydown", function (event) {
     switch (event.code) {
       case "ArrowUp": {
-        if (currentOptionIndex > 0) {
-          currentOptionIndex--;
+        currentOptionIndex--;
+
+        if (currentOptionIndex < 0) {
+          currentOptionIndex = options.length - 1;
         }
+
         break;
       }
       case "ArrowDown": {
-        if (currentOptionIndex < options.length - 1) {
-          currentOptionIndex++;
+        currentOptionIndex++;
+        if (currentOptionIndex >= options.length) {
+          currentOptionIndex = 0;
         }
         break;
       }
