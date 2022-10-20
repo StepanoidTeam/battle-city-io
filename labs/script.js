@@ -1,8 +1,6 @@
 import { initMainMenu } from "./mainMenu.js";
 import { getEditorScene } from "./sceneEditor.js";
 import { initSettings } from "./settings.js";
-import { wallBrickRedFullSprite } from "./sprite-lib.js";
-import { TextSprite } from "./textSprite.js";
 export const [nesWidth, nesHeight] = [256, 240];
 export const cellSize = 8; //px
 
@@ -27,13 +25,25 @@ function init() {
 
     return ctx;
   }
-  let currentScene = null;
+  const { getCurrentScene, setCurrentScene } = (function useScene() {
+    let currentScene = null;
+
+    function getCurrentScene() {
+      //
+      return currentScene;
+    }
+    function setCurrentScene(scene) {
+      //
+      if (currentScene) currentScene.unload();
+      currentScene = scene;
+      currentScene.load();
+    }
+    return { getCurrentScene, setCurrentScene };
+  })();
 
   const sceneSettings = initSettings({
     onExit: () => {
-      sceneSettings.unload();
-      sceneMainMenu.load();
-      currentScene = sceneMainMenu;
+      setCurrentScene(sceneMainMenu);
     },
   });
 
@@ -42,32 +52,26 @@ function init() {
       // sceneMainMenu.unload();
     },
     onSettings: () => {
-      sceneMainMenu.unload();
-      sceneSettings.load();
-      currentScene = sceneSettings;
+      setCurrentScene(sceneSettings);
     },
     onEditor: () => {
-      sceneMainMenu.unload();
-      sceneEditor.load();
-      currentScene = sceneEditor;
+      setCurrentScene(sceneEditor);
     },
   });
-  currentScene = sceneMainMenu;
 
   const sceneEditor = getEditorScene({
     onExit: () => {
       //
-      sceneEditor.unload();
-      sceneMainMenu.load();
-      currentScene = sceneMainMenu;
+      setCurrentScene(sceneMainMenu);
     },
   });
-  sceneMainMenu.load();
+  setCurrentScene(sceneMainMenu);
 
   (function draw(timestamp) {
     ctxGame.clearRect(0, 0, nesWidth, nesHeight);
 
-    currentScene.draw(ctxGame, timestamp);
+    let test = getCurrentScene();
+    test.draw(ctxGame, timestamp);
 
     requestAnimationFrame(draw);
   })();
