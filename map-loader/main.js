@@ -27,7 +27,7 @@ function* tiles(map) {
 
 const image = new Image();
 
-image.src = "../sprites/reskin/Chr_01_0.png";
+image.src = "../sprites/reskin/Chr_01_0-fix.png";
 
 image.addEventListener("load", () => {
   for (const map of maps) {

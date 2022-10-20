@@ -7,6 +7,10 @@ battle city from nes remake
 
 https://stepanoidteam.github.io/battle-city-io/labs
 
+## pavlo maps-loader
+
+https://stepanoidteam.github.io/battle-city-io/map-loader/
+
 # Resources
 
 # NES Demo reference
