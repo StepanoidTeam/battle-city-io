@@ -1,3 +1,4 @@
+import { initMainMenu } from "./mainMenu.js";
 import { getEditorScene } from "./sceneEditor.js";
 import { initSettings } from "./settings.js";
 import { wallBrickRedFullSprite } from "./sprite-lib.js";
@@ -26,42 +27,47 @@ function init() {
 
     return ctx;
   }
+  let currentScene = null;
 
-  let showMenu = false;
   const sceneSettings = initSettings({
     onExit: () => {
-      showMenu = false;
       sceneSettings.unload();
-      sceneEditor.load();
+      sceneMainMenu.load();
+      currentScene = sceneMainMenu;
     },
   });
+
+  const sceneMainMenu = initMainMenu({
+    onStartGame: () => {
+      // sceneMainMenu.unload();
+    },
+    onSettings: () => {
+      sceneMainMenu.unload();
+      sceneSettings.load();
+      currentScene = sceneSettings;
+    },
+    onEditor: () => {
+      sceneMainMenu.unload();
+      sceneEditor.load();
+      currentScene = sceneEditor;
+    },
+  });
+  currentScene = sceneMainMenu;
+
   const sceneEditor = getEditorScene({
     onExit: () => {
       //
-      showMenu = true;
       sceneEditor.unload();
-      sceneSettings.load();
+      sceneMainMenu.load();
+      currentScene = sceneMainMenu;
     },
   });
-  sceneEditor.load();
-  const header = new TextSprite({
-    text: `BATTLE\n CITY`,
-    lineSpacing: 8,
-    fillStyle: wallBrickRedFullSprite.getPattern(),
-    multiplyText: 4,
-    shadowFill: true,
-  });
+  sceneMainMenu.load();
 
   (function draw(timestamp) {
     ctxGame.clearRect(0, 0, nesWidth, nesHeight);
 
-    // todo(vmyshko): refac to use different scenes? how to manage/switch them?
-    if (showMenu) {
-      sceneSettings.draw(ctxGame, timestamp);
-      // drawMenu(ctxGame, timestamp);
-    } else {
-      sceneEditor.draw(ctxGame, timestamp);
-    }
+    currentScene.draw(ctxGame, timestamp);
 
     requestAnimationFrame(draw);
   })();

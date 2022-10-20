@@ -69,7 +69,7 @@ export function initSettings({ onExit }) {
     }
   }
   const optionsTitle = new TextSprite({
-    text: "options",
+    text: "settings",
     multiplyText: 4,
     fillStyle: wallBrickRedFullSprite.getPattern(),
     shadowFill: true,
@@ -83,7 +83,7 @@ export function initSettings({ onExit }) {
       ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
       // title
-      optionsTitle.draw(ctx, 16, 16);
+      optionsTitle.draw(ctx, 0, 16);
       menuSettings.draw(ctx, ...menuPos);
       // draw list
     },

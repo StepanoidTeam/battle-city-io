@@ -59,7 +59,7 @@ export class ListItemSelect extends ListItem {
     if (this.selectedIndex >= this.options.length) {
       this.selectedIndex = 0;
     }
-    super.onSelect();
+    this.onSelect();
   }
 
   draw(ctx, x, y) {
