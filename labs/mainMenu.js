@@ -33,10 +33,12 @@ export function initMainMenu({ onStartGame, onSettings, onEditor }) {
     new ListItem({
       text: "1 player",
       onSelect: onStartGame,
+      itemColor: "gray",
     }),
     new ListItem({
       text: "2 players",
       onSelect: onStartGame,
+      itemColor: "gray",
     }),
     new ListItem({
       text: "editor",
