@@ -81,6 +81,7 @@ export class TextSprite {
   get charSize() {
     return this.#charSize;
   }
+
   // todo(vmyshko): reuse charSize const
   constructor({
     text,
@@ -90,15 +91,13 @@ export class TextSprite {
     multiplyText = 1,
     shadowFill = false,
   }) {
-    this.#charSize = charSize;
+    this.#charSize = charSize * multiplyText;
+
     this.#lineSpacing = lineSpacing;
     this.text = text;
     this.fillStyle = fillStyle;
-    this.multiplyText = multiplyText;
+
     this.shadowFill = shadowFill;
-    if (this.multiplyText) {
-      this.#charSize = charSize * this.multiplyText;
-    }
   }
 
   set text(value) {
