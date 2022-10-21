@@ -1,25 +1,34 @@
 import { ListItem, MenuList } from "./menuList.js";
+import { nesWidth } from "./script.js";
 import { tankCursor, wallBrickRedFullSprite } from "./sprite-lib.js";
-import { TextSprite } from "./textSprite.js";
+import { TextAlign, TextSprite } from "./textSprite.js";
 
 export function initMainMenu({ onStartGame, onSettings, onEditor }) {
   const hightScores = new TextSprite({
     text: "I-     00  HI-  20000",
+    textAlign: TextAlign.center,
   });
   const companyName = new TextSprite({
     text: "stepanoid team",
     fillStyle: "rgb(173,48,5)",
+    textAlign: TextAlign.center,
   });
+
   const copyright = new TextSprite({
-    text: "© 2023 stepanoid team ltd.\n all rights reserved",
+    text: "© 2023 stepanoid team ltd.\nall rights reserved",
     lineSpacing: 8,
+    textAlign: TextAlign.center,
   });
+
   const header = new TextSprite({
-    text: `BATTLE\n CITY`,
+    text: `BATTLE\nCITY`,
     lineSpacing: 8,
     fillStyle: wallBrickRedFullSprite.getPattern(),
     multiplyText: 4,
+
+    textAlign: TextAlign.center,
   });
+
   const settingsItems = [
     new ListItem({
       text: "1 player",
@@ -44,6 +53,7 @@ export function initMainMenu({ onStartGame, onSettings, onEditor }) {
     cursor: tankCursor,
     lineSpacing: 8,
     cursorOffsetX: 24,
+    textAlign: TextAlign.center,
   });
   function onKeyDown(event) {
     switch (event.code) {
@@ -62,6 +72,9 @@ export function initMainMenu({ onStartGame, onSettings, onEditor }) {
       }
     }
   }
+
+  const screenCenterX = nesWidth / 2;
+
   return {
     draw(ctx) {
       //bg
@@ -69,11 +82,11 @@ export function initMainMenu({ onStartGame, onSettings, onEditor }) {
       ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
       // title
-      hightScores.draw(ctx, 18, 14);
-      header.draw(ctx, 28, 40);
-      mainMenuList.draw(ctx, 90, 126);
-      companyName.draw(ctx, 70, 192);
-      copyright.draw(ctx, 30, 206);
+      hightScores.draw(ctx, screenCenterX, 14);
+      header.draw(ctx, screenCenterX, 40);
+      mainMenuList.draw(ctx, screenCenterX, 126);
+      companyName.draw(ctx, screenCenterX, 192);
+      copyright.draw(ctx, screenCenterX, 206);
       // draw list
     },
     load() {
