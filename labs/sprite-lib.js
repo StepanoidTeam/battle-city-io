@@ -42,6 +42,11 @@ export const tankSprite2 = createSprite16(spritemap, 1, 0);
 
 export const tankSprite3 = createSprite16(spritemap, 0, 0);
 export const tankCursor = createSprite16(spritemap, 6, 0);
+export const enemyTank1 = createSprite16(spritemap, 8, 4);
+export const enemyTank2 = createSprite16(spritemap, 8, 5);
+export const enemyTank3 = createSprite16(spritemap, 8, 6);
+export const enemyTank4 = createSprite16(spritemap, 8, 7);
+
 export const wallBrickFullSprite = createSprite16(spritemap, 16, 0);
 export const wallBrickRightSprite = createSprite16(spritemap, 17, 0);
 export const wallBrickDownSprite = createSprite16(spritemap, 18, 0);
