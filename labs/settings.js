@@ -27,9 +27,7 @@ export function initSettings({ onExit }) {
       text,
       itemColor: "greenyellow",
       valueColor: "red",
-
       options,
-
       valueOffsetX: (maxTextLength + 1) * 8,
     });
   });

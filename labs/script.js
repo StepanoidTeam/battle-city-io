@@ -1,3 +1,4 @@
+import { initCountingScores } from "./countingScores.js";
 import { initMainMenu } from "./mainMenu.js";
 import { getEditorScene } from "./sceneEditor.js";
 import { initSettings } from "./settings.js";
@@ -41,6 +42,11 @@ function init() {
     return { getCurrentScene, setCurrentScene };
   })();
 
+  const sceneScores = initCountingScores({
+    onStartGame: () => {
+      setCurrentScene(sceneMainMenu);
+    },
+  });
   const sceneSettings = initSettings({
     onExit: () => {
       setCurrentScene(sceneMainMenu);
@@ -49,6 +55,8 @@ function init() {
 
   const sceneMainMenu = initMainMenu({
     onStartGame: () => {
+      setCurrentScene(sceneScores);
+
       // sceneMainMenu.unload();
     },
     onSettings: () => {
