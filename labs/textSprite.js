@@ -2,6 +2,7 @@
 
 import { Sprite } from "./sprite.js";
 import { spritemap } from "./sprite-lib.js";
+import { blackColour } from "./consts.js";
 
 // todo(vmyshko): extract to abc?
 const charSize = 8;
@@ -164,7 +165,7 @@ export class TextSprite {
           ctxBuffer.fillStyle = this.fillStyle;
           ctxBuffer.fillRect(0, 0, this.#charSize, this.#charSize);
           // reset comp. mode
-          ctxBuffer.fillStyle = "black";
+          ctxBuffer.fillStyle = `${blackColour}`;
 
           ctxBuffer.globalCompositeOperation = "source-over";
         }

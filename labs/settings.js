@@ -1,5 +1,6 @@
+import { blackColour, redColour } from "./consts.js";
 import { ListItem, ListItemSelect, MenuList } from "./menuList.js";
-import { nesWidth } from "./script.js";
+import { nesWidth } from "./consts.js";
 import { tankCursor, wallBrickRedFullSprite } from "./sprite-lib.js";
 import { TextAlign, TextSprite } from "./textSprite.js";
 
@@ -26,7 +27,7 @@ export function initSettings({ onExit }) {
     return new ListItemSelect({
       text,
       itemColor: "greenyellow",
-      valueColor: "red",
+      valueColor: `${redColour}`,
       options,
       valueOffsetX: (maxTextLength + 1) * 8,
     });
@@ -81,7 +82,7 @@ export function initSettings({ onExit }) {
   return {
     draw(ctx) {
       //bg
-      ctx.fillStyle = "black";
+      ctx.fillStyle = `${blackColour}`;
       ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
       // title

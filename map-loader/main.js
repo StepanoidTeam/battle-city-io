@@ -1,3 +1,4 @@
+import { blackColour } from "../labs/consts.js";
 import mapData from "./mapData.js";
 
 const SpriteSizeTiles = 16;
@@ -36,7 +37,7 @@ image.addEventListener("load", () => {
 
     canvas.width = MapSizeTiles * Scale * SpriteTileSizePx;
     canvas.height = MapSizeTiles * Scale * SpriteTileSizePx;
-    canvas.style.background = "black";
+    canvas.style.background = `${blackColour}`;
 
     context.imageSmoothingEnabled = false;
     context.scale(Scale, Scale);

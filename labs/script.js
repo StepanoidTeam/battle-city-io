@@ -1,13 +1,10 @@
+import { nesHeight, nesWidth, scale, cellSize } from "./consts.js";
 import { initCountingScores } from "./countingScores.js";
 import { initMainMenu } from "./mainMenu.js";
 import { getEditorScene } from "./sceneEditor.js";
 import { initSettings } from "./settings.js";
-export const [nesWidth, nesHeight] = [256, 240];
-export const cellSize = 8; //px
 
 function init() {
-  const scale = 3;
-
   canvasContainer.style.setProperty("--width", `${nesWidth * scale}px`);
   canvasContainer.style.setProperty("--height", `${nesHeight * scale}px`);
   canvasContainer.style.setProperty("--spriteSize", cellSize * 2);
@@ -57,7 +54,7 @@ function init() {
     onStartGame: () => {
       setCurrentScene(sceneScores);
 
-      // sceneMainMenu.unload();
+      sceneMainMenu.unload();
     },
     onSettings: () => {
       setCurrentScene(sceneSettings);
@@ -74,7 +71,10 @@ function init() {
     },
   });
   setCurrentScene(sceneMainMenu);
+  //
+  //
 
+  //
   (function draw(timestamp) {
     ctxGame.clearRect(0, 0, nesWidth, nesHeight);
 

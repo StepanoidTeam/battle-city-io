@@ -1,5 +1,5 @@
 
-import { cellSize, nesHeight, nesWidth } from "./script.js";
+import { cellSize, nesHeight, nesWidth } from "./consts.js";
 import {
   bgSprite,
   emptySprite,

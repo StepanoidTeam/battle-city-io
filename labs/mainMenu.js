@@ -1,5 +1,5 @@
+import { blackColour, brightOrange, greyColour, nesWidth } from "./consts.js";
 import { ListItem, MenuList } from "./menuList.js";
-import { nesWidth } from "./script.js";
 import { tankCursor, wallBrickRedFullSprite } from "./sprite-lib.js";
 import { TextAlign, TextSprite } from "./textSprite.js";
 
@@ -10,7 +10,7 @@ export function initMainMenu({ onStartGame, onSettings, onEditor }) {
   });
   const companyName = new TextSprite({
     text: "stepanoid team",
-    fillStyle: "rgb(173,48,5)",
+    fillStyle: `${brightOrange}`,
     textAlign: TextAlign.center,
   });
 
@@ -33,12 +33,12 @@ export function initMainMenu({ onStartGame, onSettings, onEditor }) {
     new ListItem({
       text: "1 player",
       onSelect: onStartGame,
-      itemColor: "gray",
+      itemColor: `${greyColour}`,
     }),
     new ListItem({
       text: "2 players",
       onSelect: onStartGame,
-      itemColor: "gray",
+      itemColor: `${greyColour}`,
     }),
     new ListItem({
       text: "editor",
@@ -80,7 +80,7 @@ export function initMainMenu({ onStartGame, onSettings, onEditor }) {
   return {
     draw(ctx) {
       //bg
-      ctx.fillStyle = "black";
+      ctx.fillStyle = `${blackColour}`;
       ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
       // title
