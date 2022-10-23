@@ -59,7 +59,7 @@ const abcSpriteDictionary = Object.fromEntries([
       }),
     ];
   }),
-  ..."0123456789".split("").map((letter, index) => {
+  ...'0123456789*+,-.!"#'.split("").map((letter, index) => {
     return [
       letter,
       loadLetter({
