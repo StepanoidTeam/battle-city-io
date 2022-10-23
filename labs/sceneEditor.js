@@ -24,6 +24,7 @@ import {
   iceSprite8,
   emptySprite8,
 } from "./sprite-lib.js";
+import { TextSprite } from "./textSprite.js";
 
 export function getEditorScene({ onExit }) {
   function drawBg(ctx) {
@@ -168,6 +169,13 @@ export function getEditorScene({ onExit }) {
         break;
       }
 
+      case "KeyC": {
+        if (event.repeat) break;
+
+        cursorSize = cursorSize === 1 ? 2 : 1;
+        break;
+      }
+
       case "Escape": {
         if (event.repeat) break;
 
@@ -264,12 +272,20 @@ export function getEditorScene({ onExit }) {
   }
   //drawing
 
+  const controlsLabel = new TextSprite({
+    text: "<> - move, zx-paint, c-cursor",
+  });
+  function drawLabels(ctx) {
+    controlsLabel.draw(ctx, 16, 230);
+  }
+
   const editorParts = [
     drawBg,
     drawField,
     drawCursor,
     drawCurrentTool,
     drawGrid,
+    drawLabels,
   ];
 
   return {
