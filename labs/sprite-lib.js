@@ -18,17 +18,17 @@ const background = await loadImage("../sprites/reskin/bgblank.png");
 
 // create sprites
 
-function createSprite16(spritemap, x, y) {
+function createSprite({ spritemap, x, y, size = blockSize }) {
   return new Sprite({
     // spritemap
     spritemap,
-    sx: blockSize * x,
-    sy: blockSize * y,
-    sHeight: blockSize,
-    sWidth: blockSize,
+    sx: size * x,
+    sy: size * y,
+    sHeight: size,
+    sWidth: size,
     // canvas
-    width: blockSize,
-    height: blockSize,
+    width: size,
+    height: size,
   });
 }
 
@@ -36,34 +36,43 @@ export const bgSprite = new Sprite({
   spritemap: background,
 });
 
-export const emptySprite = createSprite16(spritemap, 21, 0);
-export const tankSprite1 = createSprite16(spritemap, 0, 0);
-export const tankSprite2 = createSprite16(spritemap, 1, 0);
+export const emptySprite = createSprite({ spritemap, x: 21, y: 0, });
+export const tankSprite1 = createSprite({ spritemap, x: 0, y: 0 });
+export const tankSprite2 = createSprite({ spritemap, x: 1, y: 0 });
 
-export const tankSprite3 = createSprite16(spritemap, 0, 0);
-export const tankCursor = createSprite16(spritemap, 6, 0);
-export const enemyTank1 = createSprite16(spritemap, 8, 4);
-export const enemyTank2 = createSprite16(spritemap, 8, 5);
-export const enemyTank3 = createSprite16(spritemap, 8, 6);
-export const enemyTank4 = createSprite16(spritemap, 8, 7);
+export const tankSprite3 = createSprite({ spritemap, x: 0, y: 0 });
+export const tankCursor = createSprite({ spritemap, x: 6, y: 0 });
+export const enemyTank1 = createSprite({ spritemap, x: 8, y: 4 });
+export const enemyTank2 = createSprite({ spritemap, x: 8, y: 5 });
+export const enemyTank3 = createSprite({ spritemap, x: 8, y: 6 });
+export const enemyTank4 = createSprite({ spritemap, x: 8, y: 7 });
 
-export const wallBrickFullSprite = createSprite16(spritemap, 16, 0);
-export const wallBrickRightSprite = createSprite16(spritemap, 17, 0);
-export const wallBrickDownSprite = createSprite16(spritemap, 18, 0);
-export const wallBrickLeftSprite = createSprite16(spritemap, 19, 0);
-export const wallBrickTopSprite = createSprite16(spritemap, 20, 0);
+export const wallBrickFullSprite = createSprite({ spritemap, x: 16, y: 0 });
+export const wallBrickRightSprite = createSprite({ spritemap, x: 17, y: 0 });
+export const wallBrickDownSprite = createSprite({ spritemap, x: 18, y: 0 });
+export const wallBrickLeftSprite = createSprite({ spritemap, x: 19, y: 0 });
+export const wallBrickTopSprite = createSprite({ spritemap, x: 20, y: 0 });
 
-export const wallStoneFullSprite = createSprite16(spritemap, 16, 1);
-export const wallStoneRightSprite = createSprite16(spritemap, 17, 1);
-export const wallStoneDownSprite = createSprite16(spritemap, 18, 1);
-export const wallStoneLeftSprite = createSprite16(spritemap, 19, 1);
-export const wallStoneTopSprite = createSprite16(spritemap, 20, 1);
+export const wallStoneFullSprite = createSprite({ spritemap, x: 16, y: 1 });
+export const wallStoneRightSprite = createSprite({ spritemap, x: 17, y: 1 });
+export const wallStoneDownSprite = createSprite({ spritemap, x: 18, y: 1 });
+export const wallStoneLeftSprite = createSprite({ spritemap, x: 19, y: 1 });
+export const wallStoneTopSprite = createSprite({ spritemap, x: 20, y: 1 });
 
-export const waterSprite = createSprite16(spritemap, 16, 2); //orig
-// export const waterSprite = createSprite16(spritemap, 19, 3); //wc2
-export const iceSprite = createSprite16(spritemap, 18, 2); //orig
-// export const iceSprite = createSprite16(spritemap, 18, 3); //wc2
+export const waterSprite = createSprite({ spritemap, x: 16, y: 2 }); //orig
+// export const waterSprite = createSprite1{6(spritemap, x:19,y: 3}); //wc2
+export const iceSprite = createSprite({ spritemap, x: 18, y: 2 }); //orig
+// export const iceSprite = createSprite1{6(spritemap, x:18,y: 3}); //wc2
 
-export const woodSprite = createSprite16(spritemap, 17, 2);
+export const woodSprite = createSprite({ spritemap, x: 17, y: 2 });
 
-export const wallBrickRedFullSprite = createSprite16(spritemap, 18, 14);
+export const wallBrickRedFullSprite = createSprite({ spritemap, x: 18, y: 14 });
+//
+//
+export const emptySprite8 = createSprite({ spritemap, x: 42, y: 0 , size: 8});
+
+export const woodSprite8 = createSprite({ spritemap, x: 34, y: 4, size: 8 });
+export const waterSprite8 = createSprite({ spritemap, x: 32, y: 4, size: 8 });
+export const stoneSprite8 = createSprite({ spritemap, x: 32, y: 2, size: 8 });
+export const brickSprite8 = createSprite({ spritemap, x: 32, y: 0, size: 8 });
+export const iceSprite8 = createSprite({ spritemap, x: 36, y: 4, size: 8 });

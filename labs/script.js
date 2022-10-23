@@ -70,7 +70,7 @@ function init() {
       setCurrentScene(sceneMainMenu);
     },
   });
-  setCurrentScene(sceneMainMenu);
+  setCurrentScene(sceneEditor);
   //
   //
 

@@ -17,60 +17,35 @@ import {
   wallStoneTopSprite,
   waterSprite,
   woodSprite,
+  woodSprite8,
+  waterSprite8,
+  stoneSprite8,
+  brickSprite8,
+  iceSprite8,
+  emptySprite8,
 } from "./sprite-lib.js";
 
 export function getEditorScene({ onExit }) {
   function drawBg(ctx) {
     bgSprite.draw(ctx, 0, 0, nesWidth, nesHeight);
   }
-  function drawField(ctx) {
+
+  //
+  const fieldMatrix = [];
+  const [cols, rows] = [26, 26]; // field size in cells
+
+  function initMap() {
     for (let row = 0; row < rows; row++) {
+      fieldMatrix[row] = [];
       for (let col = 0; col < cols; col++) {
-        const toolIndex = fieldMatrix[row][col];
-
-        const tool = tools[toolIndex];
-
-        if (!tool) continue;
-
-        tool.draw(ctx, (row + 1) * cellSize * 2, (col + 1) * cellSize * 2);
+        fieldMatrix[row][col] = 0;
       }
     }
   }
-  const tools = [
-    emptySprite,
 
-    wallBrickRightSprite,
-    wallBrickDownSprite,
-    wallBrickLeftSprite,
-    wallBrickTopSprite,
-
-    wallBrickFullSprite,
-
-    wallStoneRightSprite,
-    wallStoneDownSprite,
-    wallStoneLeftSprite,
-    wallStoneTopSprite,
-
-    wallStoneFullSprite,
-
-    waterSprite,
-    woodSprite,
-    iceSprite,
-  ];
-  const editorParts = [
-    drawBg,
-    drawField,
-    drawCursor,
-    drawCurrentTool,
-    drawGrid,
-  ];
-
-  const fieldMatrix = [];
-
-  btnSave.addEventListener("click", saveMap);
-  btnLoad.addEventListener("click", loadMap);
-  btnClear.addEventListener("click", clearMap);
-
+  function clearMap() {
+    initMap();
+  }
   function saveMap() {
     const jsonMap = JSON.stringify(fieldMatrix);
 
@@ -90,73 +65,106 @@ export function getEditorScene({ onExit }) {
       alert(`bad data: ${error}`);
     }
   }
-
-  function clearMap() {
-    initMap();
-  }
-
-  const [cols, rows] = [26, 26]; // field size in cells
-
-  function initMap() {
+  function drawField(ctx) {
     for (let row = 0; row < rows; row++) {
-      fieldMatrix[row] = [];
       for (let col = 0; col < cols; col++) {
-        fieldMatrix[row][col] = 0;
+        const toolIndex = fieldMatrix[row][col];
+
+        const tool = tools[toolIndex];
+
+        if (!tool) continue;
+        tool.draw(
+          ctx,
+          row * fragmentSize + fieldOffsetX,
+          col * fragmentSize + fieldOffsetY,
+          fragmentSize,
+          fragmentSize
+        );
       }
     }
   }
 
+  const tools = [
+    // emptySprite,
+    emptySprite8,
+    /* wallBrickRightSprite,
+    wallBrickDownSprite,
+    wallBrickLeftSprite,
+    wallBrickTopSprite,
+
+    wallBrickFullSprite,
+
+    wallStoneRightSprite,
+    wallStoneDownSprite,
+    wallStoneLeftSprite,
+    wallStoneTopSprite,
+
+    wallStoneFullSprite,
+
+    waterSprite,
+    woodSprite,
+    iceSprite,*/
+    woodSprite8,
+    waterSprite8,
+    stoneSprite8,
+    brickSprite8,
+    iceSprite8,
+  ];
+
   initMap();
 
-  const tankPos = [0, 0]; //x,y
+  let [cursorPosX, cursorPosY] = [0, 0]; //x,y
 
   let currentTool = 1;
 
   //controls
 
   let paintKeyDown = false;
-
+  let cursorStep = 1;
+  let cursorSize = 2;
   function onKeyDown(event) {
     switch (event.code) {
       case "ArrowLeft": {
-        tankPos[0] = Math.max(tankPos[0] - 1, 0);
+        cursorPosX = Math.max(cursorPosX - cursorStep, 0);
         break;
       }
       case "ArrowRight": {
-        tankPos[0] = Math.min(tankPos[0] + 1, cols - 1);
+        cursorPosX = Math.min(cursorPosX + cursorStep, cols - 2);
         break;
       }
       case "ArrowUp": {
-        tankPos[1] = Math.max(tankPos[1] - 1, 0);
+        cursorPosY = Math.max(cursorPosY - cursorStep, 0);
         break;
       }
       case "ArrowDown": {
-        tankPos[1] = Math.min(tankPos[1] + 1, rows - 1);
+        cursorPosY = Math.min(cursorPosY + cursorStep, rows - 2);
+
         break;
       }
 
       case "KeyZ": {
         if (event.repeat) break;
         paintKeyDown = true;
-        if (fieldMatrix[tankPos[0]][tankPos[1]] === currentTool) {
-          if (currentTool === tools.length - 1) {
-            currentTool = 0;
-          } else {
-            currentTool++;
-          }
+        //  if (fieldMatrix[cursorPosX][cursorPosY] === currentTool) {
+        if (currentTool === tools.length - 1) {
+          currentTool = 0;
+        } else {
+          currentTool++;
         }
+        //  }
         break;
       }
+
       case "KeyX": {
         if (event.repeat) break;
         paintKeyDown = true;
-        if (fieldMatrix[tankPos[0]][tankPos[1]] === currentTool) {
-          if (currentTool === 0) {
-            currentTool = tools.length - 1;
-          } else {
-            currentTool--;
-          }
+        // if (fieldMatrix[cursorPosX][cursorPosY] === currentTool) {
+        if (currentTool === 0) {
+          currentTool = tools.length - 1;
+        } else {
+          currentTool--;
         }
+        //  }
         break;
       }
 
@@ -169,7 +177,12 @@ export function getEditorScene({ onExit }) {
     }
 
     if (paintKeyDown) {
-      fieldMatrix[tankPos[0]][tankPos[1]] = currentTool;
+      for (let cursorPartX = 0; cursorPartX < cursorSize; cursorPartX++) {
+        for (let cursorPartY = 0; cursorPartY < cursorSize; cursorPartY++) {
+          fieldMatrix[cursorPosX + cursorPartX][cursorPosY + cursorPartY] =
+            currentTool;
+        }
+      }
     }
   }
 
@@ -181,6 +194,7 @@ export function getEditorScene({ onExit }) {
       }
     }
   }
+
   const fragmentSize = blockSize / 2;
   const [fieldOffsetX, fieldOffsetY] = [blockSize, blockSize];
   function drawGrid(ctx) {
@@ -188,24 +202,27 @@ export function getEditorScene({ onExit }) {
 
     ctx.strokeStyle = "rgba(0,0,0,0.2)";
     ctx.beginPath();
-    for (let col = 0; col <= cols; col++) {
-      ctx.moveTo(col * fragmentSize + fieldOffsetX, fieldOffsetY);
+    //columns
+    for (let col = 0; col <= cols / cursorStep; col++) {
+      ctx.moveTo(col * fragmentSize * cursorStep + fieldOffsetX, fieldOffsetY);
       ctx.lineTo(
-        col * fragmentSize + fieldOffsetX,
+        col * fragmentSize * cursorStep + fieldOffsetX,
         cols * fragmentSize + fieldOffsetY
       );
     }
-
-    for (let row = 0; row <= rows; row++) {
-      ctx.moveTo(fieldOffsetX, row * fragmentSize + fieldOffsetY);
+    //rows
+    for (let row = 0; row <= rows / cursorStep; row++) {
+      ctx.moveTo(fieldOffsetX, row * fragmentSize * cursorStep + fieldOffsetY);
       ctx.lineTo(
         rows * fragmentSize + fieldOffsetX,
-        row * fragmentSize + fieldOffsetY
+        row * fragmentSize * cursorStep + fieldOffsetY
       );
     }
 
     ctx.stroke();
   }
+
+  // todo: refac to matrix
 
   function drawCurrentTool(ctx) {
     const toolSprite = tools[currentTool];
@@ -229,36 +246,49 @@ export function getEditorScene({ onExit }) {
     // blinking tank
     const blinkingDelayMs = 250;
     if (Math.floor(timestamp / blinkingDelayMs) % 2 === 0) {
-      tankSprite3.draw(
-        ctx,
-        ...tankPos.map((x) => (x + 1) * cellSize * 2),
-        cellSize * 2,
-        cellSize * 2
+      ctx.strokeStyle = "greenyellow";
+      ctx.strokeRect(
+        cursorPosX * fragmentSize + fieldOffsetX,
+        cursorPosY * fragmentSize + fieldOffsetY,
+        fragmentSize * cursorSize,
+        fragmentSize * cursorSize
       );
+      /* tankSprite3.draw(
+        ctx,
+        cursorPosX * fragmentSize + fieldOffsetX,
+        cursorPosY * fragmentSize + fieldOffsetY,
+        fragmentSize * cursorSize,
+        fragmentSize * cursorSize
+      );*/
     }
   }
   //drawing
 
-  function drawSprites(ctx, timestamp) {
-    ctx.clearRect(0, 0, nesWidth, nesHeight);
-    tankSprite3.draw(
-      ctx,
-      ...tankPos.map((x) => (x + 1) * cellSize * 2),
-      cellSize * 2,
-      cellSize * 2
-    );
-  }
+  const editorParts = [
+    drawBg,
+    drawField,
+    drawCursor,
+    drawCurrentTool,
+    drawGrid,
+  ];
+
   return {
     load() {
       editorSideBar.hidden = false;
       document.addEventListener("keyup", onKeyUp);
       document.addEventListener("keydown", onKeyDown);
+      btnSave.addEventListener("click", saveMap);
+      btnLoad.addEventListener("click", loadMap);
+      btnClear.addEventListener("click", clearMap);
     },
     unload() {
       editorSideBar.hidden = true;
 
       document.removeEventListener("keyup", onKeyUp);
       document.removeEventListener("keydown", onKeyDown);
+      btnSave.removeEventListener("click", saveMap);
+      btnLoad.removeEventListener("click", loadMap);
+      btnClear.removeEventListener("click", clearMap);
     },
 
     draw(ctx, timestamp) {
