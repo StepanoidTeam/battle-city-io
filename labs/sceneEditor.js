@@ -1,4 +1,3 @@
-
 import { cellSize, nesHeight, nesWidth } from "./consts.js";
 import {
   bgSprite,
@@ -96,7 +95,7 @@ export function getEditorScene({ onExit }) {
     initMap();
   }
 
-  const [cols, rows] = [13, 13]; // field size in cells
+  const [cols, rows] = [26, 26]; // field size in cells
 
   function initMap() {
     for (let row = 0; row < rows; row++) {
@@ -182,20 +181,27 @@ export function getEditorScene({ onExit }) {
       }
     }
   }
-
+  const fragmentSize = blockSize / 2;
+  const [fieldOffsetX, fieldOffsetY] = [blockSize, blockSize];
   function drawGrid(ctx) {
     if (!chkGrid.checked) return;
 
     ctx.strokeStyle = "rgba(0,0,0,0.2)";
     ctx.beginPath();
     for (let col = 0; col <= cols; col++) {
-      ctx.moveTo((col + 1) * blockSize, blockSize);
-      ctx.lineTo((col + 1) * blockSize, (cols + 1) * blockSize);
+      ctx.moveTo(col * fragmentSize + fieldOffsetX, fieldOffsetY);
+      ctx.lineTo(
+        col * fragmentSize + fieldOffsetX,
+        cols * fragmentSize + fieldOffsetY
+      );
     }
 
     for (let row = 0; row <= rows; row++) {
-      ctx.moveTo(blockSize, (row + 1) * blockSize);
-      ctx.lineTo((rows + 1) * blockSize, (row + 1) * blockSize);
+      ctx.moveTo(fieldOffsetX, row * fragmentSize + fieldOffsetY);
+      ctx.lineTo(
+        rows * fragmentSize + fieldOffsetX,
+        row * fragmentSize + fieldOffsetY
+      );
     }
 
     ctx.stroke();
