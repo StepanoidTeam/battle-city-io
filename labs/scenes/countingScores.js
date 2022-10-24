@@ -3,15 +3,15 @@ import {
   gingerColour,
   redColour,
   initialPointOfViewY,
-} from "./consts.js";
-import { nesWidth } from "./consts.js";
+  nesWidth,
+} from "../consts.js";
 import {
   enemyTank1,
   enemyTank2,
   enemyTank3,
   enemyTank4,
-} from "./sprite-lib.js";
-import { TextAlign, TextSprite } from "./textSprite.js";
+} from "../components/sprite-lib.js";
+import { TextAlign, TextSprite } from "../components/textSprite.js";
 
 const p1tanksDestroyed = [2, 4, 0, 2];
 const p2tanksDestroyed = [0, 16, 8, 5];

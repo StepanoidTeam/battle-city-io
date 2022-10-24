@@ -1,7 +1,10 @@
-import { blackColour, brightOrange, greyColour, nesWidth } from "./consts.js";
-import { ListItem, MenuList } from "./menuList.js";
-import { tankCursor, wallBrickRedFullSprite } from "./sprite-lib.js";
-import { TextAlign, TextSprite } from "./textSprite.js";
+import { blackColour, brightOrange, greyColour, nesWidth } from "../consts.js";
+import { ListItem, MenuList } from "../components/menuList.js";
+import {
+  tankCursor,
+  wallBrickRedFullSprite,
+} from "../components/sprite-lib.js";
+import { TextAlign, TextSprite } from "../components/textSprite.js";
 
 export function initMainMenu({ onStartGame, onSettings, onEditor }) {
   const hightScores = new TextSprite({

@@ -1,9 +1,9 @@
 import { nesHeight, nesWidth, scale, cellSize } from "./consts.js";
-import { initCountingScores } from "./countingScores.js";
-import { initGameOverScene } from "./gameOverScene.js";
-import { initMainMenu } from "./mainMenu.js";
-import { getEditorScene } from "./sceneEditor.js";
-import { initSettings } from "./settings.js";
+import { initCountingScores } from "./scenes/countingScores.js";
+import { initGameOverScene } from "./scenes/gameOverScene.js";
+import { initMainMenu } from "./scenes/mainMenu.js";
+import { getEditorScene } from "./scenes/sceneEditor.js";
+import { initSettings } from "./scenes/settings.js";
 
 function init() {
   canvasContainer.style.setProperty("--width", `${nesWidth * scale}px`);

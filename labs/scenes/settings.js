@@ -1,8 +1,11 @@
-import { blackColour, redColour } from "./consts.js";
-import { ListItem, ListItemSelect, MenuList } from "./menuList.js";
-import { nesWidth } from "./consts.js";
-import { tankCursor, wallBrickRedFullSprite } from "./sprite-lib.js";
-import { TextAlign, TextSprite } from "./textSprite.js";
+import { blackColour, redColour } from "../consts.js";
+import { ListItem, ListItemSelect, MenuList } from "../components/menuList.js";
+import { nesWidth } from "../consts.js";
+import {
+  tankCursor,
+  wallBrickRedFullSprite,
+} from "../components/sprite-lib.js";
+import { TextAlign, TextSprite } from "../components/textSprite.js";
 
 // todo(vmyshko): extract?
 

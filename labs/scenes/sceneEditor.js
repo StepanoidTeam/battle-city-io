@@ -1,5 +1,5 @@
-import { cellSize, nesHeight, nesWidth } from "./consts.js";
-import { ListItem, ListItemSelect, MenuList } from "./menuList.js";
+import { cellSize, nesHeight, nesWidth } from "../consts.js";
+import { ListItem, ListItemSelect, MenuList } from "../components/menuList.js";
 import {
   bgSprite,
   emptySprite,
@@ -24,8 +24,8 @@ import {
   brickSprite8,
   iceSprite8,
   emptySprite8,
-} from "./sprite-lib.js";
-import { TextSprite } from "./textSprite.js";
+} from "../components/sprite-lib.js";
+import { TextSprite } from "../components/textSprite.js";
 
 export function getEditorScene({ onExit }) {
   function drawBg(ctx) {
