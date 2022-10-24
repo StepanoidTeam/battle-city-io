@@ -1,4 +1,5 @@
 import { cellSize, nesHeight, nesWidth } from "./consts.js";
+import { ListItem, ListItemSelect, MenuList } from "./menuList.js";
 import {
   bgSprite,
   emptySprite,
@@ -115,16 +116,95 @@ export function getEditorScene({ onExit }) {
   initMap();
 
   let [cursorPosX, cursorPosY] = [0, 0]; //x,y
-
   let currentTool = 1;
-
-  //controls
-
   let paintKeyDown = false;
   let cursorStep = 1;
   let cursorSize = 2;
+  let menuIsOpen = false;
+
+  //controls
+
+  const itemColor = "white";
+  const contextMenu = new MenuList({
+    cursor: new TextSprite({ text: ">", charSize: 8 }),
+    lineSpacing: 8,
+    cursorOffsetX: 8,
+
+    listItems: [
+      new ListItem({
+        text: "clear",
+        itemColor,
+        onSelect: () => clearMap(),
+      }),
+      new ListItem({
+        text: "load",
+        itemColor,
+        onSelect: () => loadMap(),
+      }),
+      new ListItem({
+        text: "save",
+        itemColor,
+        onSelect: () => saveMap(),
+      }),
+      new ListItemSelect({
+        text: "show grid",
+        itemColor,
+        valueColor: "gold",
+        options: ["on", "off"],
+        onSelect: (value) => {
+          showGrid = value === "on";
+        },
+      }),
+      new ListItemSelect({
+        text: "grid size",
+        itemColor,
+        valueColor: "gold",
+        options: ["8px", "16px"],
+        onSelect: (value, index) => {
+          cursorStep = [1, 2][index];
+        },
+      }),
+      new ListItem({
+        text: "exit",
+        itemColor,
+        onSelect: () => onExit(),
+      }),
+    ],
+  });
+
   function onKeyDown(event) {
+    // todo(vmyshko): extract?
+    if (menuIsOpen) {
+      switch (event.code) {
+        case "ArrowUp": {
+          contextMenu.prev();
+          break;
+        }
+        case "ArrowDown": {
+          contextMenu.next();
+          break;
+        }
+        case "KeyZ": {
+          if (event.repeat) break;
+          contextMenu.select();
+          break;
+        }
+        case "Escape": {
+          if (event.repeat) break;
+          menuIsOpen = false;
+          break;
+        }
+      }
+
+      return;
+    }
+
     switch (event.code) {
+      case "Enter": {
+        menuIsOpen = true;
+        break;
+      }
+
       case "ArrowLeft": {
         cursorPosX -= cursorStep;
         break;
@@ -177,8 +257,7 @@ export function getEditorScene({ onExit }) {
 
       case "Escape": {
         if (event.repeat) break;
-
-        onExit();
+        menuIsOpen = true;
         break;
       }
     } //switch Keys
@@ -211,8 +290,10 @@ export function getEditorScene({ onExit }) {
 
   const fragmentSize = blockSize / 2;
   const [fieldOffsetX, fieldOffsetY] = [blockSize, blockSize];
+
+  let showGrid = true;
   function drawGrid(ctx) {
-    if (!chkGrid.checked) return;
+    if (!showGrid) return;
 
     ctx.strokeStyle = "rgba(0,0,0,0.2)";
     ctx.beginPath();
@@ -286,6 +367,25 @@ export function getEditorScene({ onExit }) {
       );*/
     }
   }
+
+  const [menuPosX, menuPosY] = [
+    (nesWidth - contextMenu.width) / 2,
+    (nesHeight - contextMenu.height) / 2,
+  ];
+  const menuPadding = 16;
+
+  function drawContextMenu(ctx, timestamp) {
+    if (!menuIsOpen) return;
+
+    ctx.fillStyle = "rgba(0,0,0,0.7)";
+    ctx.fillRect(
+      menuPosX - menuPadding,
+      menuPosY - menuPadding,
+      contextMenu.width + menuPadding * 2,
+      contextMenu.height + menuPadding * 2
+    );
+    contextMenu.draw(ctx, menuPosX, menuPosY);
+  }
   //drawing
 
   const editorParts = [
@@ -294,25 +394,19 @@ export function getEditorScene({ onExit }) {
     drawCursor,
     drawCurrentTool,
     drawGrid,
+
+    drawContextMenu,
   ];
 
   return {
     load() {
-      editorSideBar.hidden = false;
+      menuIsOpen = false;
       document.addEventListener("keyup", onKeyUp);
       document.addEventListener("keydown", onKeyDown);
-      btnSave.addEventListener("click", saveMap);
-      btnLoad.addEventListener("click", loadMap);
-      btnClear.addEventListener("click", clearMap);
     },
     unload() {
-      editorSideBar.hidden = true;
-
       document.removeEventListener("keyup", onKeyUp);
       document.removeEventListener("keydown", onKeyDown);
-      btnSave.removeEventListener("click", saveMap);
-      btnLoad.removeEventListener("click", loadMap);
-      btnClear.removeEventListener("click", clearMap);
     },
 
     draw(ctx, timestamp) {
