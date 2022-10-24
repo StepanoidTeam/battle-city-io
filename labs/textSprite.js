@@ -90,6 +90,15 @@ export class TextSprite {
     return this.#charSize;
   }
 
+  // for compat. with Sprite
+  get sHeight() {
+    return this.#charSize;
+  }
+
+  get sWidth() {
+    return this.#charSize;
+  }
+
   // todo(vmyshko): reuse charSize const
   constructor({
     text,
