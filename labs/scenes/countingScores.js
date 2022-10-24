@@ -12,21 +12,29 @@ import {
   enemyTank4,
 } from "../components/sprite-lib.js";
 import { TextAlign, TextSprite } from "../components/textSprite.js";
+import { sleep } from "../helpers.js";
 
-const p1tanksDestroyed = [2, 4, 0, 2];
-const p2tanksDestroyed = [0, 16, 8, 5];
-const levelValue = 3;
-const tankPrices = [100, 200, 300, 400];
-const enemyTanks = [enemyTank1, enemyTank2, enemyTank3, enemyTank4];
-let p1totalScores = 0;
-let p2totalScores = 0;
-for (let i = 0; i < p1tanksDestroyed.length; i++) {
-  p1totalScores += p1tanksDestroyed[i] * tankPrices[i];
-  p2totalScores += p2tanksDestroyed[i] * tankPrices[i];
+function count(tanks, index) {
+  return tanks * tankPrices[index];
 }
+function sumItems(array) {
+  return array.reduce((total, amount) => total + amount, 0);
+}
+const tankPrices = [100, 200, 300, 400];
 
-export function initCountingScores({ onStartGame }) {
-  const hightScores = new TextSprite({
+export function initCountingScores({
+  onExit,
+  level,
+  p1tanksDestroyed,
+  p2tanksDestroyed,
+}) {
+  const p1TankPts = p1tanksDestroyed.map(count);
+  const p2TankPts = p2tanksDestroyed.map(count);
+
+  const enemyTanks = [enemyTank1, enemyTank2, enemyTank3, enemyTank4];
+  let p1totalScores = sumItems(p1TankPts);
+  let p2totalScores = sumItems(p2TankPts);
+  const highScores = new TextSprite({
     text: "hi-score",
     fillStyle: `${gingerColour}`,
   });
@@ -34,8 +42,8 @@ export function initCountingScores({ onStartGame }) {
     text: "45000",
     fillStyle: `${redColour}`,
   });
-  const level = new TextSprite({
-    text: `stage ${levelValue}`,
+  const levelText = new TextSprite({
+    text: `stage ${level}`,
   });
   const onePlayer = new TextSprite({
     text: `I-player`,
@@ -57,14 +65,8 @@ export function initCountingScores({ onStartGame }) {
     fillStyle: `${gingerColour}`,
     textAlign: TextAlign.right,
   });
-  const p1totalAmountKilledTanks = p1tanksDestroyed.reduce(
-    (total, amount) => total + amount,
-    0
-  );
-  const p2totalAmountKilledTanks = p2tanksDestroyed.reduce(
-    (total, amount) => total + amount,
-    0
-  );
+  const p1totalAmountKilledTanks = sumItems(p1tanksDestroyed);
+  const p2totalAmountKilledTanks = sumItems(p2tanksDestroyed);
   const totalLine = new TextSprite({
     text: `${"".padStart(8, "_")}\ntotal ${p1totalAmountKilledTanks
       .toString()
@@ -85,9 +87,7 @@ export function initCountingScores({ onStartGame }) {
     text: p1tanksDestroyed
       .map(
         (tankCount, index) =>
-          `${tankCount * tankPrices[index]} pts ${tankCount
-            .toString()
-            .padStart(2)}<`
+          `${p1TankPts[index]} pts ${tankCount?.toString().padStart(2)}<`
       )
       .join("\n"),
     textAlign: TextAlign.right,
@@ -95,30 +95,33 @@ export function initCountingScores({ onStartGame }) {
   });
 
   const p2score = new TextSprite({
-    text: p2tanksDestroyed
-      .map(
-        (tankCount, index) =>
-          `>${tankCount.toString().padStart(2)} ${(
-            tankCount * tankPrices[index]
-          )
-            .toString()
-            .padStart(4)} pts`
-      )
-      .join("\n"),
+    text: "vova",
     lineSpacing: 16,
     textAlign: TextAlign.right,
   });
+
+  function updateScores(p1TanksDestroyed) {
+    p2score.text = p1TanksDestroyed
+      .map(
+        (tankCount, index) =>
+          `>${tankCount?.toString().padStart(2)} ${p2TankPts[index]
+            .toString()
+            .padStart(4)} pts`
+      )
+      .join("\n");
+  }
 
   function onKeyDown(event) {
     switch (event.code) {
       case "Escape": {
         if (event.repeat) break;
 
-        onStartGame();
+        onExit();
         break;
       }
     }
   }
+
   return {
     draw(ctx) {
       //bg
@@ -126,9 +129,9 @@ export function initCountingScores({ onStartGame }) {
       ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
       // title
-      hightScores.draw(ctx, 64, initialPointOfViewY);
+      highScores.draw(ctx, 64, initialPointOfViewY);
       averageScores.draw(ctx, 158, initialPointOfViewY);
-      level.draw(ctx, 100, initialPointOfViewY * 2);
+      levelText.draw(ctx, 100, initialPointOfViewY * 2);
       onePlayer.draw(ctx, nesWidth / 2 - 4 * 8 - 8, initialPointOfViewY * 3);
       onePlayerScores.draw(
         ctx,
@@ -169,8 +172,19 @@ export function initCountingScores({ onStartGame }) {
         : null;
       // draw list
     },
-    load() {
+    async load() {
       document.addEventListener("keydown", onKeyDown);
+      let tanksArr = [];
+      for (let tankIndex in p1tanksDestroyed) {
+        let tank = p1tanksDestroyed[tankIndex];
+        tanksArr.push(0);
+
+        for (let numberOfTank = 0; numberOfTank <= tank; numberOfTank++) {
+          tanksArr[tankIndex] = numberOfTank;
+          updateScores(tanksArr);
+          await sleep(1000);
+        }
+      }
     },
     unload() {
       document.removeEventListener("keydown", onKeyDown);

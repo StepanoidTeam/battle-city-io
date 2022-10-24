@@ -41,9 +41,12 @@ function init() {
   })();
 
   const sceneScores = initCountingScores({
-    onStartGame: () => {
+    onExit: () => {
       setCurrentScene(gameOverScene);
     },
+    level: 3,
+    p1tanksDestroyed: [5, 3, 0, 2],
+    p2tanksDestroyed: [0, ' ', 8, 5],
   });
   const sceneSettings = initSettings({
     onExit: () => {
@@ -69,7 +72,7 @@ function init() {
     onExit: () => setCurrentScene(sceneMainMenu),
   });
 
-  setCurrentScene(sceneMainMenu);
+  setCurrentScene(sceneScores);
 
   (function draw(timestamp) {
     ctxGame.clearRect(0, 0, nesWidth, nesHeight);
