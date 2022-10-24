@@ -8,3 +8,5 @@ export const blackColour = "rgb(0,0,0)"
 export const [nesWidth, nesHeight] = [256, 240];
 export const scale = 3;
 export const cellSize = 8; //px
+//initial points
+export const initialPointOfViewY = 16;

@@ -26,7 +26,6 @@ export function initMainMenu({ onStartGame, onSettings, onEditor }) {
     lineSpacing: 8,
     fillStyle: wallBrickRedFullSprite.getPattern(),
     multiplyText: 4,
-
     textAlign: TextAlign.center,
   });
 

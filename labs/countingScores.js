@@ -1,4 +1,9 @@
-import { blackColour, gingerColour, redColour } from "./consts.js";
+import {
+  blackColour,
+  gingerColour,
+  redColour,
+  initialPointOfViewY,
+} from "./consts.js";
 import { nesWidth } from "./consts.js";
 import {
   enemyTank1,
@@ -15,7 +20,6 @@ const tankPrices = [100, 200, 300, 400];
 const enemyTanks = [enemyTank1, enemyTank2, enemyTank3, enemyTank4];
 let p1totalScores = 0;
 let p2totalScores = 0;
-const initialPointOfView = 16;
 for (let i = 0; i < p1tanksDestroyed.length; i++) {
   p1totalScores += p1tanksDestroyed[i] * tankPrices[i];
   p2totalScores += p2tanksDestroyed[i] * tankPrices[i];
@@ -122,42 +126,46 @@ export function initCountingScores({ onStartGame }) {
       ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
       // title
-      hightScores.draw(ctx, 64, initialPointOfView);
-      averageScores.draw(ctx, 158, initialPointOfView);
-      level.draw(ctx, 100, initialPointOfView * 2);
-      onePlayer.draw(ctx, nesWidth / 2 - 4 * 8 - 8, initialPointOfView * 3);
+      hightScores.draw(ctx, 64, initialPointOfViewY);
+      averageScores.draw(ctx, 158, initialPointOfViewY);
+      level.draw(ctx, 100, initialPointOfViewY * 2);
+      onePlayer.draw(ctx, nesWidth / 2 - 4 * 8 - 8, initialPointOfViewY * 3);
       onePlayerScores.draw(
         ctx,
         nesWidth / 2 - 4 * 8 - 8,
-        initialPointOfView * 4
+        initialPointOfViewY * 4
       );
-      twoPlayers.draw(ctx, nesWidth / 2 + 12 * 8 + 8, initialPointOfView * 3);
+      twoPlayers.draw(ctx, nesWidth / 2 + 12 * 8 + 8, initialPointOfViewY * 3);
       secondPlayerScores.draw(
         ctx,
         nesWidth / 2 + 12 * 8 + 8,
-        initialPointOfView * 4
+        initialPointOfViewY * 4
       );
 
-      p1score.draw(ctx, nesWidth / 2 - 8, initialPointOfView * 5);
+      p1score.draw(ctx, nesWidth / 2 - 8, initialPointOfViewY * 5);
       enemyTanks.forEach((tank, index) =>
         tank.draw(
           ctx,
           nesWidth / 2 - 8 + 1,
-          initialPointOfView * 5 + index * (tank.sHeight + 8) - 4
+          initialPointOfViewY * 5 + index * (tank.sHeight + 8) - 4
         )
       );
-      p2score.draw(ctx, nesWidth / 2 + 12 * 8 + 8, initialPointOfView * 5);
+      p2score.draw(ctx, nesWidth / 2 + 12 * 8 + 8, initialPointOfViewY * 5);
       totalLine.draw(
         ctx,
         nesWidth / 2 + 8 * 4,
-        initialPointOfView * 5 + (8 * 4 + 16 * 3)
+        initialPointOfViewY * 5 + (8 * 4 + 16 * 3)
       );
       p1totalAmountKilledTanks >= 20
-        ? (bonus.draw(ctx, nesWidth / 2 - 5 * 8, initialPointOfView * 12),
-          bonusPoints.draw(ctx, nesWidth / 2 - 5 * 8, initialPointOfView * 13))
+        ? (bonus.draw(ctx, nesWidth / 2 - 5 * 8, initialPointOfViewY * 12),
+          bonusPoints.draw(ctx, nesWidth / 2 - 5 * 8, initialPointOfViewY * 13))
         : p2totalAmountKilledTanks >= 20
-        ? (bonus.draw(ctx, nesWidth / 2 + 8 * 13, initialPointOfView * 12),
-          bonusPoints.draw(ctx, nesWidth / 2 + 8 * 13, initialPointOfView * 13))
+        ? (bonus.draw(ctx, nesWidth / 2 + 8 * 13, initialPointOfViewY * 12),
+          bonusPoints.draw(
+            ctx,
+            nesWidth / 2 + 8 * 13,
+            initialPointOfViewY * 13
+          ))
         : null;
       // draw list
     },

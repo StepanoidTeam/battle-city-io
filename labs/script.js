@@ -1,5 +1,6 @@
 import { nesHeight, nesWidth, scale, cellSize } from "./consts.js";
 import { initCountingScores } from "./countingScores.js";
+import { initGameOverScene } from "./gameOverScene.js";
 import { initMainMenu } from "./mainMenu.js";
 import { getEditorScene } from "./sceneEditor.js";
 import { initSettings } from "./settings.js";
@@ -49,11 +50,20 @@ function init() {
       setCurrentScene(sceneMainMenu);
     },
   });
-
+  const gameOverScene = initGameOverScene({
+    onExit: () => {
+      setCurrentScene(gameOverScene);
+    },
+  });
   const sceneMainMenu = initMainMenu({
     onStartGame: () => {
-      setCurrentScene(sceneScores);
+      setCurrentScene(gameOverScene);
 
+      //todo remove settimeout
+      setTimeout(function () {
+        gameOverScene.unload;
+        setCurrentScene(sceneScores);
+      }, 3000);
       sceneMainMenu.unload();
     },
     onSettings: () => {

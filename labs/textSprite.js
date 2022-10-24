@@ -160,7 +160,7 @@ export class TextSprite {
             -1,
             this.#charSize,
             this.#charSize,
-            x + charIndex * this.#charSize,
+            x + charIndex * this.#charSize + textAlignOffsetX,
             y + lineIndex * (this.#charSize + this.#lineSpacing),
             this.#charSize,
             this.#charSize
