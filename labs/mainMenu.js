@@ -8,6 +8,7 @@ export function initMainMenu({ onStartGame, onSettings, onEditor }) {
     text: "I-     00  HI-  20000",
     textAlign: TextAlign.center,
   });
+
   const companyName = new TextSprite({
     text: "stepanoid team",
     fillStyle: `${brightOrange}`,
@@ -57,6 +58,7 @@ export function initMainMenu({ onStartGame, onSettings, onEditor }) {
     cursorOffsetX: 24,
     textAlign: TextAlign.center,
   });
+
   function onKeyDown(event) {
     switch (event.code) {
       case "ArrowUp": {
