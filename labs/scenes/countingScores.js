@@ -100,8 +100,10 @@ export function initCountingScores({
     textAlign: TextAlign.right,
   });
 
-  function updateScores(p1TanksDestroyed) {
-    p2score.text = p1TanksDestroyed
+  function updateScores(p2TanksDestroyed) {
+      const p2TankPts = p2TanksDestroyed.map(count);
+
+    p2score.text = p2TanksDestroyed
       .map(
         (tankCount, index) =>
           `>${tankCount?.toString().padStart(2)} ${p2TankPts[index]
@@ -175,8 +177,8 @@ export function initCountingScores({
     async load() {
       document.addEventListener("keydown", onKeyDown);
       let tanksArr = [];
-      for (let tankIndex in p1tanksDestroyed) {
-        let tank = p1tanksDestroyed[tankIndex];
+      for (let tankIndex in p2tanksDestroyed) {
+        let tank = p2tanksDestroyed[tankIndex];
         tanksArr.push(0);
 
         for (let numberOfTank = 0; numberOfTank <= tank; numberOfTank++) {
