@@ -2,7 +2,7 @@
 
 import { Sprite } from "./sprite.js";
 import { spritemap } from "./sprite-lib.js";
-import { blackColour } from "./consts.js";
+import { blackColour } from "../consts.js";
 
 // todo(vmyshko): extract to abc?
 const charSize = 8;

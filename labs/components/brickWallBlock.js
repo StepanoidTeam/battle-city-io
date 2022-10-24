@@ -1,4 +1,4 @@
-import { spritemap } from "./sprite-lib.js";
+import { spritemap } from "../components/sprite-lib.js";
 import { Sprite } from "./sprite.js";
 
 const bricksWallSprites = [];
