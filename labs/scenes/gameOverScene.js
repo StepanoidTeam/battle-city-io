@@ -1,6 +1,8 @@
 import { initialPointOfViewY, nesWidth } from "../consts.js";
 import { wallBrickFullSprite } from "../components/sprite-lib.js";
 import { TextAlign, TextSprite } from "../components/textSprite.js";
+import { sleep } from "../helpers.js";
+
 
 export function initGameOverScene({ onExit }) {
   const gameOver = new TextSprite({
@@ -12,17 +14,17 @@ export function initGameOverScene({ onExit }) {
     shadowFill: true,
   });
 
-  let timeOutId;
 
   return {
     draw(ctx) {
       gameOver.draw(ctx, nesWidth - 16, initialPointOfViewY * 4);
     },
-    load() {
-      timeOutId = setTimeout(onExit, 3_000);
+    async load() {
+      await sleep(3000);
+      onExit();
     },
     unload() {
-      clearTimeout(timeOutId);
+//
     },
   };
 }
