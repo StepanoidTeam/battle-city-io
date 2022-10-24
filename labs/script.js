@@ -42,7 +42,7 @@ function init() {
 
   const sceneScores = initCountingScores({
     onStartGame: () => {
-      setCurrentScene(sceneMainMenu);
+      setCurrentScene(gameOverScene);
     },
   });
   const sceneSettings = initSettings({
@@ -52,39 +52,25 @@ function init() {
   });
   const gameOverScene = initGameOverScene({
     onExit: () => {
-      setCurrentScene(gameOverScene);
+      setCurrentScene(sceneMainMenu);
     },
   });
   const sceneMainMenu = initMainMenu({
     onStartGame: () => {
-      setCurrentScene(gameOverScene);
-
-      //todo remove settimeout
-      setTimeout(function () {
-        gameOverScene.unload;
-        setCurrentScene(sceneScores);
-      }, 3000);
-      sceneMainMenu.unload();
+      setCurrentScene(sceneScores);
     },
     onSettings: () => {
       setCurrentScene(sceneSettings);
     },
-    onEditor: () => {
-      setCurrentScene(sceneEditor);
-    },
+    onEditor: () => setCurrentScene(sceneEditor),
   });
 
   const sceneEditor = getEditorScene({
-    onExit: () => {
-      //
-      setCurrentScene(sceneMainMenu);
-    },
+    onExit: () => setCurrentScene(sceneMainMenu),
   });
-  setCurrentScene(sceneEditor);
-  //
-  //
 
-  //
+  setCurrentScene(sceneMainMenu);
+
   (function draw(timestamp) {
     ctxGame.clearRect(0, 0, nesWidth, nesHeight);
 
