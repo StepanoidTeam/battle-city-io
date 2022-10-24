@@ -98,6 +98,7 @@ export class TextSprite {
   get sWidth() {
     return this.#charSize;
   }
+  // todo(vmyshko): impl width height based on max boundaries
 
   // todo(vmyshko): reuse charSize const
   constructor({

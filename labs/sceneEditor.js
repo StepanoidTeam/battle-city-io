@@ -126,7 +126,7 @@ export function getEditorScene({ onExit }) {
 
   const itemColor = "white";
   const contextMenu = new MenuList({
-    cursor: new TextSprite({ text: ">", charSize: 8 }),
+    cursor: new TextSprite({ text: ">" }),
     lineSpacing: 8,
     cursorOffsetX: 8,
 
@@ -231,6 +231,8 @@ export function getEditorScene({ onExit }) {
         } else {
           currentTool++;
         }
+
+        // currentTool = (currentTool + 1) % tools.length
         //  }
         break;
       }
