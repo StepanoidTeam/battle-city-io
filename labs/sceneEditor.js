@@ -126,20 +126,19 @@ export function getEditorScene({ onExit }) {
   function onKeyDown(event) {
     switch (event.code) {
       case "ArrowLeft": {
-        cursorPosX = Math.max(cursorPosX - cursorStep, 0);
+        cursorPosX -= cursorStep;
         break;
       }
       case "ArrowRight": {
-        cursorPosX = Math.min(cursorPosX + cursorStep, cols - 2);
+        cursorPosX += cursorStep;
         break;
       }
       case "ArrowUp": {
-        cursorPosY = Math.max(cursorPosY - cursorStep, 0);
+        cursorPosY -= cursorStep;
         break;
       }
       case "ArrowDown": {
-        cursorPosY = Math.min(cursorPosY + cursorStep, rows - 2);
-
+        cursorPosY += cursorStep;
         break;
       }
 
@@ -182,7 +181,14 @@ export function getEditorScene({ onExit }) {
         onExit();
         break;
       }
-    }
+    } //switch Keys
+
+    // check boundaries
+    cursorPosX = Math.max(cursorPosX, 0);
+    cursorPosX = Math.min(cursorPosX, cols - cursorSize);
+    cursorPosY = Math.max(cursorPosY, 0);
+    cursorPosY = Math.min(cursorPosY, rows - cursorSize);
+    //---
 
     if (paintKeyDown) {
       for (let cursorPartX = 0; cursorPartX < cursorSize; cursorPartX++) {
@@ -230,24 +236,34 @@ export function getEditorScene({ onExit }) {
     ctx.stroke();
   }
 
-  // todo: refac to matrix
-
   function drawCurrentTool(ctx) {
     const toolSprite = tools[currentTool];
 
-    ctx.fillRect(
-      cellSize * 2 * 14 + cellSize,
-      cellSize,
-      cellSize * 2,
-      cellSize * 2
+    ctx.strokeStyle = "black";
+
+    const [toolPosX, toolPosY] = [
+      blockSize * 14 + cellSize + ((2 - cursorSize) * fragmentSize) / 2,
+      fragmentSize + ((2 - cursorSize) * fragmentSize) / 2,
+    ];
+
+    ctx.strokeRect(
+      toolPosX,
+      toolPosY,
+      (blockSize * cursorSize) / 2,
+      (blockSize * cursorSize) / 2
     );
 
-    toolSprite.draw(
-      ctx,
-
-      cellSize * 2 * 14 + cellSize,
-      cellSize
-    );
+    for (let cursorPartX = 0; cursorPartX < cursorSize; cursorPartX++) {
+      for (let cursorPartY = 0; cursorPartY < cursorSize; cursorPartY++) {
+        toolSprite.draw(
+          ctx,
+          toolPosX + cursorPartX * fragmentSize,
+          toolPosY + cursorPartY * fragmentSize,
+          fragmentSize,
+          fragmentSize
+        );
+      }
+    }
   }
 
   function drawCursor(ctx, timestamp) {
@@ -272,20 +288,12 @@ export function getEditorScene({ onExit }) {
   }
   //drawing
 
-  const controlsLabel = new TextSprite({
-    text: "<> - move, zx-paint, c-cursor",
-  });
-  function drawLabels(ctx) {
-    controlsLabel.draw(ctx, 16, 230);
-  }
-
   const editorParts = [
     drawBg,
     drawField,
     drawCursor,
     drawCurrentTool,
     drawGrid,
-    drawLabels,
   ];
 
   return {
