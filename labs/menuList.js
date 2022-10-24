@@ -2,7 +2,7 @@ import { TextAlign, TextSprite } from "./textSprite.js";
 
 const noOp = () => console.log("noOp");
 
-const debug = false; //show debug rects
+globalThis.debug = false; //show debug rects
 
 export class ListItem {
   get width() {
@@ -80,7 +80,7 @@ export class ListItemSelect extends ListItem {
     if (this.selectedIndex >= this.options.length) {
       this.selectedIndex = 0;
     }
-    this.onSelect();
+    this.onSelect(this.value, this.selectedIndex);
   }
 
   draw(ctx, x, y) {
@@ -99,7 +99,7 @@ export class MenuList {
     listItems,
     cursor,
     lineSpacing = 0,
-    cursorOffsetX,
+    cursorOffsetX = 0,
     selectedIndex = 0,
     textAlign = TextAlign.left,
   }) {
@@ -108,7 +108,7 @@ export class MenuList {
     this.lineSpacing = lineSpacing;
     this.cursorOffsetX = cursorOffsetX;
     this.selectedIndex = selectedIndex;
-    this.textAlign = textAlign; // todo(vmyshko): impl
+    this.textAlign = textAlign;
 
     this.width = Math.max(...this.listItems.map((item) => item.width));
 
@@ -124,6 +124,13 @@ export class MenuList {
 
   get selectedItem() {
     return this.listItems[this.selectedIndex];
+  }
+
+  get height() {
+    return (
+      (this.selectedItem.textSprite.charSize + this.lineSpacing) *
+      this.listItems.length
+    );
   }
 
   select() {
@@ -166,13 +173,7 @@ export class MenuList {
 
     if (debug) {
       ctx.strokeStyle = "greenyellow";
-      ctx.strokeRect(
-        x + +this.#textAlignOffsetX,
-        y,
-        this.width,
-        (this.selectedItem.textSprite.charSize + this.lineSpacing) *
-          this.listItems.length
-      );
+      ctx.strokeRect(x + +this.#textAlignOffsetX, y, this.width, this.height);
     }
   }
 }
