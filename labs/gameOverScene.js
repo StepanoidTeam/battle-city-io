@@ -13,12 +13,13 @@ export function initGameOverScene({ onExit }) {
   });
 
   let timeOutId;
+
   return {
     draw(ctx) {
       gameOver.draw(ctx, nesWidth - 16, initialPointOfViewY * 4);
     },
     load() {
-      timeOutId = setTimeout(onExit, 0);
+      timeOutId = setTimeout(onExit, 3_000);
     },
     unload() {
       clearTimeout(timeOutId);
