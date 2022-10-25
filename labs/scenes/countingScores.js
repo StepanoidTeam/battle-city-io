@@ -101,7 +101,7 @@ export function initCountingScores({
   });
 
   function updateScores(p2TanksDestroyed) {
-      const p2TankPts = p2TanksDestroyed.map(count);
+    const p2TankPts = p2TanksDestroyed.map(count);
 
     p2score.text = p2TanksDestroyed
       .map(
@@ -178,18 +178,45 @@ export function initCountingScores({
       document.addEventListener("keydown", onKeyDown);
       let tanksArr = [];
       for (let tankIndex in p2tanksDestroyed) {
+        await sleep(500);
         let tank = p2tanksDestroyed[tankIndex];
         tanksArr.push(0);
 
         for (let numberOfTank = 0; numberOfTank <= tank; numberOfTank++) {
           tanksArr[tankIndex] = numberOfTank;
           updateScores(tanksArr);
-          await sleep(1000);
+          await sleep(180);
         }
       }
+
+      // for (const interimCount of interimCounts(p2tanksDestroyed)) {
+      //   updateScores(interimCount);
+      //   await sleep(200);
+      // }
     },
     unload() {
       document.removeEventListener("keydown", onKeyDown);
     },
   };
+}
+
+/**
+ * Yield interim counts
+ *
+ * @example
+ * [1, 2]:
+ * -> [0]
+ * -> [1]
+ * -> [1, 0]
+ * -> [1, 1]
+ * -> [1, 2]
+ */
+function* interimCounts(total) {
+  for (const [i, count] of total.entries()) {
+    const prev = total.slice(0, i);
+
+    for (let j = 0; j <= count; j++) {
+      yield prev.concat(j);
+    }
+  }
 }

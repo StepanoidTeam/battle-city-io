@@ -46,7 +46,7 @@ function init() {
     },
     level: 3,
     p1tanksDestroyed: [5, 3, 0, 2],
-    p2tanksDestroyed: [0, 9, 8, 5],
+    p2tanksDestroyed: [13, 9, 8, 5],
   });
   const sceneSettings = initSettings({
     onExit: () => {
