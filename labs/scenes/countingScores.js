@@ -30,6 +30,10 @@ export function initCountingScores({
 }) {
   const p1TankPts = p1tanksDestroyed.map(countPts);
   const p2TankPts = p2tanksDestroyed.map(countPts);
+  let p1total = 0;
+  let p2total = 0;
+  let p1price = 0;
+  let p2price = 0;
 
   const enemyTanks = [enemyTank1, enemyTank2, enemyTank3, enemyTank4];
   let p1totalScores = sumItems(p1TankPts);
@@ -56,22 +60,22 @@ export function initCountingScores({
     textAlign: TextAlign.right,
   });
   const onePlayerScores = new TextSprite({
-    text: `${p1totalScores}`,
+    text: `${0}`,
     fillStyle: `${gingerColour}`,
     textAlign: TextAlign.right,
   });
   const secondPlayerScores = new TextSprite({
-    text: `${p2totalScores}`,
+    text: `${0}`,
     fillStyle: `${gingerColour}`,
     textAlign: TextAlign.right,
   });
   const p1totalAmountKilledTanks = sumItems(p1tanksDestroyed);
   const p2totalAmountKilledTanks = sumItems(p2tanksDestroyed);
-  console.log(p1totalAmountKilledTanks);
+
   const totalLine = new TextSprite({
-    text: `${"".padStart(8, "_")}\ntotal ${p1totalAmountKilledTanks
+    text: `${"".padStart(8, "_")}\ntotal ${p1total
       .toString()
-      .padStart(2)}${p2totalAmountKilledTanks.toString().padStart(2 + 4)}`,
+      .padStart(2)}${p2total.toString().padStart(2 + 4)}`,
     textAlign: TextAlign.right,
   });
 
@@ -115,6 +119,11 @@ export function initCountingScores({
             .padStart(4)} pts`
       )
       .join("\n");
+  }
+  function getTotal(p1Total, p2Total) {
+    return `${"".padStart(8, "_")}\ntotal ${p1Total
+      .toString()
+      .padStart(2)}${p2Total.toString().padStart(2 + 4)}`;
   }
 
   function onKeyDown(event) {
@@ -165,23 +174,30 @@ export function initCountingScores({
         nesWidth / 2 + 8 * 4,
         initialPointOfViewY * 5 + (8 * 4 + 16 * 3)
       );
-      p1totalAmountKilledTanks >= 20
-        ? (bonus.draw(ctx, nesWidth / 2 - 5 * 8, initialPointOfViewY * 12),
-          bonusPoints.draw(ctx, nesWidth / 2 - 5 * 8, initialPointOfViewY * 13))
-        : p2totalAmountKilledTanks >= 20
-        ? (bonus.draw(ctx, nesWidth / 2 + 8 * 13, initialPointOfViewY * 12),
-          bonusPoints.draw(
-            ctx,
-            nesWidth / 2 + 8 * 13,
-            initialPointOfViewY * 13
-          ))
-        : null;
+      console.log(p1price, p1totalScores);
+      if (p1price === p1totalScores && p2price === p2totalScores) {
+        p1totalScores > p2totalScores
+          ? (bonus.draw(ctx, nesWidth / 2 - 5 * 8, initialPointOfViewY * 12),
+            bonusPoints.draw(
+              ctx,
+              nesWidth / 2 - 5 * 8,
+              initialPointOfViewY * 13
+            ))
+          : (bonus.draw(ctx, nesWidth / 2 + 8 * 13, initialPointOfViewY * 12),
+            bonusPoints.draw(
+              ctx,
+              nesWidth / 2 + 8 * 13,
+              initialPointOfViewY * 13
+            ));
+      }
+
       // draw list
     },
     async load() {
       document.addEventListener("keydown", onKeyDown);
       let p1tanksArr = [];
       let p2tanksArr = [];
+
       for (
         let tankPriceIndex = 0;
         tankPriceIndex < tankPrices.length;
@@ -207,8 +223,34 @@ export function initCountingScores({
 
           p1score.text = getP1Scores(p1tanksArr);
           p2score.text = getP2Scores(p2tanksArr);
-          await sleep(180);
+         // audioScores.play();
+
+          await sleep(150);
         }
+      }
+
+      while (
+        p1price < p1totalScores ||
+        p2price < p2totalScores ||
+        p1total < p1totalAmountKilledTanks ||
+        p2total < p2totalAmountKilledTanks
+      ) {
+        if (p1price < p1totalScores) {
+          p1price += 100;
+        }
+        if (p2price < p2totalScores) {
+          p2price += 100;
+        }
+        if (p1total < p1totalAmountKilledTanks) {
+          p1total++;
+        }
+        if (p2total < p2totalAmountKilledTanks) {
+          p2total++;
+        }
+        onePlayerScores.text = `${p1price}`;
+        secondPlayerScores.text = `${p2price}`;
+        totalLine.text = getTotal(p1total, p2total);
+        await sleep(70);
       }
 
       // for (const interimCount of interimCounts(p2tanksDestroyed)) {
