@@ -85,13 +85,11 @@ export function initCountingScores({
     textAlign: TextAlign.right,
   });
   const p1score = new TextSprite({
-    text: "",
     textAlign: TextAlign.right,
     lineSpacing: 16,
   });
 
   const p2score = new TextSprite({
-    text: "vova",
     lineSpacing: 16,
     textAlign: TextAlign.right,
   });
