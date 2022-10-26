@@ -72,7 +72,7 @@ function init() {
     onExit: () => setCurrentScene(sceneMainMenu),
   });
 
-  setCurrentScene(sceneScores);
+  setCurrentScene(sceneMainMenu);
 
   (function draw(timestamp) {
     ctxGame.clearRect(0, 0, nesWidth, nesHeight);

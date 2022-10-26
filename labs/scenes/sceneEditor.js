@@ -2,22 +2,8 @@ import { cellSize, nesHeight, nesWidth } from "../consts.js";
 import { ListItem, ListItemSelect, MenuList } from "../components/menuList.js";
 import {
   bgSprite,
-  emptySprite,
-  iceSprite,
+  fgShadowSprite,
   blockSize,
-  tankSprite3,
-  wallBrickDownSprite,
-  wallBrickFullSprite,
-  wallBrickLeftSprite,
-  wallBrickRightSprite,
-  wallBrickTopSprite,
-  wallStoneDownSprite,
-  wallStoneFullSprite,
-  wallStoneLeftSprite,
-  wallStoneRightSprite,
-  wallStoneTopSprite,
-  waterSprite,
-  woodSprite,
   woodSprite8,
   waterSprite8,
   stoneSprite8,
@@ -30,6 +16,10 @@ import { TextSprite } from "../components/textSprite.js";
 export function getEditorScene({ onExit }) {
   function drawBg(ctx) {
     bgSprite.draw(ctx, 0, 0, nesWidth, nesHeight);
+  }
+
+  function drawFg(ctx) {
+    fgShadowSprite.draw(ctx, 0, 0, nesWidth, nesHeight);
   }
 
   //
@@ -398,6 +388,7 @@ export function getEditorScene({ onExit }) {
     drawGrid,
 
     drawContextMenu,
+    drawFg,
   ];
 
   return {
