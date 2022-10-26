@@ -14,7 +14,7 @@ import {
 import { TextAlign, TextSprite } from "../components/textSprite.js";
 import { sleep } from "../helpers.js";
 
-function count(tanks, index) {
+function countPts(tanks, index) {
   return tanks * tankPrices[index];
 }
 function sumItems(array) {
@@ -28,8 +28,8 @@ export function initCountingScores({
   p1tanksDestroyed,
   p2tanksDestroyed,
 }) {
-  const p1TankPts = p1tanksDestroyed.map(count);
-  const p2TankPts = p2tanksDestroyed.map(count);
+  const p1TankPts = p1tanksDestroyed.map(countPts);
+  const p2TankPts = p2tanksDestroyed.map(countPts);
 
   const enemyTanks = [enemyTank1, enemyTank2, enemyTank3, enemyTank4];
   let p1totalScores = sumItems(p1TankPts);
@@ -67,6 +67,7 @@ export function initCountingScores({
   });
   const p1totalAmountKilledTanks = sumItems(p1tanksDestroyed);
   const p2totalAmountKilledTanks = sumItems(p2tanksDestroyed);
+  console.log(p1totalAmountKilledTanks);
   const totalLine = new TextSprite({
     text: `${"".padStart(8, "_")}\ntotal ${p1totalAmountKilledTanks
       .toString()
@@ -84,12 +85,7 @@ export function initCountingScores({
     textAlign: TextAlign.right,
   });
   const p1score = new TextSprite({
-    text: p1tanksDestroyed
-      .map(
-        (tankCount, index) =>
-          `${p1TankPts[index]} pts ${tankCount?.toString().padStart(2)}<`
-      )
-      .join("\n"),
+    text: "",
     textAlign: TextAlign.right,
     lineSpacing: 16,
   });
@@ -100,13 +96,21 @@ export function initCountingScores({
     textAlign: TextAlign.right,
   });
 
-  function updateScores(p2TanksDestroyed) {
-    const p2TankPts = p2TanksDestroyed.map(count);
-
-    p2score.text = p2TanksDestroyed
+  function getP1Scores(tanksDestroyed) {
+    const tankPts = tanksDestroyed.map(countPts);
+    return tanksDestroyed
       .map(
         (tankCount, index) =>
-          `>${tankCount?.toString().padStart(2)} ${p2TankPts[index]
+          `${tankPts[index]} pts ${tankCount?.toString().padStart(2)}<`
+      )
+      .join("\n");
+  }
+  function getP2Scores(tanksDestroyed) {
+    const tankPts = tanksDestroyed.map(countPts);
+    return tanksDestroyed
+      .map(
+        (tankCount, index) =>
+          `>${tankCount?.toString().padStart(2)} ${tankPts[index]
             .toString()
             .padStart(4)} pts`
       )
@@ -176,15 +180,33 @@ export function initCountingScores({
     },
     async load() {
       document.addEventListener("keydown", onKeyDown);
-      let tanksArr = [];
-      for (let tankIndex in p2tanksDestroyed) {
+      let p1tanksArr = [];
+      let p2tanksArr = [];
+      for (
+        let tankPriceIndex = 0;
+        tankPriceIndex < tankPrices.length;
+        tankPriceIndex++
+      ) {
         await sleep(500);
-        let tank = p2tanksDestroyed[tankIndex];
-        tanksArr.push(0);
+        let p2tank = p2tanksDestroyed[tankPriceIndex];
+        let p1tank = p1tanksDestroyed[tankPriceIndex];
 
-        for (let numberOfTank = 0; numberOfTank <= tank; numberOfTank++) {
-          tanksArr[tankIndex] = numberOfTank;
-          updateScores(tanksArr);
+        p1tanksArr.push(0);
+        p2tanksArr.push(0);
+        let p2numberOfTank = 0;
+        let p1numberOfTank = 0;
+        while (p1numberOfTank < p1tank || p2numberOfTank < p2tank) {
+          if (p1numberOfTank < p1tank) {
+            p1numberOfTank++;
+          }
+          if (p2numberOfTank < p2tank) {
+            p2numberOfTank++;
+          }
+          p1tanksArr[tankPriceIndex] = p1numberOfTank;
+          p2tanksArr[tankPriceIndex] = p2numberOfTank;
+
+          p1score.text = getP1Scores(p1tanksArr);
+          p2score.text = getP2Scores(p2tanksArr);
           await sleep(180);
         }
       }
