@@ -4,17 +4,19 @@ import { Sprite } from "./sprite.js";
 export const blockSize = 16; //px
 
 function loadImage(src) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const img = new Image();
     img.src = src;
 
-    img.addEventListener("load", () => resolve(img));
+    img.addEventListener("load", () => resolve(img), { once: true });
+    img.addEventListener("error", (error) => reject(error), { once: true });
   });
 }
 
 // load images
 export const spritemap = await loadImage("../sprites/spritemap2.png");
-const background = await loadImage("../sprites/reskin/bgblank.png");
+const background = await loadImage("../sprites/reskin/bg_no-shadow.png");
+const foreground = await loadImage("../sprites/reskin/fg_shadow.png");
 
 // create sprites
 
@@ -36,7 +38,11 @@ export const bgSprite = new Sprite({
   spritemap: background,
 });
 
-export const emptySprite = createSprite({ spritemap, x: 21, y: 0, });
+export const fgShadowSprite = new Sprite({
+  spritemap: foreground,
+});
+
+export const emptySprite = createSprite({ spritemap, x: 21, y: 0 });
 export const tankSprite1 = createSprite({ spritemap, x: 0, y: 0 });
 export const tankSprite2 = createSprite({ spritemap, x: 1, y: 0 });
 
@@ -69,7 +75,7 @@ export const woodSprite = createSprite({ spritemap, x: 17, y: 2 });
 export const wallBrickRedFullSprite = createSprite({ spritemap, x: 18, y: 14 });
 //
 //
-export const emptySprite8 = createSprite({ spritemap, x: 42, y: 0 , size: 8});
+export const emptySprite8 = createSprite({ spritemap, x: 42, y: 0, size: 8 });
 
 export const woodSprite8 = createSprite({ spritemap, x: 34, y: 4, size: 8 });
 export const waterSprite8 = createSprite({ spritemap, x: 32, y: 4, size: 8 });

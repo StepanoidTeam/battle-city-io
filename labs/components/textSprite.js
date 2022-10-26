@@ -102,7 +102,7 @@ export class TextSprite {
 
   // todo(vmyshko): reuse charSize const
   constructor({
-    text,
+    text = "",
     charSize = 8,
     lineSpacing = 0,
     fillStyle = null,
