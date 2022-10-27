@@ -1,32 +1,191 @@
-import { bgSprite, tankCursor } from "../components/sprite-lib.js";
-import { nesHeight, nesWidth } from "../consts.js";
+import {
+  bgSprite,
+  tankSpriteDown,
+  tankSpriteLeft,
+  tankSpriteRight,
+  tankSpriteUp,
+} from "../components/sprite-lib.js";
+import { blockSize, fragmentSize, nesHeight, nesWidth } from "../consts.js";
+
+const TankDirection = {
+  Left: "left",
+  Right: "right",
+  Up: "up",
+  Down: "down",
+};
+
+const directionSprites = {
+  [TankDirection.Left]: tankSpriteLeft,
+  [TankDirection.Right]: tankSpriteRight,
+  [TankDirection.Up]: tankSpriteUp,
+  [TankDirection.Down]: tankSpriteDown,
+};
+
+class Tank {
+  constructor({ posX = 0, posY = 0 } = {}) {
+    this.posX = posX;
+    this.posY = posY;
+
+    this.direction = TankDirection.Up;
+  }
+
+  draw(ctx, timestamp) {
+    const currentSprite = directionSprites[this.direction];
+
+    const [x, y] = [this.posX, this.posY].map(
+      (z) => z * fragmentSize + blockSize // field offset
+    );
+
+    currentSprite.draw(ctx, x, y, blockSize, blockSize);
+  }
+
+  // todo(vmyshko): temp for controller/mover
+  drawXY(ctx, x, y) {
+    const currentSprite = directionSprites[this.direction];
+
+    currentSprite.draw(ctx, x, y, blockSize, blockSize);
+  }
+}
+
+class Sleeper {
+  static #queue = new Set();
+
+  #startTimestamp = 0;
+  #currentTimestamp = 0;
+  #diffMs = 0;
+  #resolveFn = null;
+  constructor(ms = 0) {
+    Sleeper.#queue.add(this);
+
+    this.#diffMs = ms;
+
+    return new Promise((resolve, reject) => {
+      this.#resolveFn = resolve;
+    });
+  }
+
+  update(timestamp) {
+    if (!this.#startTimestamp) {
+      this.#startTimestamp = timestamp;
+    }
+
+    this.#currentTimestamp = timestamp;
+
+    if (this.#currentTimestamp - this.#startTimestamp > this.#diffMs) {
+      this.#resolveFn();
+      this.#destroy();
+    }
+  }
+
+  #destroy() {
+    Sleeper.#queue.delete(this);
+  }
+
+  static update(timestamp) {
+    for (let sleeper of Sleeper.#queue) {
+      sleeper.update(timestamp);
+    }
+  }
+}
+
+class Controller {
+  #movableItem = null;
+
+  isMoving = false;
+
+  constructor(movableItem) {
+    this.#movableItem = movableItem;
+  }
+
+  async startMove(direction) {
+    if (this.isMoving) return;
+    this.isMoving = true;
+
+    this.#movableItem.direction = direction;
+    // prevent if already moving, wait till end?
+
+    // get FROM coords
+    this.x = this.#movableItem.posX * fragmentSize + blockSize;
+    this.y = this.#movableItem.posY * fragmentSize + blockSize;
+
+    const stepPx = 1;
+    for (
+      let animFrameIndex = 0;
+      animFrameIndex < fragmentSize;
+      animFrameIndex++
+    ) {
+      // anim move
+      switch (direction) {
+        case TankDirection.Up: {
+          this.y -= stepPx;
+          break;
+        }
+        case TankDirection.Down: {
+          this.y += stepPx;
+          break;
+        }
+        case TankDirection.Left: {
+          this.x -= stepPx;
+          break;
+        }
+        case TankDirection.Right: {
+          this.x += stepPx;
+          break;
+        }
+      }
+
+      await new Sleeper(10);
+    }
+
+    // real move
+    switch (direction) {
+      case TankDirection.Up: {
+        this.#movableItem.posY--;
+        break;
+      }
+      case TankDirection.Down: {
+        this.#movableItem.posY++;
+        break;
+      }
+      case TankDirection.Left: {
+        this.#movableItem.posX--;
+        break;
+      }
+      case TankDirection.Right: {
+        this.#movableItem.posX++;
+        break;
+      }
+    }
+
+    //release next move
+    this.isMoving = false;
+  }
+
+  update(timestamp) {
+    //
+  }
+
+  draw(ctx, timestamp) {
+    this.#movableItem.drawXY(ctx, this.x, this.y);
+  }
+}
 
 export function GameScene({ onExit }) {
   let paused = false;
 
   let gameParts = [];
 
-  const fieldSize = 13;
-  let [p1posX, p1posY] = [0, 0];
+  const fieldSize = 26; // todo(vmyshko): get  from actual map
 
+  const p1tank = new Tank({ posX: 12, posY: 12 });
+
+  const ctrl1 = new Controller(p1tank);
+
+  const keysPressed = new Set();
   function onKeyDown(event) {
+    keysPressed.add(event.code);
+
     switch (event.code) {
-      case "ArrowUp": {
-        p1posY--;
-        break;
-      }
-      case "ArrowDown": {
-        p1posY++;
-        break;
-      }
-      case "ArrowLeft": {
-        p1posX--;
-        break;
-      }
-      case "ArrowRight": {
-        p1posX++;
-        break;
-      }
       case "KeyZ": {
         if (event.repeat) break;
         //fire
@@ -39,29 +198,61 @@ export function GameScene({ onExit }) {
         break;
       }
     }
+  }
+
+  // todo(vmyshko): refac, make a part of class?
+  async function update(timestamp) {
+    Sleeper.update(timestamp);
+    //
+
+    for (let key of keysPressed) {
+      switch (key) {
+        case "ArrowUp": {
+          ctrl1.startMove(TankDirection.Up);
+          break;
+        }
+        case "ArrowDown": {
+          ctrl1.startMove(TankDirection.Down);
+          break;
+        }
+        case "ArrowLeft": {
+          ctrl1.startMove(TankDirection.Left);
+          break;
+        }
+        case "ArrowRight": {
+          ctrl1.startMove(TankDirection.Right);
+          break;
+        }
+      } //switch
+    } //for
 
     // check collisions
     // bounds
-    p1posX = Math.max(0, p1posX);
-    p1posX = Math.min(fieldSize - 1, p1posX);
+    // move to tank? or map class?
+    p1tank.posX = Math.max(0, p1tank.posX);
+    // todo(vmyshko): -2 depends on obj size in fragments
+    p1tank.posX = Math.min(fieldSize - 2, p1tank.posX);
 
-    p1posY = Math.max(0, p1posY);
-    p1posY = Math.min(fieldSize - 1, p1posY);
+    p1tank.posY = Math.max(0, p1tank.posY);
+    p1tank.posY = Math.min(fieldSize - 2, p1tank.posY);
   }
 
-  function onKeyUp() {
+  function onKeyUp(event) {
     //
+    keysPressed.delete(event.code);
   }
 
   function drawBg(ctx) {
     bgSprite.draw(ctx, 0, 0, nesWidth, nesHeight);
   }
 
-  function drawPlayer(ctx, timestamp) {
-    tankCursor.draw(ctx, ...[p1posX, p1posY].map((x) => x * 16 + 16), 16, 16);
-  }
+  gameParts.push(
+    drawBg,
 
-  gameParts.push(drawBg, drawPlayer);
+    (...args) => p1tank.draw(...args),
+    (...args) => ctrl1.draw(...args)
+    // (...args) => p2tank.draw(...args)
+  );
 
   return {
     load() {
@@ -76,7 +267,13 @@ export function GameScene({ onExit }) {
 
     draw(ctx, timestamp) {
       //
+      update(timestamp);
+
       gameParts.forEach((component) => component(ctx, timestamp));
+
+      //debug keys
+      ctx.font = ctx.font.replace(/\d+px/, "6px");
+      ctx.fillText("keys: " + [...keysPressed.values()], 50, 235);
     },
   };
 }
