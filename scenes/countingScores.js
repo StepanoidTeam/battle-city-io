@@ -173,19 +173,17 @@ export function initCountingScores({
         initialPointOfViewY * 5 + (8 * 4 + 16 * 3)
       );
       if (p1price === p1totalScores && p2price === p2totalScores) {
-        p1totalScores > p2totalScores
-          ? (bonus.draw(ctx, nesWidth / 2 - 5 * 8, initialPointOfViewY * 12),
-            bonusPoints.draw(
-              ctx,
-              nesWidth / 2 - 5 * 8,
-              initialPointOfViewY * 13
-            ))
-          : (bonus.draw(ctx, nesWidth / 2 + 8 * 13, initialPointOfViewY * 12),
-            bonusPoints.draw(
-              ctx,
-              nesWidth / 2 + 8 * 13,
-              initialPointOfViewY * 13
-            ));
+        if (p1totalScores > p2totalScores) {
+          bonus.draw(ctx, nesWidth / 2 - 5 * 8, initialPointOfViewY * 12);
+          bonusPoints.draw(ctx, nesWidth / 2 - 5 * 8, initialPointOfViewY * 13);
+        } else {
+          bonus.draw(ctx, nesWidth / 2 + 8 * 13, initialPointOfViewY * 12);
+          bonusPoints.draw(
+            ctx,
+            nesWidth / 2 + 8 * 13,
+            initialPointOfViewY * 13
+          );
+        }
       }
 
       // draw list
@@ -220,7 +218,7 @@ export function initCountingScores({
 
           p1score.text = getP1Scores(p1tanksArr);
           p2score.text = getP2Scores(p2tanksArr);
-         // audioScores.play();
+          // audioScores.play();
 
           await sleep(150);
         }
