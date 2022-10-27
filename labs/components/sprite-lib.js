@@ -1,7 +1,5 @@
+import { blockSize } from "../consts.js";
 import { Sprite } from "./sprite.js";
-
-// todo(vmyshko): rename
-export const blockSize = 16; //px
 
 function loadImage(src) {
   return new Promise((resolve, reject) => {

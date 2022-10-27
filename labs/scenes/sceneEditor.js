@@ -1,9 +1,14 @@
-import { cellSize, nesHeight, nesWidth } from "../consts.js";
+import {
+  blockSize,
+  cellSize,
+  fragmentSize,
+  nesHeight,
+  nesWidth,
+} from "../consts.js";
 import { ListItem, ListItemSelect, MenuList } from "../components/menuList.js";
 import {
   bgSprite,
   fgShadowSprite,
-  blockSize,
   woodSprite8,
   waterSprite8,
   stoneSprite8,
@@ -38,6 +43,7 @@ export function getEditorScene({ onExit }) {
   function clearMap() {
     initMap();
   }
+
   function saveMap() {
     const jsonMap = JSON.stringify(fieldMatrix);
 
@@ -57,6 +63,7 @@ export function getEditorScene({ onExit }) {
       alert(`bad data: ${error}`);
     }
   }
+
   function drawField(ctx) {
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < cols; col++) {
@@ -280,7 +287,6 @@ export function getEditorScene({ onExit }) {
     }
   }
 
-  const fragmentSize = blockSize / 2;
   const [fieldOffsetX, fieldOffsetY] = [blockSize, blockSize];
 
   let showGrid = true;
