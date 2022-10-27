@@ -41,10 +41,12 @@ export const fgShadowSprite = new Sprite({
 });
 
 export const emptySprite = createSprite({ spritemap, x: 21, y: 0 });
-export const tankSprite1 = createSprite({ spritemap, x: 0, y: 0 });
-export const tankSprite2 = createSprite({ spritemap, x: 1, y: 0 });
 
-export const tankSprite3 = createSprite({ spritemap, x: 0, y: 0 });
+export const tankSpriteUp = createSprite({ spritemap, x: 0, y: 0 });
+export const tankSpriteLeft = createSprite({ spritemap, x: 2, y: 0 });
+export const tankSpriteDown = createSprite({ spritemap, x: 4, y: 0 });
+export const tankSpriteRight = createSprite({ spritemap, x: 6, y: 0 });
+
 export const tankCursor = createSprite({ spritemap, x: 6, y: 0 });
 export const enemyTank1 = createSprite({ spritemap, x: 8, y: 4 });
 export const enemyTank2 = createSprite({ spritemap, x: 8, y: 5 });
