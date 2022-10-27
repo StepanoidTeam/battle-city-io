@@ -84,7 +84,8 @@ function init() {
     onExit: () => setCurrentScene(sceneMainMenu),
   });
 
-  setCurrentScene(gameScene);
+  // todo(vmyshko): DO NOT COMMIT other scene, than MainMenu
+  setCurrentScene(sceneMainMenu);
 
   (function draw(timestamp) {
     ctxGame.clearRect(0, 0, nesWidth, nesHeight);
