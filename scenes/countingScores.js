@@ -172,7 +172,6 @@ export function initCountingScores({
         nesWidth / 2 + 8 * 4,
         initialPointOfViewY * 5 + (8 * 4 + 16 * 3)
       );
-      console.log(p1price, p1totalScores);
       if (p1price === p1totalScores && p2price === p2totalScores) {
         p1totalScores > p2totalScores
           ? (bonus.draw(ctx, nesWidth / 2 - 5 * 8, initialPointOfViewY * 12),

@@ -118,6 +118,8 @@ class Controller {
       switch (direction) {
         case TankDirection.Up: {
           this.y -= stepPx;
+          //  tankMove.play();
+        
           break;
         }
         case TankDirection.Down: {
@@ -209,18 +211,22 @@ export function GameScene({ onExit }) {
       switch (key) {
         case "ArrowUp": {
           ctrl1.startMove(TankDirection.Up);
+
           break;
         }
         case "ArrowDown": {
           ctrl1.startMove(TankDirection.Down);
+
           break;
         }
         case "ArrowLeft": {
           ctrl1.startMove(TankDirection.Left);
+
           break;
         }
         case "ArrowRight": {
           ctrl1.startMove(TankDirection.Right);
+
           break;
         }
       } //switch
