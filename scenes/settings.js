@@ -6,33 +6,64 @@ import {
   wallBrickRedFullSprite,
 } from "../components/sprite-lib.js";
 import { TextAlign, TextSprite } from "../components/textSprite.js";
+import { config } from "../config.js";
 
 // todo(vmyshko): extract?
 
 export function initSettings({ onExit }) {
-  const yesNo = ["yes", "no"];
-  const onOff = ["on", "off"];
+  const yesNo = [
+    { value: true, text: "yes" },
+    { value: false, text: "no" },
+  ];
+  const onOff = [
+    { value: true, text: "on" },
+    { value: false, text: "off" },
+  ];
 
   //max items 10
   const optionsText = [
-    ["pl.friendly fire", onOff],
-    ["ai friendly fire", onOff],
-    ["ai use bonus", yesNo],
-    ["bonus ship and gun", yesNo],
-    ["additional lives", [1, 2, 3, 4, 5]],
-    ["level pack", ["classic", "1990"]],
-    ["skin", ["1985", "reskin"]],
+    [
+      "pl.friendly fire",
+      onOff,
+      (value) => (config.options.player.friendlyFire = value),
+    ],
+    [
+      "ai friendly fire",
+      onOff,
+      (value) => (config.options.ai.friendlyFire = value),
+    ],
+    ["ai use bonus", yesNo, (value) => (config.options.ai.useBonus = value)],
+    [
+      "bonus ship and gun",
+      yesNo,
+      (value) => {
+        (config.options.extraBonuses.ship = value),
+          (config.options.extraBonuses.gun = value);
+      },
+    ],
+    [
+      "additional lives",
+      [1, 2, 3, 4, 5],
+      (value) => (config.options.additionalLives = value),
+    ],
+    [
+      "level pack",
+      ["classic", "1990"],
+      (value) => (config.options.levelPack = value),
+    ],
+    ["skin", ["1985", "reskin"], (value) => (config.options.skin = value)],
   ];
 
   const maxTextLength = Math.max(...optionsText.map(([text]) => text.length));
 
-  const settingsItems = optionsText.map(([text, options]) => {
+  const settingsItems = optionsText.map(([text, options, onSelect]) => {
     return new ListItemSelect({
       text,
       itemColor: "greenyellow",
       valueColor: `${redColour}`,
       options,
       valueOffsetX: (maxTextLength + 1) * 8,
+      onSelect,
     });
   });
 
@@ -65,6 +96,7 @@ export function initSettings({ onExit }) {
       case "KeyZ": {
         if (event.repeat) break;
         menuSettings.select();
+        console.log(config);
         break;
       }
       case "Escape": {

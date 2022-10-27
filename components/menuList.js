@@ -37,7 +37,7 @@ export class ListItemSelect extends ListItem {
   #maxOptionLength;
 
   get value() {
-    return this.options[this.selectedIndex];
+    return this.options[this.selectedIndex].value;
   }
 
   get width() {
@@ -54,13 +54,23 @@ export class ListItemSelect extends ListItem {
     onSelect,
   }) {
     super({ text, itemColor, onSelect });
+    if (typeof options[0] === "object") {
+      this.options = options;
+    } else {
+      this.options = options.map((value) => ({
+        value: value,
+        text: `${value}`,
+      }));
+    }
 
-    // this.value = value;
-    this.selectedIndex = options.includes(value) ? options.indexOf(value) : 0;
-    this.options = options;
+    const selectedItemIndex = this.options.findIndex(
+      (option) => option.value === value
+    );
+
+    this.selectedIndex = selectedItemIndex < 0 ? 0 : selectedItemIndex;
 
     this.#maxOptionLength = Math.max(
-      ...this.options.map((option) => `${option}`.length)
+      ...this.options.map((option) => option.text.length)
     );
 
     this.valueOffsetX =
@@ -69,17 +79,14 @@ export class ListItemSelect extends ListItem {
     this.optionSprites = this.options.map(
       (option) =>
         new TextSprite({
-          text: option.toString(),
+          text: option.text,
           fillStyle: valueColor ?? itemColor,
         })
     );
   }
 
   select() {
-    this.selectedIndex++;
-    if (this.selectedIndex >= this.options.length) {
-      this.selectedIndex = 0;
-    }
+    this.selectedIndex = (this.selectedIndex + 1) % this.options.length;
     this.onSelect(this.value, this.selectedIndex);
   }
 
