@@ -100,7 +100,8 @@ class Controller {
   async startMove(direction) {
     if (this.isMoving) return;
     this.isMoving = true;
-
+        tankMove.volume= 0.1
+        tankMove.play();
     this.#movableItem.direction = direction;
     // prevent if already moving, wait till end?
 
@@ -119,7 +120,7 @@ class Controller {
         case TankDirection.Up: {
           this.y -= stepPx;
           //  tankMove.play();
-        
+
           break;
         }
         case TankDirection.Down: {
@@ -161,6 +162,7 @@ class Controller {
 
     //release next move
     this.isMoving = false;
+    tankMove.pause()
   }
 
   update(timestamp) {
