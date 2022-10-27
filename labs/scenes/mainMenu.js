@@ -35,12 +35,12 @@ export function initMainMenu({ onStartGame, onSettings, onEditor }) {
   const settingsItems = [
     new ListItem({
       text: "1 player",
-      onSelect: onStartGame,
+      onSelect: () => onStartGame({ players: 1 }),
       itemColor: `${greyColour}`,
     }),
     new ListItem({
       text: "2 players",
-      onSelect: onStartGame,
+      onSelect: () => onStartGame({ players: 2 }),
       itemColor: `${greyColour}`,
     }),
     new ListItem({

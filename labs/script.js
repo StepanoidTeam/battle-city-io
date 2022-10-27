@@ -1,5 +1,6 @@
 import { nesHeight, nesWidth, scale, cellSize } from "./consts.js";
 import { initCountingScores } from "./scenes/countingScores.js";
+import { GameScene } from "./scenes/game.js";
 import { initGameOverScene } from "./scenes/gameOverScene.js";
 import { initMainMenu } from "./scenes/mainMenu.js";
 import { getEditorScene } from "./scenes/sceneEditor.js";
@@ -12,8 +13,6 @@ function init() {
   canvasContainer.style.setProperty("--scale", scale);
 
   const ctxGame = initCanvas(canvasGame, nesWidth, nesHeight);
-  const ctxBg = initCanvas(canvasBg, nesWidth, nesHeight);
-  const ctxSprites = initCanvas(sprites, nesWidth, nesHeight);
 
   function initCanvas(canvas, width, height) {
     const ctx = canvas.getContext("2d");
@@ -24,6 +23,7 @@ function init() {
 
     return ctx;
   }
+
   const { getCurrentScene, setCurrentScene } = (function useScene() {
     let currentScene = null;
 
@@ -39,6 +39,7 @@ function init() {
     }
     return { getCurrentScene, setCurrentScene };
   })();
+  //-------------
 
   const sceneScores = initCountingScores({
     onExit: () => {
@@ -48,19 +49,26 @@ function init() {
     p1tanksDestroyed: [5, 3, 0, 2],
     p2tanksDestroyed: [13, 9, 8, 5],
   });
+
   const sceneSettings = initSettings({
     onExit: () => {
       setCurrentScene(sceneMainMenu);
     },
   });
+
   const gameOverScene = initGameOverScene({
     onExit: () => {
       setCurrentScene(sceneMainMenu);
     },
   });
+
   const sceneMainMenu = initMainMenu({
-    onStartGame: () => {
-      setCurrentScene(sceneScores);
+    onStartGame: ({ players }) => {
+      if (players === 1) {
+        setCurrentScene(gameScene);
+      } else {
+        setCurrentScene(sceneScores);
+      }
     },
     onSettings: () => {
       setCurrentScene(sceneSettings);
@@ -72,7 +80,11 @@ function init() {
     onExit: () => setCurrentScene(sceneMainMenu),
   });
 
-  setCurrentScene(sceneMainMenu);
+  const gameScene = new GameScene({
+    onExit: () => setCurrentScene(sceneMainMenu),
+  });
+
+  setCurrentScene(gameScene);
 
   (function draw(timestamp) {
     ctxGame.clearRect(0, 0, nesWidth, nesHeight);
