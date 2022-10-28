@@ -21,6 +21,11 @@ const directionSprites = {
   [TankDirection.Down]: tankSpriteDown,
 };
 
+// todo(vmyshko): extract?
+function posToPx(pos) {
+  return pos * fragmentSize + blockSize;
+}
+
 class Tank {
   constructor({ posX = 0, posY = 0 } = {}) {
     this.posX = posX;
@@ -32,9 +37,7 @@ class Tank {
   draw(ctx, timestamp) {
     const currentSprite = directionSprites[this.direction];
 
-    const [x, y] = [this.posX, this.posY].map(
-      (z) => z * fragmentSize + blockSize // field offset
-    );
+    const [x, y] = [this.posX, this.posY].map(posToPx);
 
     currentSprite.draw(ctx, x, y, blockSize, blockSize);
   }
@@ -100,14 +103,18 @@ class Controller {
   async startMove(direction) {
     if (this.isMoving) return;
     this.isMoving = true;
-        tankMove.volume= 0.1
-        tankMove.play();
+    tankMove.volume = 0.05;
+    // tankMove.play();
     this.#movableItem.direction = direction;
     // prevent if already moving, wait till end?
 
     // get FROM coords
-    this.x = this.#movableItem.posX * fragmentSize + blockSize;
-    this.y = this.#movableItem.posY * fragmentSize + blockSize;
+    this.x = posToPx(this.#movableItem.posX);
+    this.y = posToPx(this.#movableItem.posY);
+
+    // get DEST coords
+
+    // this.destX =
 
     const stepPx = 1;
     for (
@@ -162,7 +169,7 @@ class Controller {
 
     //release next move
     this.isMoving = false;
-    tankMove.pause()
+    // tankMove.pause();
   }
 
   update(timestamp) {
@@ -171,6 +178,14 @@ class Controller {
 
   draw(ctx, timestamp) {
     this.#movableItem.drawXY(ctx, this.x, this.y);
+
+    if (this.isMoving) {
+      const [x, y] = [this.#movableItem.posX, this.#movableItem.posY].map(
+        posToPx
+      );
+      ctx.strokeStyle = "crimson";
+      ctx.strokeRect(x, y, blockSize, blockSize);
+    }
   }
 }
 
@@ -257,7 +272,7 @@ export function GameScene({ onExit }) {
   gameParts.push(
     drawBg,
 
-    (...args) => p1tank.draw(...args),
+    // (...args) => p1tank.draw(...args),
     (...args) => ctrl1.draw(...args)
     // (...args) => p2tank.draw(...args)
   );
