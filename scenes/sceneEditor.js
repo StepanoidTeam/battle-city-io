@@ -356,13 +356,6 @@ export function getEditorScene({ onExit }) {
         fragmentSize * cursorSize,
         fragmentSize * cursorSize
       );
-      /* tankSprite3.draw(
-        ctx,
-        cursorPosX * fragmentSize + fieldOffsetX,
-        cursorPosY * fragmentSize + fieldOffsetY,
-        fragmentSize * cursorSize,
-        fragmentSize * cursorSize
-      );*/
     }
   }
 
