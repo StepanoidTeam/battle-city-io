@@ -8,7 +8,7 @@ import {
   tankSpriteUp,
 } from "../components/sprite-lib.js";
 import { blockSize, fragmentSize, nesHeight, nesWidth } from "../consts.js";
-import { sharedMapData } from "./shared.js";
+import { sharedMapData } from "./_shared.js";
 
 const TankDirection = {
   Left: "left",

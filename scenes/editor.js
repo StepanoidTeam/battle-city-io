@@ -22,7 +22,7 @@ import {
 import { TextSprite } from "../components/textSprite.js";
 import { Grid } from "../components/grid.js";
 import { MapDrawer } from "../components/mapData.js";
-import { sharedMapData } from "./shared.js";
+import { sharedMapData } from "./_shared.js";
 
 export function getEditor({ onExit }) {
   function drawBg(ctx) {
