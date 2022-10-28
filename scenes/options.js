@@ -1,4 +1,4 @@
-import { blackColour, redColour } from "../consts.js";
+import { blackColor, greyColor, redColor, whiteColor } from "../consts.js";
 import { ListItem, ListItemSelect, MenuList } from "../components/menuList.js";
 import { nesWidth } from "../consts.js";
 import {
@@ -10,7 +10,7 @@ import { config } from "../config.js";
 
 // todo(vmyshko): extract?
 
-export function initSettings({ onExit }) {
+export function initOptions({ onExit }) {
   const yesNo = [
     { value: true, text: "yes" },
     { value: false, text: "no" },
@@ -56,27 +56,27 @@ export function initSettings({ onExit }) {
 
   const maxTextLength = Math.max(...optionsText.map(([text]) => text.length));
 
-  const settingsItems = optionsText.map(([text, options, onSelect]) => {
+  const optionsItems = optionsText.map(([text, options, onSelect]) => {
     return new ListItemSelect({
       text,
-      itemColor: "greenyellow",
-      valueColor: `${redColour}`,
+      itemColor: `${greyColor}`,
+      valueColor: `${whiteColor}`,
       options,
       valueOffsetX: (maxTextLength + 1) * 8,
       onSelect,
     });
   });
 
-  settingsItems.push(
+  optionsItems.push(
     new ListItem({
       text: "main menu",
-      itemColor: "blueviolet",
+      itemColor: `${greyColor}`,
       onSelect: onExit,
     })
   );
 
-  const menuSettings = new MenuList({
-    listItems: settingsItems,
+  const menuOptions = new MenuList({
+    listItems: optionsItems,
     cursor: tankCursor,
     lineSpacing: 8,
     cursorOffsetX: 24,
@@ -86,16 +86,16 @@ export function initSettings({ onExit }) {
   function onKeyDown(event) {
     switch (event.code) {
       case "ArrowUp": {
-        menuSettings.prev();
+        menuOptions.prev();
         break;
       }
       case "ArrowDown": {
-        menuSettings.next();
+        menuOptions.next();
         break;
       }
       case "KeyZ": {
         if (event.repeat) break;
-        menuSettings.select();
+        menuOptions.select();
         console.log(config);
         break;
       }
@@ -108,7 +108,7 @@ export function initSettings({ onExit }) {
     }
   }
   const optionsTitle = new TextSprite({
-    text: "settings",
+    text: "options",
     multiplyText: 4,
     fillStyle: wallBrickRedFullSprite.getPattern(),
     textAlign: TextAlign.center,
@@ -117,12 +117,12 @@ export function initSettings({ onExit }) {
   return {
     draw(ctx) {
       //bg
-      ctx.fillStyle = `${blackColour}`;
+      ctx.fillStyle = `${blackColor}`;
       ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
       // title
       optionsTitle.draw(ctx, nesWidth / 2, 16);
-      menuSettings.draw(ctx, nesWidth / 2 + 16, 16 * 4);
+      menuOptions.draw(ctx, nesWidth / 2 + 16, 16 * 4);
       // draw list
     },
     load() {

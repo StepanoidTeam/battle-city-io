@@ -1,12 +1,19 @@
-import { blackColour, brightOrange, greyColour, nesWidth } from "../consts.js";
+import {
+  blackColor,
+  brightOrange,
+  greyColor,
+  nesHeight,
+  nesWidth,
+} from "../consts.js";
 import { ListItem, MenuList } from "../components/menuList.js";
 import {
   tankCursor,
   wallBrickRedFullSprite,
 } from "../components/sprite-lib.js";
 import { TextAlign, TextSprite } from "../components/textSprite.js";
+import { sleep } from "../helpers.js";
 
-export function initMainMenu({ onStartGame, onSettings, onEditor }) {
+export function initMainMenu({ onStartGame, onOptions, onEditor }) {
   const hightScores = new TextSprite({
     text: "I-     00  HI-  20000",
     textAlign: TextAlign.center,
@@ -36,20 +43,20 @@ export function initMainMenu({ onStartGame, onSettings, onEditor }) {
     new ListItem({
       text: "1 player",
       onSelect: () => onStartGame({ players: 1 }),
-      itemColor: `${greyColour}`,
+      itemColor: `${greyColor}`,
     }),
     new ListItem({
       text: "2 players",
       onSelect: () => onStartGame({ players: 2 }),
-      itemColor: `${greyColour}`,
+      itemColor: `${greyColor}`,
     }),
     new ListItem({
       text: "editor",
       onSelect: onEditor,
     }),
     new ListItem({
-      text: "settings",
-      onSelect: onSettings,
+      text: "options",
+      onSelect: onOptions,
     }),
   ];
 
@@ -80,23 +87,40 @@ export function initMainMenu({ onStartGame, onSettings, onEditor }) {
   }
 
   const screenCenterX = nesWidth / 2;
-
+  const screeninitialPoint = 16;
+  let y = nesHeight;
   return {
     draw(ctx) {
       //bg
-      ctx.fillStyle = `${blackColour}`;
+      ctx.fillStyle = `${blackColor}`;
       ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
       // title
-      hightScores.draw(ctx, screenCenterX, 14);
-      header.draw(ctx, screenCenterX, 40);
-      mainMenuList.draw(ctx, screenCenterX, 126);
-      companyName.draw(ctx, screenCenterX, 192);
-      copyright.draw(ctx, screenCenterX, 206);
+
+      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      hightScores.draw(ctx, screenCenterX, y);
+      header.draw(ctx, screenCenterX, y * 3);
+      mainMenuList.draw(ctx, screenCenterX, y * 8);
+      companyName.draw(ctx, screenCenterX, y * 12);
+      copyright.draw(ctx, screenCenterX, y * 13);
+      //             await sleep(100);
+
+      // hightScores.draw(ctx, screenCenterX, screeninitialPoint);
+      // header.draw(ctx, screenCenterX, screeninitialPoint * 3);
+      // mainMenuList.draw(ctx, screenCenterX, screeninitialPoint * 8);
+      // companyName.draw(ctx, screenCenterX, screeninitialPoint * 12);
+      // copyright.draw(ctx, screenCenterX, screeninitialPoint * 13);
       // draw list
     },
-    load() {
+    async load() {
       document.addEventListener("keydown", onKeyDown);
+      while (y > screeninitialPoint) {
+        if (y > screeninitialPoint) {
+          await sleep(20);
+
+          y--;
+        }
+      }
     },
     unload() {
       document.removeEventListener("keydown", onKeyDown);
