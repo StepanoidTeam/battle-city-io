@@ -17,18 +17,12 @@ import {
 import {
   bgSprite,
   fgShadowSprite,
-  woodSprite8,
-  waterSprite8,
-  stoneSprite8,
-  brickSprite8,
-  iceSprite8,
-  emptySprite8,
   tileSprites,
 } from "../components/sprite-lib.js";
 import { TextSprite } from "../components/textSprite.js";
 import { Grid } from "../components/grid.js";
-import { MapData, MapDrawer } from "../components/mapData.js";
-import { sharedMapData } from "./_shared.js";
+import { MapDrawer } from "../components/mapData.js";
+import { sharedMapData } from "./shared.js";
 
 export function getEditor({ onExit }) {
   function drawBg(ctx) {
