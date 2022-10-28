@@ -1,11 +1,4 @@
-const tiles = {
-  Void: 0x00,
-  Forest: 0x0f,
-  Concrete: 0x10,
-  Water: 0x12,
-  Ice: 0x21,
-  Brick: 0x22,
-};
+import { tiles } from "../consts.js";
 
 const colors = {
   Black: [0, 0, 0, 255],

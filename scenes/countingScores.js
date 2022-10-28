@@ -2,7 +2,6 @@ import {
   blackColor,
   gingerColor,
   redColor,
-  initialPointOfViewY,
   nesWidth,
   cellSize,
 } from "../consts.js";
@@ -136,7 +135,7 @@ export function initCountingScores({
       }
     }
   }
-
+  const initialPointOfViewY = 16;
   return {
     draw(ctx) {
       //bg

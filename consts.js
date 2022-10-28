@@ -11,6 +11,14 @@ export const scale = 3;
 export const cellSize = 8; //px
 
 export const blockSize = 16; //px
+export const [fieldOffsetX, fieldOffsetY] = [blockSize, blockSize];
+
 export const fragmentSize = blockSize / 2; //px
-//initial points
-export const initialPointOfViewY = 16;
+export const tiles = {
+  Void: 0x00,
+  Forest: 0x0f,
+  Concrete: 0x10,
+  Water: 0x12,
+  Ice: 0x21,
+  Brick: 0x22,
+};

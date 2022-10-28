@@ -1,4 +1,4 @@
-import { fragmentSize } from "../consts.js";
+import { fieldOffsetX, fieldOffsetY, fragmentSize } from "../consts.js";
 
 export class Grid {
   hidden = false;
@@ -6,7 +6,7 @@ export class Grid {
   setCellSize(value) {
     this.cellSize = value;
   }
-  
+
   constructor({
     cols,
     rows,
@@ -19,8 +19,6 @@ export class Grid {
     this.cols = cols;
     this.rows = rows;
     this.cellSize = cellSize;
-    this.fieldOffsetX = fieldOffsetX;
-    this.fieldOffsetY = fieldOffsetY;
     this.strokeStyle = strokeStyle;
   }
 
@@ -37,23 +35,23 @@ export class Grid {
     //columns
     for (let col = 0; col <= this.cols / this.cellSize; col++) {
       ctx.moveTo(
-        col * fragmentSize * this.cellSize + this.fieldOffsetX,
-        this.fieldOffsetY
+        col * fragmentSize * this.cellSize + fieldOffsetX,
+        fieldOffsetY
       );
       ctx.lineTo(
-        col * fragmentSize * this.cellSize + this.fieldOffsetX,
-        this.cols * fragmentSize + this.fieldOffsetY
+        col * fragmentSize * this.cellSize + fieldOffsetX,
+        this.cols * fragmentSize + fieldOffsetY
       );
     }
     //rows
     for (let row = 0; row <= this.rows / this.cellSize; row++) {
       ctx.moveTo(
-        this.fieldOffsetX,
-        row * fragmentSize * this.cellSize + this.fieldOffsetY
+        fieldOffsetX,
+        row * fragmentSize * this.cellSize + fieldOffsetY
       );
       ctx.lineTo(
-        this.rows * fragmentSize + this.fieldOffsetX,
-        row * fragmentSize * this.cellSize + this.fieldOffsetY
+        this.rows * fragmentSize + fieldOffsetX,
+        row * fragmentSize * this.cellSize + fieldOffsetY
       );
     }
 
