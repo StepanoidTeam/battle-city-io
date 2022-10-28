@@ -87,7 +87,6 @@ export function initMainMenu({ onStartGame, onOptions, onEditor }) {
   }
 
   const screenCenterX = nesWidth / 2;
-  const screeninitialPoint = 16;
   let averageOffset = 240;
   return {
     draw(ctx) {
