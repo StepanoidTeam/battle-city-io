@@ -1,4 +1,5 @@
 import { Grid } from "../components/grid.js";
+import { MapDrawer } from "../components/mapData.js";
 import {
   bgSprite,
   tankSpriteDown,
@@ -7,6 +8,7 @@ import {
   tankSpriteUp,
 } from "../components/sprite-lib.js";
 import { blockSize, fragmentSize, nesHeight, nesWidth } from "../consts.js";
+import { sharedMapData } from "./_shared.js";
 
 const TankDirection = {
   Left: "left",
@@ -275,12 +277,14 @@ export function GameScene({ onExit }) {
     cols: fieldSize,
     rows: fieldSize,
     cellSize: 1,
-    fieldOffsetX: 16,
-    fieldOffsetY: 16,
   });
+  const mapDrawer = new MapDrawer({ mapData: sharedMapData });
+
   gameParts.push(
     drawBg,
+    (ctx) => mapDrawer.draw(ctx),
     (ctx) => grid.draw(ctx),
+
     // (...args) => p1tank.draw(...args),
     (...args) => ctrl1.draw(...args)
     // (...args) => p2tank.draw(...args)

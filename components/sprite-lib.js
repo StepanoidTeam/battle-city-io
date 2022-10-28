@@ -1,4 +1,4 @@
-import { blockSize } from "../consts.js";
+import { blockSize, tiles } from "../consts.js";
 import { Sprite } from "./sprite.js";
 
 function loadImage(src) {
@@ -82,3 +82,12 @@ export const waterSprite8 = createSprite({ spritemap, x: 32, y: 4, size: 8 });
 export const stoneSprite8 = createSprite({ spritemap, x: 32, y: 2, size: 8 });
 export const brickSprite8 = createSprite({ spritemap, x: 32, y: 0, size: 8 });
 export const iceSprite8 = createSprite({ spritemap, x: 36, y: 4, size: 8 });
+
+export const tileSprites = new Map([
+  [tiles.Void, emptySprite8],
+  [tiles.Forest, woodSprite8],
+  [tiles.Concrete, stoneSprite8],
+  [tiles.Water, waterSprite8],
+  [tiles.Ice, iceSprite8],
+  [tiles.Brick, brickSprite8],
+]);
