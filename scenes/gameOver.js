@@ -1,4 +1,4 @@
-import { initialPointOfViewY, nesWidth } from "../consts.js";
+import {  nesWidth } from "../consts.js";
 import { wallBrickFullSprite } from "../components/sprite-lib.js";
 import { TextAlign, TextSprite } from "../components/textSprite.js";
 import { sleep } from "../helpers.js";
@@ -17,7 +17,7 @@ export function initGameOverScene({ onExit }) {
 
   return {
     draw(ctx) {
-      gameOver.draw(ctx, nesWidth - 16, initialPointOfViewY * 4);
+      gameOver.draw(ctx, nesWidth - 16, 16 * 4);
     },
     async load() {
       await sleep(3000);

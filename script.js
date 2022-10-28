@@ -1,9 +1,9 @@
 import { nesHeight, nesWidth, scale, cellSize } from "./consts.js";
 import { initCountingScores } from "./scenes/countingScores.js";
 import { GameScene } from "./scenes/game.js";
-import { initGameOverScene } from "./scenes/gameOverScene.js";
+import { initGameOverScene } from "./scenes/gameOver.js";
 import { initMainMenu } from "./scenes/mainMenu.js";
-import { getEditorScene } from "./scenes/sceneEditor.js";
+import { getEditor } from "./scenes/editor.js";
 import { initOptions } from "./scenes/options.js";
 
 function init() {
@@ -76,7 +76,7 @@ function init() {
     onEditor: () => setCurrentScene(sceneEditor),
   });
 
-  const sceneEditor = getEditorScene({
+  const sceneEditor = getEditor({
     onExit: () => setCurrentScene(sceneMainMenu),
   });
 
