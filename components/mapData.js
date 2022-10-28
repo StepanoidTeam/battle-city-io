@@ -8,6 +8,7 @@ export class MapData {
     this.rows = rows;
     this.init(cols, rows);
   }
+
   init(cols, rows) {
     this.fieldMatrix = [];
     for (let row = 0; row < rows; row++) {
@@ -17,16 +18,19 @@ export class MapData {
       }
     }
   }
+
   clearMap() {
     this.init(this.cols, this.rows);
   }
 }
 
 export class MapDrawer {
-  constructor({ mapData}) {
+  constructor({ mapData }) {
     this.mapData = mapData;
   }
+
   update(timestamp) {}
+
   #drawField(ctx) {
     const { cols, rows, fieldMatrix } = this.mapData;
     for (let row = 0; row < rows; row++) {
@@ -46,6 +50,7 @@ export class MapDrawer {
       }
     }
   }
+
   draw(ctx) {
     this.#drawField(ctx);
   }
