@@ -88,7 +88,7 @@ export function initMainMenu({ onStartGame, onOptions, onEditor }) {
 
   const screenCenterX = nesWidth / 2;
   const screeninitialPoint = 16;
-  let y = nesHeight;
+  let averageOffset = 240;
   return {
     draw(ctx) {
       //bg
@@ -98,28 +98,18 @@ export function initMainMenu({ onStartGame, onOptions, onEditor }) {
       // title
 
       ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-      hightScores.draw(ctx, screenCenterX, y);
-      header.draw(ctx, screenCenterX, y * 3);
-      mainMenuList.draw(ctx, screenCenterX, y * 8);
-      companyName.draw(ctx, screenCenterX, y * 12);
-      copyright.draw(ctx, screenCenterX, y * 13);
-      //             await sleep(100);
-
-      // hightScores.draw(ctx, screenCenterX, screeninitialPoint);
-      // header.draw(ctx, screenCenterX, screeninitialPoint * 3);
-      // mainMenuList.draw(ctx, screenCenterX, screeninitialPoint * 8);
-      // companyName.draw(ctx, screenCenterX, screeninitialPoint * 12);
-      // copyright.draw(ctx, screenCenterX, screeninitialPoint * 13);
-      // draw list
+      hightScores.draw(ctx, screenCenterX, 8 + averageOffset);
+      header.draw(ctx, screenCenterX, 32 + averageOffset);
+      mainMenuList.draw(ctx, screenCenterX, 114 + averageOffset);
+      companyName.draw(ctx, screenCenterX, 180 + averageOffset);
+      copyright.draw(ctx, screenCenterX, 196 + averageOffset);
     },
     async load() {
       document.addEventListener("keydown", onKeyDown);
-      while (y > screeninitialPoint) {
-        if (y > screeninitialPoint) {
-          await sleep(20);
 
-          y--;
-        }
+      while (averageOffset > screeninitialPoint) {
+        await sleep(10);
+        averageOffset -= 1;
       }
     },
     unload() {
