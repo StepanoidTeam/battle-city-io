@@ -1,9 +1,27 @@
+import { fragmentSize } from "../consts.js";
+
 export class Grid {
   hidden = false;
-  strokeStyle = "rgba(0,0,0,0.2)";
 
-  constructor() {
+  setCellSize(value) {
+    this.cellSize = value;
+  }
+  
+  constructor({
+    cols,
+    rows,
+    cellSize,
+    fieldOffsetX,
+    fieldOffsetY,
+    strokeStyle = "rgba(0,0,0,0.2)",
+  }) {
     this.init();
+    this.cols = cols;
+    this.rows = rows;
+    this.cellSize = cellSize;
+    this.fieldOffsetX = fieldOffsetX;
+    this.fieldOffsetY = fieldOffsetY;
+    this.strokeStyle = strokeStyle;
   }
 
   // todo(vmyshko): change? from fn or from setters?
@@ -17,19 +35,25 @@ export class Grid {
     ctx.strokeStyle = this.strokeStyle;
     ctx.beginPath();
     //columns
-    for (let col = 0; col <= cols / cursorStep; col++) {
-      ctx.moveTo(col * fragmentSize * cursorStep + fieldOffsetX, fieldOffsetY);
+    for (let col = 0; col <= this.cols / this.cellSize; col++) {
+      ctx.moveTo(
+        col * fragmentSize * this.cellSize + this.fieldOffsetX,
+        this.fieldOffsetY
+      );
       ctx.lineTo(
-        col * fragmentSize * cursorStep + fieldOffsetX,
-        cols * fragmentSize + fieldOffsetY
+        col * fragmentSize * this.cellSize + this.fieldOffsetX,
+        this.cols * fragmentSize + this.fieldOffsetY
       );
     }
     //rows
-    for (let row = 0; row <= rows / cursorStep; row++) {
-      ctx.moveTo(fieldOffsetX, row * fragmentSize * cursorStep + fieldOffsetY);
+    for (let row = 0; row <= this.rows / this.cellSize; row++) {
+      ctx.moveTo(
+        this.fieldOffsetX,
+        row * fragmentSize * this.cellSize + this.fieldOffsetY
+      );
       ctx.lineTo(
-        rows * fragmentSize + fieldOffsetX,
-        row * fragmentSize * cursorStep + fieldOffsetY
+        this.rows * fragmentSize + this.fieldOffsetX,
+        row * fragmentSize * this.cellSize + this.fieldOffsetY
       );
     }
 

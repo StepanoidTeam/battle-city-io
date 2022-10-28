@@ -1,5 +1,5 @@
 import { blackColor, greyColor, redColor, whiteColor } from "../consts.js";
-import { ListItem, ListItemSelect, MenuList } from "../components/menuList.js";
+import { ListItem, ListItemSelect, MenuList, onOff, yesNo } from "../components/menuList.js";
 import { nesWidth } from "../consts.js";
 import {
   tankCursor,
@@ -11,15 +11,7 @@ import { config } from "../config.js";
 // todo(vmyshko): extract?
 
 export function initOptions({ onExit }) {
-  const yesNo = [
-    { value: true, text: "yes" },
-    { value: false, text: "no" },
-  ];
-  const onOff = [
-    { value: true, text: "on" },
-    { value: false, text: "off" },
-  ];
-
+ 
   //max items 10
   const optionsText = [
     [

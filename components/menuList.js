@@ -2,6 +2,15 @@ import { TextAlign, TextSprite } from "./textSprite.js";
 
 const noOp = () => console.log("noOp");
 
+export const yesNo = [
+  { value: true, text: "yes" },
+  { value: false, text: "no" },
+];
+export const onOff = [
+  { value: true, text: "on" },
+  { value: false, text: "off" },
+];
+
 globalThis.debug = false; //show debug rects
 
 export class ListItem {

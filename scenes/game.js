@@ -1,3 +1,4 @@
+import { Grid } from "../components/grid.js";
 import {
   bgSprite,
   tankSpriteDown,
@@ -98,6 +99,8 @@ class Controller {
 
   constructor(movableItem) {
     this.#movableItem = movableItem;
+    this.x = posToPx(this.#movableItem.posX);
+    this.y = posToPx(this.#movableItem.posY);
   }
 
   async startMove(direction) {
@@ -268,10 +271,16 @@ export function GameScene({ onExit }) {
   function drawBg(ctx) {
     bgSprite.draw(ctx, 0, 0, nesWidth, nesHeight);
   }
-
+  const grid = new Grid({
+    cols: fieldSize,
+    rows: fieldSize,
+    cellSize: 1,
+    fieldOffsetX: 16,
+    fieldOffsetY: 16,
+  });
   gameParts.push(
     drawBg,
-
+    (ctx) => grid.draw(ctx),
     // (...args) => p1tank.draw(...args),
     (...args) => ctrl1.draw(...args)
     // (...args) => p2tank.draw(...args)

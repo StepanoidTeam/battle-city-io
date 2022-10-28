@@ -5,7 +5,12 @@ import {
   nesHeight,
   nesWidth,
 } from "../consts.js";
-import { ListItem, ListItemSelect, MenuList } from "../components/menuList.js";
+import {
+  ListItem,
+  ListItemSelect,
+  MenuList,
+  onOff,
+} from "../components/menuList.js";
 import {
   bgSprite,
   fgShadowSprite,
@@ -17,6 +22,7 @@ import {
   emptySprite8,
 } from "../components/sprite-lib.js";
 import { TextSprite } from "../components/textSprite.js";
+import { Grid } from "../components/grid.js";
 
 export function getEditorScene({ onExit }) {
   function drawBg(ctx) {
@@ -147,18 +153,22 @@ export function getEditorScene({ onExit }) {
         text: "show grid",
         itemColor,
         valueColor: "gold",
-        options: ["on", "off"],
+        options: onOff,
         onSelect: (value) => {
-          showGrid = value === "on";
+          grid.hidden = !value;
         },
       }),
       new ListItemSelect({
         text: "grid size",
         itemColor,
         valueColor: "gold",
-        options: ["8px", "16px"],
-        onSelect: (value, index) => {
-          cursorStep = [1, 2][index];
+        options: [
+          { value: 1, text: "8px" },
+          { value: 2, text: "16px" },
+        ],
+        onSelect: (value) => {
+          cursorStep = value;
+          grid.setCellSize(value);
         },
       }),
       new ListItem({
@@ -289,32 +299,13 @@ export function getEditorScene({ onExit }) {
 
   const [fieldOffsetX, fieldOffsetY] = [blockSize, blockSize];
 
-  let showGrid = true;
-  function drawGrid(ctx) {
-    if (!showGrid) return;
-
-    ctx.strokeStyle = "rgba(0,0,0,0.2)";
-    ctx.beginPath();
-    //columns
-    for (let col = 0; col <= cols / cursorStep; col++) {
-      ctx.moveTo(col * fragmentSize * cursorStep + fieldOffsetX, fieldOffsetY);
-      ctx.lineTo(
-        col * fragmentSize * cursorStep + fieldOffsetX,
-        cols * fragmentSize + fieldOffsetY
-      );
-    }
-    //rows
-    for (let row = 0; row <= rows / cursorStep; row++) {
-      ctx.moveTo(fieldOffsetX, row * fragmentSize * cursorStep + fieldOffsetY);
-      ctx.lineTo(
-        rows * fragmentSize + fieldOffsetX,
-        row * fragmentSize * cursorStep + fieldOffsetY
-      );
-    }
-
-    ctx.stroke();
-  }
-
+  const grid = new Grid({
+    cols,
+    rows,
+    cellSize: cursorStep,
+    fieldOffsetX,
+    fieldOffsetY,
+  });
   function drawCurrentTool(ctx) {
     const toolSprite = tools[currentTool];
 
@@ -384,7 +375,9 @@ export function getEditorScene({ onExit }) {
     drawField,
     drawCursor,
     drawCurrentTool,
-    drawGrid,
+    (ctx) => {
+      grid.draw(ctx);
+    },
 
     drawContextMenu,
     drawFg,
