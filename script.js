@@ -4,7 +4,7 @@ import { GameScene } from "./scenes/game.js";
 import { initGameOverScene } from "./scenes/gameOverScene.js";
 import { initMainMenu } from "./scenes/mainMenu.js";
 import { getEditorScene } from "./scenes/sceneEditor.js";
-import { initSettings } from "./scenes/settings.js";
+import { initOptions } from "./scenes/options.js";
 
 function init() {
   canvasContainer.style.setProperty("--width", `${nesWidth * scale}px`);
@@ -50,7 +50,7 @@ function init() {
     p2tanksDestroyed: [13, 9, 8, 5],
   });
 
-  const sceneSettings = initSettings({
+  const sceneSettings = initOptions({
     onExit: () => {
       setCurrentScene(sceneMainMenu);
     },
@@ -70,7 +70,7 @@ function init() {
         setCurrentScene(sceneScores);
       }
     },
-    onSettings: () => {
+    onOptions: () => {
       setCurrentScene(sceneSettings);
     },
     onEditor: () => setCurrentScene(sceneEditor),
