@@ -98,19 +98,25 @@ export function initMainMenu({ onStartGame, onOptions, onEditor }) {
       // title
 
       ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-      hightScores.draw(ctx, screenCenterX, 8 + averageOffset);
-      header.draw(ctx, screenCenterX, 32 + averageOffset);
-      mainMenuList.draw(ctx, screenCenterX, 114 + averageOffset);
-      companyName.draw(ctx, screenCenterX, 180 + averageOffset);
-      copyright.draw(ctx, screenCenterX, 196 + averageOffset);
+      hightScores.draw(ctx, screenCenterX, 8 + 8 + averageOffset);
+      header.draw(ctx, screenCenterX, 32 + 8 + averageOffset);
+      mainMenuList.draw(ctx, screenCenterX, 114 + 8 + averageOffset);
+      companyName.draw(ctx, screenCenterX, 180 + 8 + averageOffset);
+      copyright.draw(ctx, screenCenterX, 196 + 8 + averageOffset);
     },
     async load() {
-      document.addEventListener("keydown", onKeyDown);
+      document.addEventListener("keydown", function skipIntro(event) {
+        if (["Escape", "Enter", "KeyZ"].includes(event.code)) {
+          averageOffset = 0;
+        }
+        document.removeEventListener("keydown", skipIntro);
+      });
 
-      while (averageOffset > screeninitialPoint) {
-        await sleep(10);
+      while (averageOffset > 0) {
         averageOffset -= 1;
+        await sleep(20);
       }
+      document.addEventListener("keydown", onKeyDown);
     },
     unload() {
       document.removeEventListener("keydown", onKeyDown);
