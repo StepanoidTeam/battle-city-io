@@ -90,6 +90,7 @@ export class ListItemSelect extends ListItem {
         new TextSprite({
           text: option.text,
           fillStyle: valueColor ?? itemColor,
+          textAlign: TextAlign.right
         })
     );
   }
