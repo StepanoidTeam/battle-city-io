@@ -9,7 +9,7 @@ export const whiteColor = "rgb(255,255,255)";
 export const [nesWidth, nesHeight] = [256, 240];
 export const scale = 3;
 export const cellSize = 8; //px
-
+export const linePxFix = 0.5; // to fix canvas lines blur - http://diveintohtml5.info/canvas.html#pixel-madness
 export const blockSize = 16; //px
 export const [fieldOffsetX, fieldOffsetY] = [blockSize, blockSize];
 
