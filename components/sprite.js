@@ -10,9 +10,6 @@ export class Sprite {
       sy: spriteSize * y,
       sHeight: spriteSize,
       sWidth: spriteSize,
-      // canvas
-      width: spriteSize,
-      height: spriteSize,
     });
   }
   constructor({
@@ -22,7 +19,6 @@ export class Sprite {
     sy = 0,
     sWidth = spritemap.width,
     sHeight = spritemap.height,
- 
   }) {
     // todo(vmyshko): replace to [x,y]-like arrays?
 
