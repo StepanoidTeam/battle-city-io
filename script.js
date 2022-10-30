@@ -21,6 +21,8 @@ function init() {
     ctx.scale(scale, scale);
     ctx.imageSmoothingEnabled = false; // pixelated
 
+    ctx.font = ctx.font.replace(/\d+px/, "6px");
+
     return ctx;
   }
 
