@@ -23,37 +23,43 @@ const FallbackColor = colors.Magenta;
 
 export function preview(maps) {
   for (const [index, map] of maps.entries()) {
-    const canvas = createCanvas(map);
-    const downloadLink = createDownloadLink(canvas, index);
+    const ctxBuffer = createCanvas({ map });
+    const ctxScaled = createCanvas({ map, scale: 5 });
 
-    downloadLink.appendChild(canvas);
+    drawMap(ctxBuffer, map);
+    ctxScaled.drawImage(ctxBuffer.canvas, 0, 0);
+
+    const downloadLink = createDownloadLink(ctxBuffer, index);
+
+    downloadLink.appendChild(ctxScaled.canvas);
     document.body.appendChild(downloadLink);
   }
 }
 
-function createCanvas(map) {
+function createCanvas({ map, scale = 1 }) {
   const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  canvas.width = map.width * scale;
+  canvas.height = map.height * scale;
+  ctx.scale(scale, scale);
+  ctx.imageSmoothingEnabled = false; // pixelated
 
-  canvas.width = map.width;
-  canvas.height = map.height;
-
-  putImageData(canvas, map);
-
-  return canvas;
+  return ctx;
 }
 
-function putImageData(canvas, map) {
+function drawMap(ctx, map) {
   const data = new Uint8ClampedArray(
     map.tiles.flatMap((tile) => tileColors.get(tile) ?? FallbackColor)
   );
 
-  canvas.getContext("2d").putImageData(new ImageData(data, map.width), 0, 0);
+  ctx.putImageData(new ImageData(data, map.width), 0, 0);
 }
 
-function createDownloadLink(canvas, index) {
+function createDownloadLink(ctx, index) {
   const anchor = document.createElement("a");
+  anchor.classList.add("canvas-link");
 
-  anchor.href = canvas.toDataURL();
+  anchor.href = ctx.canvas.toDataURL();
   anchor.download = (index + 1).toString().padStart(2, "0");
 
   return anchor;
