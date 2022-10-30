@@ -29,11 +29,19 @@ const p1directionSprites = {
   [Direction.Up]: p1TankMoveUp,
   [Direction.Down]: p1TankMoveDown,
 };
+
 const bulletDirectionSprites = {
   [Direction.Left]: bulletLeft,
   [Direction.Right]: bulletRight,
   [Direction.Up]: bulletUp,
   [Direction.Down]: bulletDown,
+};
+
+const bulletDirectionSize = {
+  [Direction.Left]: [1, 2],
+  [Direction.Right]: [1, 2],
+  [Direction.Up]: [2, 1],
+  [Direction.Down]: [2, 1],
 };
 // todo(vmyshko): extract?
 function posToPx(pos) {
@@ -41,8 +49,6 @@ function posToPx(pos) {
 }
 
 class MovingObj {
-  width = 2;
-  height = 2;
   #isMoving = false;
 
   set isMoving(value) {
@@ -51,12 +57,14 @@ class MovingObj {
   get isMoving() {
     return this.#isMoving;
   }
-  constructor({ posX = 0, posY = 0, directionSprites }) {
+  constructor({ posX = 0, posY = 0, directionSprites, width, height }) {
     this.posX = posX;
     this.posY = posY;
     this.directionSprites = directionSprites;
     this.direction = Direction.Up;
     this.isMoving = false;
+    this.width = width;
+    this.height = height;
   }
 
   draw(ctx, timestamp) {
@@ -247,6 +255,8 @@ export function GameScene({ onExit }) {
     posX: 12,
     posY: 12,
     directionSprites: p1directionSprites,
+    width: 2,
+    height: 2,
   });
 
   const tankCtrl = new Controller({
@@ -260,6 +270,8 @@ export function GameScene({ onExit }) {
     posX: 12,
     posY: 12,
     directionSprites: bulletDirectionSprites,
+    width: 1,
+    height: 2,
   });
 
   const bulletCtrl = new Controller({
@@ -278,8 +290,15 @@ export function GameScene({ onExit }) {
         if (event.repeat) break;
 
         (async () => {
-          for (let i = 0; i <= 20; i++) {
-            await bulletCtrl.startMove(p1tank.direction);
+          const [bulletWidth, bulletHeight] =
+            bulletDirectionSize[p1tank.direction];
+          bullet1.width = bulletWidth;
+          bullet1.height = bulletHeight;
+          bullet1.posX = p1tank.posX;
+          bullet1.posY = p1tank.posY;
+          const bulletDirection = p1tank.direction;
+          for (let i = 0; i <= 30; i++) {
+            await bulletCtrl.startMove(bulletDirection);
           }
         })();
         break;
