@@ -1,5 +1,5 @@
 import { Grid } from "../components/grid.js";
-import { MapDrawer } from "../components/mapData.js";
+import { MapDrawer, pathlessBlocks } from "../components/mapData.js";
 import {
   bgSprite,
   tankSpriteDown,
@@ -30,14 +30,21 @@ function posToPx(pos) {
 }
 
 class Tank {
+  width = 2;
+  height = 2;
+
   constructor({ posX = 0, posY = 0 } = {}) {
     this.posX = posX;
     this.posY = posY;
 
     this.direction = TankDirection.Up;
+    this.isMoving = false;
   }
 
   draw(ctx, timestamp) {
+    // todo(vmyshko): play move anim if moving?
+    // todo(vmyshko): play move anim/sound?
+
     const currentSprite = directionSprites[this.direction];
 
     const [x, y] = [this.posX, this.posY].map(posToPx);
@@ -53,6 +60,7 @@ class Tank {
   }
 }
 
+// todo(vmyshko): extract, bind to main game loop (draw)
 class Sleeper {
   static #queue = new Set();
 
@@ -96,30 +104,74 @@ class Sleeper {
 
 class Controller {
   #movableItem = null;
+  #mapData = null;
 
-  isMoving = false;
-
-  constructor(movableItem) {
+  constructor({ movableItem, mapData }) {
     this.#movableItem = movableItem;
+    this.#mapData = mapData;
     this.x = posToPx(this.#movableItem.posX);
     this.y = posToPx(this.#movableItem.posY);
   }
 
+  // todo(vmyshko): rename args
+  checkCollision({ destX, destY, sizeX = 1, sizeY = 1 }) {
+    // todo(vmyshko): optimize checks // excl. out-of-bounds (and remove .getTileId then)
+    for (let col = destX; col < destX + sizeX; col++) {
+      for (let row = destY; row < destY + sizeY; row++) {
+        const tileId = this.#mapData.getTileId(col, row);
+
+        // todo(vmyshko): return collided col,row?
+        if (pathlessBlocks.includes(tileId)) return true;
+      }
+    }
+
+    return false;
+  }
+
   async startMove(direction) {
-    if (this.isMoving) return;
-    this.isMoving = true;
-    tankMove.volume = 0.05;
-    // tankMove.play();
+    if (this.#movableItem.isMoving) return;
+    this.#movableItem.isMoving = true;
+
     this.#movableItem.direction = direction;
     // prevent if already moving, wait till end?
 
+    const destShifts = {
+      [TankDirection.Up]: [0, -1],
+      [TankDirection.Down]: [0, 1],
+      [TankDirection.Left]: [-1, 0],
+      [TankDirection.Right]: [1, 0],
+    };
+    // get DEST coords
+    const [dx, dy] = destShifts[direction];
+
+    const [nextPosX, nextPosY] = [
+      this.#movableItem.posX + dx,
+      this.#movableItem.posY + dy,
+    ];
+    // todo(vmyshko): check collision?
+
+    const isCollided = this.checkCollision({
+      destX: nextPosX,
+      destY: nextPosY,
+      sizeX: this.#movableItem.width,
+      sizeY: this.#movableItem.height,
+    });
+
+    if (isCollided) {
+      // todo(vmyshko): do not move
+      //release next move
+      this.#movableItem.isMoving = false;
+      return;
+    }
+
+    // real move
+    this.#movableItem.posX = nextPosX;
+    this.#movableItem.posY = nextPosY;
+
+    // animate move
     // get FROM coords
     this.x = posToPx(this.#movableItem.posX);
     this.y = posToPx(this.#movableItem.posY);
-
-    // get DEST coords
-
-    // this.destX =
 
     const stepPx = 1;
     for (
@@ -131,8 +183,6 @@ class Controller {
       switch (direction) {
         case TankDirection.Up: {
           this.y -= stepPx;
-          //  tankMove.play();
-
           break;
         }
         case TankDirection.Down: {
@@ -152,29 +202,8 @@ class Controller {
       await new Sleeper(10);
     }
 
-    // real move
-    switch (direction) {
-      case TankDirection.Up: {
-        this.#movableItem.posY--;
-        break;
-      }
-      case TankDirection.Down: {
-        this.#movableItem.posY++;
-        break;
-      }
-      case TankDirection.Left: {
-        this.#movableItem.posX--;
-        break;
-      }
-      case TankDirection.Right: {
-        this.#movableItem.posX++;
-        break;
-      }
-    }
-
     //release next move
-    this.isMoving = false;
-    // tankMove.pause();
+    this.#movableItem.isMoving = false;
   }
 
   update(timestamp) {
@@ -184,7 +213,7 @@ class Controller {
   draw(ctx, timestamp) {
     this.#movableItem.drawXY(ctx, this.x, this.y);
 
-    if (this.isMoving) {
+    if (this.#movableItem.isMoving) {
       const [x, y] = [this.#movableItem.posX, this.#movableItem.posY].map(
         posToPx
       );
@@ -203,7 +232,7 @@ export function GameScene({ onExit }) {
 
   const p1tank = new Tank({ posX: 12, posY: 12 });
 
-  const ctrl1 = new Controller(p1tank);
+  const ctrl1 = new Controller({ movableItem: p1tank, mapData: sharedMapData });
 
   const keysPressed = new Set();
   function onKeyDown(event) {
@@ -253,16 +282,6 @@ export function GameScene({ onExit }) {
         }
       } //switch
     } //for
-
-    // check collisions
-    // bounds
-    // move to tank? or map class?
-    p1tank.posX = Math.max(0, p1tank.posX);
-    // todo(vmyshko): -2 depends on obj size in fragments
-    p1tank.posX = Math.min(fieldSize - 2, p1tank.posX);
-
-    p1tank.posY = Math.max(0, p1tank.posY);
-    p1tank.posY = Math.min(fieldSize - 2, p1tank.posY);
   }
 
   function onKeyUp(event) {
@@ -309,7 +328,9 @@ export function GameScene({ onExit }) {
 
       //debug keys
       ctx.font = ctx.font.replace(/\d+px/, "6px");
+      ctx.fillStyle = "black";
       ctx.fillText("keys: " + [...keysPressed.values()], 50, 235);
+      ctx.fillText("tank: " + `${p1tank.posX},${p1tank.posY}`, 150, 235);
     },
   };
 }
