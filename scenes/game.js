@@ -148,6 +148,11 @@ class Controller {
       this.#movableItem.posX + dx,
       this.#movableItem.posY + dy,
     ];
+
+    // get FROM coords
+    this.x = posToPx(this.#movableItem.posX);
+    this.y = posToPx(this.#movableItem.posY);
+
     // todo(vmyshko): check collision?
 
     const isCollided = this.checkCollision({
@@ -169,10 +174,6 @@ class Controller {
     this.#movableItem.posY = nextPosY;
 
     // animate move
-    // get FROM coords
-    this.x = posToPx(this.#movableItem.posX);
-    this.y = posToPx(this.#movableItem.posY);
-
     const stepPx = 1;
     for (
       let animFrameIndex = 0;

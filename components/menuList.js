@@ -14,10 +14,6 @@ export const onOff = [
 globalThis.debug = false; //show debug rects
 
 export class ListItem {
-  get width() {
-    return this.text.length * this.textSprite.charSize;
-  }
-
   constructor({ text, itemColor, onSelect = noOp }) {
     this.text = text;
     this.onSelect = onSelect;
@@ -26,6 +22,9 @@ export class ListItem {
       text: text,
       fillStyle: itemColor,
     });
+
+    this.minWidth = this.text.length * this.textSprite.charSize;
+    this.width = this.minWidth;
   }
 
   select() {
@@ -49,19 +48,7 @@ export class ListItemSelect extends ListItem {
     return this.options[this.selectedIndex].value;
   }
 
-  get width() {
-    return this.#maxOptionLength * this.textSprite.charSize + this.valueOffsetX;
-  }
-
-  constructor({
-    text,
-    itemColor,
-    valueColor,
-    value,
-    options,
-    valueOffsetX,
-    onSelect,
-  }) {
+  constructor({ text, itemColor, valueColor, value, options, onSelect }) {
     super({ text, itemColor, onSelect });
     if (typeof options[0] === "object") {
       this.options = options;
@@ -82,15 +69,17 @@ export class ListItemSelect extends ListItem {
       ...this.options.map((option) => option.text.length)
     );
 
-    this.valueOffsetX =
-      valueOffsetX ?? (text.length + 1) * this.textSprite.charSize;
+    this.minWidth =
+      (this.text.length + 1 + this.#maxOptionLength) * this.textSprite.charSize;
+
+    this.width = this.minWidth;
 
     this.optionSprites = this.options.map(
       (option) =>
         new TextSprite({
           text: option.text,
           fillStyle: valueColor ?? itemColor,
-          textAlign: TextAlign.right
+          textAlign: TextAlign.right,
         })
     );
   }
@@ -105,7 +94,7 @@ export class ListItemSelect extends ListItem {
 
     const selectedOption = this.optionSprites[this.selectedIndex];
 
-    selectedOption.draw(ctx, x + this.valueOffsetX, y);
+    selectedOption.draw(ctx, x + this.width, y);
   }
 }
 
@@ -128,6 +117,10 @@ export class MenuList {
     this.textAlign = textAlign;
 
     this.width = Math.max(...this.listItems.map((item) => item.width));
+
+    this.listItems.forEach((item) => {
+      item.width = this.width;
+    });
 
     this.#textAlignOffsetX =
       -1 *

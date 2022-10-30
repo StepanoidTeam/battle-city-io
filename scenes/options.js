@@ -51,16 +51,12 @@ export function initOptions({ onExit }) {
     ["skin", ["1985", "reskin"], (value) => (config.options.skin = value)],
   ];
 
-  const maxTextLength = Math.max(...optionsText.map(([text]) => text.length));
-  const maxYesNoLength = Math.max(...yesNo.map((text) => text.text.length));
-
   const optionsItems = optionsText.map(([text, options, onSelect]) => {
     return new ListItemSelect({
       text,
       itemColor: `${greyColor}`,
       valueColor: `${whiteColor}`,
       options,
-      valueOffsetX: (maxTextLength + maxYesNoLength + 1) * 8,
       onSelect,
     });
   });
