@@ -7,6 +7,7 @@ import {
 } from "../consts.js";
 import { ListItem, MenuList } from "../components/menuList.js";
 import {
+  tankAnimationCursor,
   tankCursor,
   wallBrickRedFullSprite,
 } from "../components/sprite-lib.js";
@@ -62,7 +63,7 @@ export function initMainMenu({ onStartGame, onOptions, onEditor }) {
 
   const mainMenuList = new MenuList({
     listItems: settingsItems,
-    cursor: tankCursor,
+    cursor: tankAnimationCursor,
     lineSpacing: 8,
     cursorOffsetX: 24,
     textAlign: TextAlign.center,

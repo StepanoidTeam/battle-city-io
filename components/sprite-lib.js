@@ -1,4 +1,5 @@
 import { blockSize, tiles } from "../consts.js";
+import { AnimationSprite } from "./animationSprite.js";
 import { Sprite } from "./sprite.js";
 
 function loadImage(src) {
@@ -48,6 +49,7 @@ export const tankSpriteDown = createSprite({ spritemap, x: 4, y: 0 });
 export const tankSpriteRight = createSprite({ spritemap, x: 6, y: 0 });
 
 export const tankCursor = createSprite({ spritemap, x: 6, y: 0 });
+export const tankCursor2 = createSprite({ spritemap, x: 7, y: 0 });
 export const enemyTank1 = createSprite({ spritemap, x: 8, y: 4 });
 export const enemyTank2 = createSprite({ spritemap, x: 8, y: 5 });
 export const enemyTank3 = createSprite({ spritemap, x: 8, y: 6 });
@@ -91,3 +93,16 @@ export const tileSprites = new Map([
   [tiles.Ice, iceSprite8],
   [tiles.Brick, brickSprite8],
 ]);
+
+export const explosionStart = createSprite({ spritemap, x: 18, y: 5 });
+export const explosionMiddle = createSprite({ spritemap, x: 19, y: 5 });
+export const explosionEnd = createSprite({ spritemap, x: 20, y: 5 });
+export const tankAnimationCursor = new AnimationSprite({
+  sprites: [
+    tankCursor,
+    tankCursor2,
+    explosionStart,
+    explosionMiddle,
+    explosionEnd,
+  ],
+});
