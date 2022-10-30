@@ -2,10 +2,11 @@ import { Grid } from "../components/grid.js";
 import { MapDrawer, pathlessBlocks } from "../components/mapData.js";
 import {
   bgSprite,
-  tankSpriteDown,
-  tankSpriteLeft,
-  tankSpriteRight,
-  tankSpriteUp,
+  p1TankMoveDown,
+  p1TankMoveLeft,
+  p1TankMoveRight,
+  p1TankMoveUp,
+  
 } from "../components/sprite-lib.js";
 import { blockSize, fragmentSize, nesHeight, nesWidth } from "../consts.js";
 import { sharedMapData } from "./_shared.js";
@@ -17,11 +18,11 @@ const TankDirection = {
   Down: "down",
 };
 
-const directionSprites = {
-  [TankDirection.Left]: tankSpriteLeft,
-  [TankDirection.Right]: tankSpriteRight,
-  [TankDirection.Up]: tankSpriteUp,
-  [TankDirection.Down]: tankSpriteDown,
+const p1directionSprites = {
+  [TankDirection.Left]: p1TankMoveLeft,
+  [TankDirection.Right]: p1TankMoveRight,
+  [TankDirection.Up]: p1TankMoveUp,
+  [TankDirection.Down]: p1TankMoveDown,
 };
 
 // todo(vmyshko): extract?
@@ -32,7 +33,17 @@ function posToPx(pos) {
 class Tank {
   width = 2;
   height = 2;
+  #isMoving = false;
 
+  set isMoving(value) {
+    this.#isMoving = value;
+    Object.values(p1directionSprites).forEach((animSprite) => {
+      value ? animSprite.start() : animSprite.stop();
+    });
+  }
+  get isMoving() {
+    return this.#isMoving;
+  }
   constructor({ posX = 0, posY = 0 } = {}) {
     this.posX = posX;
     this.posY = posY;
@@ -45,7 +56,7 @@ class Tank {
     // todo(vmyshko): play move anim if moving?
     // todo(vmyshko): play move anim/sound?
 
-    const currentSprite = directionSprites[this.direction];
+    const currentSprite = p1directionSprites[this.direction];
 
     const [x, y] = [this.posX, this.posY].map(posToPx);
 
@@ -54,7 +65,7 @@ class Tank {
 
   // todo(vmyshko): temp for controller/mover
   drawXY(ctx, x, y) {
-    const currentSprite = directionSprites[this.direction];
+    const currentSprite = p1directionSprites[this.direction];
 
     currentSprite.draw(ctx, x, y, blockSize, blockSize);
   }

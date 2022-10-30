@@ -2,6 +2,7 @@ import { sleep } from "../helpers.js";
 
 export class AnimationSprite {
   #currentSpriteIndex = 0;
+  #isPlaying = false;
   get sWidth() {
     return this.currentSprite.sWidth;
   }
@@ -17,17 +18,22 @@ export class AnimationSprite {
   }
 
   async start() {
-    while (true) {
+    this.#isPlaying = true;
+    while (this.#isPlaying) {
       this.#currentSpriteIndex =
         (this.#currentSpriteIndex + 1) % this.sprites.length;
 
       await sleep(this.frameDurationMs);
     }
   }
+
   get currentSprite() {
     return this.sprites[this.#currentSpriteIndex];
   }
-  stop() {}
+
+  stop() {
+    this.#isPlaying = false;
+  }
 
   draw(...args) {
     this.currentSprite.draw(...args);

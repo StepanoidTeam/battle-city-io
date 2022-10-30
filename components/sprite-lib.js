@@ -43,10 +43,15 @@ export const fgShadowSprite = new Sprite({
 
 export const emptySprite = createSprite({ spritemap, x: 21, y: 0 });
 
-export const tankSpriteUp = createSprite({ spritemap, x: 0, y: 0 });
-export const tankSpriteLeft = createSprite({ spritemap, x: 2, y: 0 });
-export const tankSpriteDown = createSprite({ spritemap, x: 4, y: 0 });
-export const tankSpriteRight = createSprite({ spritemap, x: 6, y: 0 });
+export const p1tankSpriteUp1 = createSprite({ spritemap, x: 0, y: 0 });
+export const p1tankSpriteLeft1 = createSprite({ spritemap, x: 2, y: 0 });
+export const p1tankSpriteDown1 = createSprite({ spritemap, x: 4, y: 0 });
+export const p1tankSpriteRight1 = createSprite({ spritemap, x: 6, y: 0 });
+
+export const p1tankSpriteUp2 = createSprite({ spritemap, x: 1, y: 0 });
+export const p1tankSpriteLeft2 = createSprite({ spritemap, x: 3, y: 0 });
+export const p1tankSpriteDown2 = createSprite({ spritemap, x: 5, y: 0 });
+export const p1tankSpriteRight2 = createSprite({ spritemap, x: 7, y: 0 });
 
 export const tankCursor = createSprite({ spritemap, x: 6, y: 0 });
 export const tankCursor2 = createSprite({ spritemap, x: 7, y: 0 });
@@ -105,4 +110,16 @@ export const tankAnimationCursor = new AnimationSprite({
     explosionMiddle,
     explosionEnd,
   ],
+});
+export const p1TankMoveUp = new AnimationSprite({
+  sprites: [p1tankSpriteUp1, p1tankSpriteUp2],
+});
+export const p1TankMoveLeft = new AnimationSprite({
+  sprites: [p1tankSpriteLeft1, p1tankSpriteLeft2],
+});
+export const p1TankMoveDown = new AnimationSprite({
+  sprites: [p1tankSpriteDown1, p1tankSpriteDown2],
+});
+export const p1TankMoveRight = new AnimationSprite({
+  sprites: [p1tankSpriteRight1, p1tankSpriteRight2],
 });
