@@ -12,9 +12,9 @@ function loadImage(src) {
 }
 
 // load images
-export const spritemap = await loadImage("../sprites/spritemap2.png");
-const background = await loadImage("../sprites/reskin/bg_no-shadow.png");
-const foreground = await loadImage("../sprites/reskin/fg_shadow.png");
+export const spritemap = await loadImage("sprites/spritemap2.png");
+const background = await loadImage("sprites/reskin/bg_no-shadow.png");
+const foreground = await loadImage("sprites/reskin/fg_shadow.png");
 
 // create sprites
 
