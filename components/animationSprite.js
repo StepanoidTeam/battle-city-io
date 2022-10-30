@@ -20,10 +20,19 @@ export class AnimationSprite {
   async start() {
     this.#isPlaying = true;
     while (this.#isPlaying) {
-      this.#currentSpriteIndex =
-        (this.#currentSpriteIndex + 1) % this.sprites.length;
+      // #1 full-anim approach
+      for (let frame = 0; frame < this.sprites.length; frame++) {
+        this.#currentSpriteIndex = frame;
 
-      await sleep(this.frameDurationMs);
+        await sleep(this.frameDurationMs);
+      }
+
+      // #2 stop-as-is approach
+
+      // this.#currentSpriteIndex =
+      //   (this.#currentSpriteIndex + 1) % this.sprites.length;
+
+      // await sleep(this.frameDurationMs);
     }
   }
 
@@ -35,7 +44,12 @@ export class AnimationSprite {
     this.#isPlaying = false;
   }
 
-  draw(...args) {
-    this.currentSprite.draw(...args);
+  draw(ctx, x, y, ...args) {
+    this.currentSprite.draw(ctx, x, y, ...args);
+
+    if (debug) {
+      ctx.fillStyle = "white";
+      ctx.fillText("frame:" + this.#currentSpriteIndex, x, y);
+    }
   }
 }

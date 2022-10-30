@@ -6,9 +6,10 @@ import {
   p1TankMoveLeft,
   p1TankMoveRight,
   p1TankMoveUp,
-  
+  tankAnimationDurationMs,
 } from "../components/sprite-lib.js";
 import { blockSize, fragmentSize, nesHeight, nesWidth } from "../consts.js";
+import { sleep } from "../helpers.js";
 import { sharedMapData } from "./_shared.js";
 
 const TankDirection = {
@@ -184,6 +185,7 @@ class Controller {
     this.#movableItem.posX = nextPosX;
     this.#movableItem.posY = nextPosY;
 
+    const tankMoveDurationMs = tankAnimationDurationMs / 2;
     // animate move
     const stepPx = 1;
     for (
@@ -192,26 +194,15 @@ class Controller {
       animFrameIndex++
     ) {
       // anim move
-      switch (direction) {
-        case TankDirection.Up: {
-          this.y -= stepPx;
-          break;
-        }
-        case TankDirection.Down: {
-          this.y += stepPx;
-          break;
-        }
-        case TankDirection.Left: {
-          this.x -= stepPx;
-          break;
-        }
-        case TankDirection.Right: {
-          this.x += stepPx;
-          break;
-        }
-      }
+      const [dx, dy] = destShifts[direction];
 
-      await new Sleeper(10);
+      const [destX, destY] = [this.x + dx * stepPx, this.y + dy * stepPx];
+
+      this.x = destX;
+      this.y = destY;
+
+      if (animFrameIndex === fragmentSize - 1) break;
+      await sleep(tankMoveDurationMs);
     }
 
     //release next move
@@ -224,14 +215,6 @@ class Controller {
 
   draw(ctx, timestamp) {
     this.#movableItem.drawXY(ctx, this.x, this.y);
-
-    if (this.#movableItem.isMoving) {
-      const [x, y] = [this.#movableItem.posX, this.#movableItem.posY].map(
-        posToPx
-      );
-      ctx.strokeStyle = "crimson";
-      ctx.strokeRect(x, y, blockSize, blockSize);
-    }
   }
 }
 
@@ -339,7 +322,6 @@ export function GameScene({ onExit }) {
       gameParts.forEach((component) => component(ctx, timestamp));
 
       //debug keys
-      ctx.font = ctx.font.replace(/\d+px/, "6px");
       ctx.fillStyle = "black";
       ctx.fillText("keys: " + [...keysPressed.values()], 50, 235);
       ctx.fillText("tank: " + `${p1tank.posX},${p1tank.posY}`, 150, 235);

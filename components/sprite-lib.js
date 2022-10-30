@@ -111,15 +111,21 @@ export const tankAnimationCursor = new AnimationSprite({
     explosionEnd,
   ],
 });
+
+export const tankAnimationDurationMs = 100;
 export const p1TankMoveUp = new AnimationSprite({
   sprites: [p1tankSpriteUp1, p1tankSpriteUp2],
+  durationMs: tankAnimationDurationMs,
 });
 export const p1TankMoveLeft = new AnimationSprite({
   sprites: [p1tankSpriteLeft1, p1tankSpriteLeft2],
+  durationMs: tankAnimationDurationMs,
 });
 export const p1TankMoveDown = new AnimationSprite({
   sprites: [p1tankSpriteDown1, p1tankSpriteDown2],
+  durationMs: tankAnimationDurationMs,
 });
 export const p1TankMoveRight = new AnimationSprite({
   sprites: [p1tankSpriteRight1, p1tankSpriteRight2],
+  durationMs: tankAnimationDurationMs,
 });
