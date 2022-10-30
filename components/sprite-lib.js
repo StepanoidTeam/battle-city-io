@@ -82,6 +82,37 @@ export const woodSprite = createSprite({ spritemap, x: 17, y: 2 });
 export const wallBrickRedFullSprite = createSprite({ spritemap, x: 18, y: 14 });
 //
 //
+
+export const bulletUp = new Sprite({
+  spritemap,
+  sx: 320,
+  sy: 48,
+  sWidth: 16,
+  sHeight: 8,
+});
+export const bulletLeft = new Sprite({
+  spritemap,
+  sx: 336,
+  sy: 48,
+  sWidth: 8,
+  sHeight: 16,
+});
+export const bulletDown = new Sprite({
+  spritemap,
+  sx: 320,
+  sy: 40,
+  sWidth: 16,
+  sHeight: 8,
+});
+export const bulletRight = new Sprite({
+  spritemap,
+  sx: 344,
+  sy: 48,
+  sWidth: 8,
+  sHeight: 16,
+});
+
+//
 export const emptySprite8 = createSprite({ spritemap, x: 42, y: 0, size: 8 });
 
 export const woodSprite8 = createSprite({ spritemap, x: 34, y: 4, size: 8 });

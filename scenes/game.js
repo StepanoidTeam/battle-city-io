@@ -2,6 +2,10 @@ import { Grid } from "../components/grid.js";
 import { MapDrawer, pathlessBlocks } from "../components/mapData.js";
 import {
   bgSprite,
+  bulletDown,
+  bulletLeft,
+  bulletRight,
+  bulletUp,
   p1TankMoveDown,
   p1TankMoveLeft,
   p1TankMoveRight,
@@ -12,7 +16,7 @@ import { blockSize, fragmentSize, nesHeight, nesWidth } from "../consts.js";
 import { sleep } from "../helpers.js";
 import { sharedMapData } from "./_shared.js";
 
-const TankDirection = {
+const Direction = {
   Left: "left",
   Right: "right",
   Up: "up",
@@ -20,36 +24,38 @@ const TankDirection = {
 };
 
 const p1directionSprites = {
-  [TankDirection.Left]: p1TankMoveLeft,
-  [TankDirection.Right]: p1TankMoveRight,
-  [TankDirection.Up]: p1TankMoveUp,
-  [TankDirection.Down]: p1TankMoveDown,
+  [Direction.Left]: p1TankMoveLeft,
+  [Direction.Right]: p1TankMoveRight,
+  [Direction.Up]: p1TankMoveUp,
+  [Direction.Down]: p1TankMoveDown,
 };
-
+const bulletDirectionSprites = {
+  [Direction.Left]: bulletLeft,
+  [Direction.Right]: bulletRight,
+  [Direction.Up]: bulletUp,
+  [Direction.Down]: bulletDown,
+};
 // todo(vmyshko): extract?
 function posToPx(pos) {
   return pos * fragmentSize + blockSize;
 }
 
-class Tank {
+class MovingObj {
   width = 2;
   height = 2;
   #isMoving = false;
 
   set isMoving(value) {
     this.#isMoving = value;
-    Object.values(p1directionSprites).forEach((animSprite) => {
-      value ? animSprite.start() : animSprite.stop();
-    });
   }
   get isMoving() {
     return this.#isMoving;
   }
-  constructor({ posX = 0, posY = 0 } = {}) {
+  constructor({ posX = 0, posY = 0, directionSprites }) {
     this.posX = posX;
     this.posY = posY;
-
-    this.direction = TankDirection.Up;
+    this.directionSprites = directionSprites;
+    this.direction = Direction.Up;
     this.isMoving = false;
   }
 
@@ -57,7 +63,7 @@ class Tank {
     // todo(vmyshko): play move anim if moving?
     // todo(vmyshko): play move anim/sound?
 
-    const currentSprite = p1directionSprites[this.direction];
+    const currentSprite = this.directionSprites[this.direction];
 
     const [x, y] = [this.posX, this.posY].map(posToPx);
 
@@ -66,9 +72,9 @@ class Tank {
 
   // todo(vmyshko): temp for controller/mover
   drawXY(ctx, x, y) {
-    const currentSprite = p1directionSprites[this.direction];
+    const currentSprite = this.directionSprites[this.direction];
 
-    currentSprite.draw(ctx, x, y, blockSize, blockSize);
+    currentSprite.draw(ctx, x, y, currentSprite.sWidth, currentSprite.sHeight);
   }
 }
 
@@ -113,16 +119,17 @@ class Sleeper {
     }
   }
 }
-
 class Controller {
   #movableItem = null;
   #mapData = null;
 
-  constructor({ movableItem, mapData }) {
+  constructor({ movableItem, mapData, isAnimated, moveDurationMs }) {
     this.#movableItem = movableItem;
     this.#mapData = mapData;
     this.x = posToPx(this.#movableItem.posX);
     this.y = posToPx(this.#movableItem.posY);
+    this.isAnimated = isAnimated;
+    this.moveDurationMs = moveDurationMs;
   }
 
   // todo(vmyshko): rename args
@@ -142,16 +149,25 @@ class Controller {
 
   async startMove(direction) {
     if (this.#movableItem.isMoving) return;
+    const toggledAnimation = (value) => {
+      if (this.isAnimated) {
+        Object.values(this.#movableItem.directionSprites).forEach(
+          (animSprite) => {
+            value ? animSprite.start() : animSprite.stop();
+          }
+        );
+      }
+    };
     this.#movableItem.isMoving = true;
-
+    toggledAnimation(this.#movableItem.isMoving);
     this.#movableItem.direction = direction;
     // prevent if already moving, wait till end?
 
     const destShifts = {
-      [TankDirection.Up]: [0, -1],
-      [TankDirection.Down]: [0, 1],
-      [TankDirection.Left]: [-1, 0],
-      [TankDirection.Right]: [1, 0],
+      [Direction.Up]: [0, -1],
+      [Direction.Down]: [0, 1],
+      [Direction.Left]: [-1, 0],
+      [Direction.Right]: [1, 0],
     };
     // get DEST coords
     const [dx, dy] = destShifts[direction];
@@ -178,6 +194,8 @@ class Controller {
       // todo(vmyshko): do not move
       //release next move
       this.#movableItem.isMoving = false;
+      toggledAnimation(this.#movableItem.isMoving);
+
       return;
     }
 
@@ -185,7 +203,6 @@ class Controller {
     this.#movableItem.posX = nextPosX;
     this.#movableItem.posY = nextPosY;
 
-    const tankMoveDurationMs = tankAnimationDurationMs / 2;
     // animate move
     const stepPx = 1;
     for (
@@ -202,11 +219,12 @@ class Controller {
       this.y = destY;
 
       if (animFrameIndex === fragmentSize - 1) break;
-      await sleep(tankMoveDurationMs);
+      await sleep(this.moveDurationMs);
     }
 
     //release next move
     this.#movableItem.isMoving = false;
+    toggledAnimation(this.#movableItem.isMoving);
   }
 
   update(timestamp) {
@@ -225,9 +243,32 @@ export function GameScene({ onExit }) {
 
   const fieldSize = 26; // todo(vmyshko): get  from actual map
 
-  const p1tank = new Tank({ posX: 12, posY: 12 });
+  const p1tank = new MovingObj({
+    posX: 12,
+    posY: 12,
+    directionSprites: p1directionSprites,
+  });
 
-  const ctrl1 = new Controller({ movableItem: p1tank, mapData: sharedMapData });
+  const tankCtrl = new Controller({
+    movableItem: p1tank,
+    mapData: sharedMapData,
+    isAnimated: true,
+    moveDurationMs: tankAnimationDurationMs / 2,
+  });
+
+  const bullet1 = new MovingObj({
+    posX: 12,
+    posY: 12,
+    directionSprites: bulletDirectionSprites,
+    moveDurationMs: 80,
+  });
+
+  const bulletCtrl = new Controller({
+    movableItem: bullet1,
+    mapData: sharedMapData,
+    isAnimated: false,
+    moveDurationMs: 1000,
+  });
 
   const keysPressed = new Set();
   function onKeyDown(event) {
@@ -236,7 +277,7 @@ export function GameScene({ onExit }) {
     switch (event.code) {
       case "KeyZ": {
         if (event.repeat) break;
-        //fire
+        bulletCtrl.startMove(p1tank.direction);
 
         break;
       }
@@ -256,24 +297,26 @@ export function GameScene({ onExit }) {
     for (let key of keysPressed) {
       switch (key) {
         case "ArrowUp": {
-          ctrl1.startMove(TankDirection.Up);
+          tankCtrl.startMove(Direction.Up);
 
           break;
         }
         case "ArrowDown": {
-          ctrl1.startMove(TankDirection.Down);
+          tankCtrl.startMove(Direction.Down);
 
           break;
         }
         case "ArrowLeft": {
-          ctrl1.startMove(TankDirection.Left);
+          tankCtrl.startMove(Direction.Left);
 
           break;
         }
         case "ArrowRight": {
-          ctrl1.startMove(TankDirection.Right);
+          tankCtrl.startMove(Direction.Right);
 
           break;
+        }
+        case "KeyZ": {
         }
       } //switch
     } //for
@@ -300,8 +343,9 @@ export function GameScene({ onExit }) {
     (ctx) => grid.draw(ctx),
 
     // (...args) => p1tank.draw(...args),
-    (...args) => ctrl1.draw(...args)
+    (...args) => tankCtrl.draw(...args),
     // (...args) => p2tank.draw(...args)
+    (...args) => bulletCtrl.draw(...args)
   );
 
   return {
@@ -320,7 +364,6 @@ export function GameScene({ onExit }) {
       update(timestamp);
 
       gameParts.forEach((component) => component(ctx, timestamp));
-
       //debug keys
       ctx.fillStyle = "black";
       ctx.fillText("keys: " + [...keysPressed.values()], 50, 235);
