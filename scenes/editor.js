@@ -66,7 +66,11 @@ export function getEditor({ onExit }) {
   let menuIsOpen = false;
 
   //controls
-
+  const optionsOffsetX =
+    ("grid size".length +
+      Math.max(...["8px", "16px"].map((text) => text.length)) +
+      1) *
+    8;
   const itemColor = "white";
   const contextMenu = new MenuList({
     cursor: new TextSprite({ text: ">" }),
@@ -94,6 +98,8 @@ export function getEditor({ onExit }) {
         itemColor,
         valueColor: "gold",
         options: onOff,
+        valueOffsetX: optionsOffsetX,
+
         onSelect: (value) => {
           grid.hidden = !value;
         },
@@ -106,6 +112,8 @@ export function getEditor({ onExit }) {
           { value: 1, text: "8px" },
           { value: 2, text: "16px" },
         ],
+        valueOffsetX: optionsOffsetX,
+
         onSelect: (value) => {
           cursorStep = value;
           grid.setCellSize(value);

@@ -1,5 +1,11 @@
 import { blackColor, greyColor, redColor, whiteColor } from "../consts.js";
-import { ListItem, ListItemSelect, MenuList, onOff, yesNo } from "../components/menuList.js";
+import {
+  ListItem,
+  ListItemSelect,
+  MenuList,
+  onOff,
+  yesNo,
+} from "../components/menuList.js";
 import { nesWidth } from "../consts.js";
 import {
   tankCursor,
@@ -11,7 +17,6 @@ import { config } from "../config.js";
 // todo(vmyshko): extract?
 
 export function initOptions({ onExit }) {
- 
   //max items 10
   const optionsText = [
     [
@@ -47,6 +52,7 @@ export function initOptions({ onExit }) {
   ];
 
   const maxTextLength = Math.max(...optionsText.map(([text]) => text.length));
+  const maxYesNoLength = Math.max(...yesNo.map((text) => text.text.length));
 
   const optionsItems = optionsText.map(([text, options, onSelect]) => {
     return new ListItemSelect({
@@ -54,7 +60,7 @@ export function initOptions({ onExit }) {
       itemColor: `${greyColor}`,
       valueColor: `${whiteColor}`,
       options,
-      valueOffsetX: (maxTextLength + 1) * 8,
+      valueOffsetX: (maxTextLength + maxYesNoLength + 1) * 8,
       onSelect,
     });
   });
@@ -66,7 +72,6 @@ export function initOptions({ onExit }) {
       onSelect: onExit,
     })
   );
-
   const menuOptions = new MenuList({
     listItems: optionsItems,
     cursor: tankCursor,
@@ -88,7 +93,6 @@ export function initOptions({ onExit }) {
       case "KeyZ": {
         if (event.repeat) break;
         menuOptions.select();
-        console.log(config);
         break;
       }
       case "Escape": {
