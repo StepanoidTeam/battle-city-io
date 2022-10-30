@@ -260,14 +260,13 @@ export function GameScene({ onExit }) {
     posX: 12,
     posY: 12,
     directionSprites: bulletDirectionSprites,
-    moveDurationMs: 80,
   });
 
   const bulletCtrl = new Controller({
     movableItem: bullet1,
     mapData: sharedMapData,
     isAnimated: false,
-    moveDurationMs: 1000,
+    moveDurationMs: 8,
   });
 
   const keysPressed = new Set();
@@ -277,8 +276,12 @@ export function GameScene({ onExit }) {
     switch (event.code) {
       case "KeyZ": {
         if (event.repeat) break;
-        bulletCtrl.startMove(p1tank.direction);
 
+        (async () => {
+          for (let i = 0; i <= 20; i++) {
+            await bulletCtrl.startMove(p1tank.direction);
+          }
+        })();
         break;
       }
 
