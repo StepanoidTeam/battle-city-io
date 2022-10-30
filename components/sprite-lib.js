@@ -43,15 +43,15 @@ export const fgShadowSprite = new Sprite({
 
 export const emptySprite = createSprite({ spritemap, x: 21, y: 0 });
 
-export const p1tankSpriteUp1 = createSprite({ spritemap, x: 0, y: 0 });
-export const p1tankSpriteLeft1 = createSprite({ spritemap, x: 2, y: 0 });
-export const p1tankSpriteDown1 = createSprite({ spritemap, x: 4, y: 0 });
-export const p1tankSpriteRight1 = createSprite({ spritemap, x: 6, y: 0 });
+export const p1tankSpriteUp1 = createSprite({ spritemap, x: 0, y: 17 });
+export const p1tankSpriteLeft1 = createSprite({ spritemap, x: 2, y: 17 });
+export const p1tankSpriteDown1 = createSprite({ spritemap, x: 4, y: 17});
+export const p1tankSpriteRight1 = createSprite({ spritemap, x: 6, y: 17 });
 
-export const p1tankSpriteUp2 = createSprite({ spritemap, x: 1, y: 0 });
-export const p1tankSpriteLeft2 = createSprite({ spritemap, x: 3, y: 0 });
-export const p1tankSpriteDown2 = createSprite({ spritemap, x: 5, y: 0 });
-export const p1tankSpriteRight2 = createSprite({ spritemap, x: 7, y: 0 });
+export const p1tankSpriteUp2 = createSprite({ spritemap, x: 1, y: 17 });
+export const p1tankSpriteLeft2 = createSprite({ spritemap, x: 3, y: 17 });
+export const p1tankSpriteDown2 = createSprite({ spritemap, x: 5, y: 17 });
+export const p1tankSpriteRight2 = createSprite({ spritemap, x: 7, y: 17 });
 
 export const tankCursor = createSprite({ spritemap, x: 6, y: 0 });
 export const tankCursor2 = createSprite({ spritemap, x: 7, y: 0 });
@@ -100,7 +100,7 @@ export const bulletLeft = new Sprite({
 export const bulletDown = new Sprite({
   spritemap,
   sx: 320,
-  sy: 40,
+  sy: 56,
   sWidth: 16,
   sHeight: 8,
 });
