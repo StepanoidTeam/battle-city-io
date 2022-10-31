@@ -1,3 +1,4 @@
+import { AnimationSprite } from "../components/animationSprite.js";
 import { Grid } from "../components/grid.js";
 import { MapDrawer, pathlessBlocks } from "../components/mapData.js";
 import {
@@ -6,6 +7,9 @@ import {
   bulletLeft,
   bulletRight,
   bulletUp,
+  explosionEnd,
+  explosionMiddle,
+  explosionStart,
   p1TankMoveDown,
   p1TankMoveLeft,
   p1TankMoveRight,
@@ -145,7 +149,6 @@ class Controller {
     this.y = posToPx(this.#movableItem.posY);
     this.isAnimated = isAnimated;
     this.moveDurationMs = moveDurationMs;
-
     this.onCollision = onCollision;
   }
 
@@ -219,7 +222,6 @@ class Controller {
       //release next move
       this.#movableItem.isMoving = false;
       toggledAnimation(this.#movableItem.isMoving);
-
       this.onCollision(collisions);
       return;
     }
@@ -242,7 +244,6 @@ class Controller {
 
       this.x = destX;
       this.y = destY;
-
       if (animFrameIndex === fragmentSize - 1) break;
       await sleep(this.moveDurationMs);
     }
@@ -308,10 +309,25 @@ export function GameScene({ onExit }) {
           moveDurationMs: 8,
           onCollision: (collisions) => {
             gameParts.delete(drawExactBullet);
+            gameParts.add(drawAnim);
+
             //gen explosion? destroy blocks?
             // console.log(collisions);
           },
         });
+
+        const explosion = new AnimationSprite({
+          sprites: [explosionStart, explosionMiddle, explosionEnd],
+          durationMs:3000
+        });
+
+        function drawAnim(ctx) {
+          explosion.draw(ctx, bulletCtrl.x, bulletCtrl.y);
+          if (explosion.animPlyedOnce) {
+            explosion.stop();
+            gameParts.delete(drawAnim);
+          }
+        }
 
         function drawExactBullet(...args) {
           bulletCtrl.draw(...args);

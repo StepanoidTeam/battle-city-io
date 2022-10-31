@@ -10,11 +10,12 @@ export class AnimationSprite {
     return this.currentSprite.sHeight;
   }
 
-  constructor({ sprites, durationMs = 1000 }) {
+  constructor({ sprites, durationMs = 1000, animPlyedOnce = false }) {
     this.sprites = sprites;
     this.durationMs = durationMs;
     this.start();
     this.frameDurationMs = this.durationMs / this.sprites.length;
+    this.animPlyedOnce = animPlyedOnce;
   }
 
   async start() {
@@ -26,7 +27,7 @@ export class AnimationSprite {
 
         await sleep(this.frameDurationMs);
       }
-
+      this.animPlyedOnce = true;
       // #2 stop-as-is approach
 
       // this.#currentSpriteIndex =
