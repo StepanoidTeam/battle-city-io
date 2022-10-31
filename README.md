@@ -3,7 +3,6 @@
 battle city from nes remake
 
 # Demo
-## bob labs - editor
 
 https://stepanoidteam.github.io/battle-city-io/
 
