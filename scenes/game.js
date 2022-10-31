@@ -318,12 +318,12 @@ export function GameScene({ onExit }) {
 
         const explosion = new AnimationSprite({
           sprites: [explosionStart, explosionMiddle, explosionEnd],
-          durationMs:3000
+          durationMs: 3000,
         });
 
         function drawAnim(ctx) {
           explosion.draw(ctx, bulletCtrl.x, bulletCtrl.y);
-          if (explosion.animPlyedOnce) {
+          if (explosion.playOnce) {
             explosion.stop();
             gameParts.delete(drawAnim);
           }
