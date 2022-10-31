@@ -127,32 +127,48 @@ class Sleeper {
     }
   }
 }
+
 class Controller {
   #movableItem = null;
   #mapData = null;
 
-  constructor({ movableItem, mapData, isAnimated, moveDurationMs }) {
+  constructor({
+    movableItem,
+    mapData,
+    isAnimated,
+    moveDurationMs,
+    onCollision = () => {},
+  }) {
     this.#movableItem = movableItem;
     this.#mapData = mapData;
     this.x = posToPx(this.#movableItem.posX);
     this.y = posToPx(this.#movableItem.posY);
     this.isAnimated = isAnimated;
     this.moveDurationMs = moveDurationMs;
+
+    this.onCollision = onCollision;
   }
 
   // todo(vmyshko): rename args
   checkCollision({ destX, destY, sizeX = 1, sizeY = 1 }) {
     // todo(vmyshko): optimize checks // excl. out-of-bounds (and remove .getTileId then)
+    const collisions = [];
     for (let col = destX; col < destX + sizeX; col++) {
       for (let row = destY; row < destY + sizeY; row++) {
         const tileId = this.#mapData.getTileId(col, row);
 
         // todo(vmyshko): return collided col,row?
-        if (pathlessBlocks.includes(tileId)) return true;
+
+        if (pathlessBlocks.includes(tileId)) {
+          collisions.push({ tileId, col, row });
+        }
       }
     }
 
-    return false;
+    return {
+      isCollided: collisions.length > 0,
+      collisions: collisions,
+    };
   }
 
   async startMove(direction) {
@@ -191,7 +207,7 @@ class Controller {
 
     // todo(vmyshko): check collision?
 
-    const isCollided = this.checkCollision({
+    const { isCollided, collisions } = this.checkCollision({
       destX: nextPosX,
       destY: nextPosY,
       sizeX: this.#movableItem.width,
@@ -204,6 +220,7 @@ class Controller {
       this.#movableItem.isMoving = false;
       toggledAnimation(this.#movableItem.isMoving);
 
+      this.onCollision(collisions);
       return;
     }
 
@@ -245,9 +262,7 @@ class Controller {
 }
 
 export function GameScene({ onExit }) {
-  let paused = false;
-
-  let gameParts = [];
+  const gameParts = new Set();
 
   const fieldSize = 26; // todo(vmyshko): get  from actual map
 
@@ -266,21 +281,6 @@ export function GameScene({ onExit }) {
     moveDurationMs: tankAnimationDurationMs / 2,
   });
 
-  const bullet1 = new MovingObj({
-    posX: 12,
-    posY: 12,
-    directionSprites: bulletDirectionSprites,
-    width: 1,
-    height: 2,
-  });
-
-  const bulletCtrl = new Controller({
-    movableItem: bullet1,
-    mapData: sharedMapData,
-    isAnimated: false,
-    moveDurationMs: 8,
-  });
-
   const keysPressed = new Set();
   function onKeyDown(event) {
     keysPressed.add(event.code);
@@ -289,14 +289,40 @@ export function GameScene({ onExit }) {
       case "KeyZ": {
         if (event.repeat) break;
 
+        const [bulletWidth, bulletHeight] =
+          bulletDirectionSize[p1tank.direction];
+
+        //create new bullet
+        const bullet1 = new MovingObj({
+          posX: p1tank.posX,
+          posY: p1tank.posY,
+          directionSprites: bulletDirectionSprites,
+          width: bulletWidth,
+          height: bulletHeight,
+        });
+
+        const bulletCtrl = new Controller({
+          movableItem: bullet1,
+          mapData: sharedMapData,
+          isAnimated: false,
+          moveDurationMs: 8,
+          onCollision: (collisions) => {
+            gameParts.delete(drawExactBullet);
+            //gen explosion? destroy blocks?
+            // console.log(collisions);
+          },
+        });
+
+        function drawExactBullet(...args) {
+          bulletCtrl.draw(...args);
+        }
+
+        gameParts.add(drawExactBullet);
+
+        // start moving
         (async () => {
-          const [bulletWidth, bulletHeight] =
-            bulletDirectionSize[p1tank.direction];
-          bullet1.width = bulletWidth;
-          bullet1.height = bulletHeight;
-          bullet1.posX = p1tank.posX;
-          bullet1.posY = p1tank.posY;
           const bulletDirection = p1tank.direction;
+          // todo(vmyshko): until collide or timeout?
           for (let i = 0; i <= 30; i++) {
             await bulletCtrl.startMove(bulletDirection);
           }
@@ -359,20 +385,13 @@ export function GameScene({ onExit }) {
   });
   const mapDrawer = new MapDrawer({ mapData: sharedMapData });
 
-  gameParts.push(
-    drawBg,
-    (ctx) => mapDrawer.draw(ctx),
-    (ctx) => grid.draw(ctx),
-
-    // (...args) => p1tank.draw(...args),
-    (...args) => tankCtrl.draw(...args),
-    // (...args) => p2tank.draw(...args)
-    (...args) => bulletCtrl.draw(...args)
-  );
+  gameParts.add(drawBg);
+  gameParts.add((ctx) => mapDrawer.draw(ctx));
+  gameParts.add((ctx) => grid.draw(ctx));
+  gameParts.add((...args) => tankCtrl.draw(...args));
 
   return {
     load() {
-      paused = false;
       document.addEventListener("keyup", onKeyUp);
       document.addEventListener("keydown", onKeyDown);
     },
