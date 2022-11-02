@@ -1,4 +1,4 @@
-import { initialPointOfViewY, nesWidth } from "./consts.js";
+import { nesHeight, nesWidth } from "./consts.js";
 import { wallBrickFullSprite } from "./sprite-lib.js";
 import { TextAlign, TextSprite } from "./textSprite.js";
 
@@ -8,7 +8,7 @@ export function initGameOverScene({ onExit }) {
     lineSpacing: 8,
     fillStyle: wallBrickFullSprite.getPattern(),
     multiplyText: 7,
-    textAlign: TextAlign.right,
+    textAlign: TextAlign.center,
     shadowFill: true,
   });
 
@@ -17,7 +17,11 @@ export function initGameOverScene({ onExit }) {
   // let startTime = null;
   return {
     draw(ctx, timestamp) {
-      gameOver.draw(ctx, nesWidth - 16, initialPointOfViewY * 4);
+      gameOver.draw(
+        ctx,
+        nesWidth / 2,
+        (nesHeight - (gameOver.charSize * 2 + 8)) / 2
+      );
     },
     // update(timestamp) {
     //   if (!startTime) startTime = timestamp; //1 startTime ??= timestamp

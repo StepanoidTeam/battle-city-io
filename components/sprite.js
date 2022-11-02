@@ -1,7 +1,6 @@
 // general sprite class to draw any sprite
 
 export class Sprite {
-  defaultSpriteSize = 16;
   static createSprite(spritemap, x, y, spriteSize) {
     return new Sprite({
       // spritemap
@@ -10,9 +9,6 @@ export class Sprite {
       sy: spriteSize * y,
       sHeight: spriteSize,
       sWidth: spriteSize,
-      // canvas
-      width: spriteSize,
-      height: spriteSize,
     });
   }
   constructor({
@@ -22,7 +18,6 @@ export class Sprite {
     sy = 0,
     sWidth = spritemap.width,
     sHeight = spritemap.height,
- 
   }) {
     // todo(vmyshko): replace to [x,y]-like arrays?
 
@@ -35,13 +30,7 @@ export class Sprite {
     this.spritemap = spritemap;
   }
 
-  draw(
-    ctx,
-    x,
-    y,
-    width = this.defaultSpriteSize,
-    height = this.defaultSpriteSize
-  ) {
+  draw(ctx, x, y, width, height) {
     ctx.drawImage(
       this.spritemap,
       // spritemap
@@ -52,17 +41,15 @@ export class Sprite {
       // canvas
       x,
       y,
-      width,
-      height
+      width ?? this.sWidth,
+      height ?? this.sHeight
     );
   }
-  getPattern({
-    width = this.defaultSpriteSize,
-    height = this.defaultSpriteSize,
-  } = {}) {
+
+  getPattern({ width, height } = {}) {
     const ctxBuffer = document.createElement("canvas").getContext("2d");
-    ctxBuffer.canvas.width = width;
-    ctxBuffer.canvas.height = height;
+    ctxBuffer.canvas.width = width ?? this.sWidth;
+    ctxBuffer.canvas.height = height ?? this.sHeight;
     ctxBuffer.imageSmoothingEnabled = false; // pixelated
     this.draw(ctxBuffer, 0, 0);
     const pattern = ctxBuffer.createPattern(ctxBuffer.canvas, "repeat");

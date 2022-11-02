@@ -3,13 +3,12 @@
 battle city from nes remake
 
 # Demo
-## bob labs - editor
 
-https://stepanoidteam.github.io/battle-city-io/labs
+https://stepanoidteam.github.io/battle-city-io/
 
 ## pavlo maps-loader
 
-https://stepanoidteam.github.io/battle-city-io/map-loader/
+https://stepanoidteam.github.io/battle-city-io/maps/1990/preview.html
 
 # Resources
 

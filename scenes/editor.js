@@ -1,55 +1,43 @@
-import { cellSize, nesHeight, nesWidth } from "../consts.js";
-import { ListItem, ListItemSelect, MenuList } from "../components/menuList.js";
+import {
+  blockSize,
+  cellSize,
+  fieldOffsetX,
+  fieldOffsetY,
+  fragmentSize,
+  nesHeight,
+  nesWidth,
+  tiles,
+} from "../consts.js";
+import {
+  ListItem,
+  ListItemSelect,
+  MenuList,
+  onOff,
+} from "../components/menuList.js";
 import {
   bgSprite,
-  emptySprite,
-  iceSprite,
-  blockSize,
-  tankSprite3,
-  wallBrickDownSprite,
-  wallBrickFullSprite,
-  wallBrickLeftSprite,
-  wallBrickRightSprite,
-  wallBrickTopSprite,
-  wallStoneDownSprite,
-  wallStoneFullSprite,
-  wallStoneLeftSprite,
-  wallStoneRightSprite,
-  wallStoneTopSprite,
-  waterSprite,
-  woodSprite,
-  woodSprite8,
-  waterSprite8,
-  stoneSprite8,
-  brickSprite8,
-  iceSprite8,
-  emptySprite8,
+  fgShadowSprite,
+  tileSprites,
 } from "../components/sprite-lib.js";
 import { TextSprite } from "../components/textSprite.js";
+import { Grid } from "../components/grid.js";
+import { MapDrawer } from "../components/mapData.js";
+import { sharedMapData } from "./_shared.js";
 
-export function getEditorScene({ onExit }) {
+export function getEditor({ onExit }) {
   function drawBg(ctx) {
     bgSprite.draw(ctx, 0, 0, nesWidth, nesHeight);
   }
 
+  function drawFg(ctx) {
+    fgShadowSprite.draw(ctx, 0, 0, nesWidth, nesHeight);
+  }
   //
-  const fieldMatrix = [];
+
   const [cols, rows] = [26, 26]; // field size in cells
 
-  function initMap() {
-    for (let row = 0; row < rows; row++) {
-      fieldMatrix[row] = [];
-      for (let col = 0; col < cols; col++) {
-        fieldMatrix[row][col] = 0;
-      }
-    }
-  }
-
-  function clearMap() {
-    initMap();
-  }
   function saveMap() {
-    const jsonMap = JSON.stringify(fieldMatrix);
+    const jsonMap = JSON.stringify(sharedMapData.fieldMatrix);
 
     console.log(jsonMap);
   }
@@ -61,62 +49,17 @@ export function getEditorScene({ onExit }) {
 
       if (!Array.isArray(mapObj)) throw Error("not an array");
 
-      fieldMatrix.splice(0);
-      fieldMatrix.push(...mapObj);
+      sharedMapData.fieldMatrix.splice(0);
+      sharedMapData.fieldMatrix.push(...mapObj);
     } catch (error) {
       alert(`bad data: ${error}`);
     }
   }
-  function drawField(ctx) {
-    for (let row = 0; row < rows; row++) {
-      for (let col = 0; col < cols; col++) {
-        const toolIndex = fieldMatrix[row][col];
 
-        const tool = tools[toolIndex];
-
-        if (!tool) continue;
-        tool.draw(
-          ctx,
-          row * fragmentSize + fieldOffsetX,
-          col * fragmentSize + fieldOffsetY,
-          fragmentSize,
-          fragmentSize
-        );
-      }
-    }
-  }
-
-  const tools = [
-    // emptySprite,
-    emptySprite8,
-    /* wallBrickRightSprite,
-    wallBrickDownSprite,
-    wallBrickLeftSprite,
-    wallBrickTopSprite,
-
-    wallBrickFullSprite,
-
-    wallStoneRightSprite,
-    wallStoneDownSprite,
-    wallStoneLeftSprite,
-    wallStoneTopSprite,
-
-    wallStoneFullSprite,
-
-    waterSprite,
-    woodSprite,
-    iceSprite,*/
-    woodSprite8,
-    waterSprite8,
-    stoneSprite8,
-    brickSprite8,
-    iceSprite8,
-  ];
-
-  initMap();
+  const tools = Object.values(tiles);
 
   let [cursorPosX, cursorPosY] = [0, 0]; //x,y
-  let currentTool = 1;
+  let currentToolIndex = 1;
   let paintKeyDown = false;
   let cursorStep = 1;
   let cursorSize = 2;
@@ -134,7 +77,7 @@ export function getEditorScene({ onExit }) {
       new ListItem({
         text: "clear",
         itemColor,
-        onSelect: () => clearMap(),
+        onSelect: () => sharedMapData.clearMap(),
       }),
       new ListItem({
         text: "load",
@@ -150,18 +93,22 @@ export function getEditorScene({ onExit }) {
         text: "show grid",
         itemColor,
         valueColor: "gold",
-        options: ["on", "off"],
+        options: onOff,
         onSelect: (value) => {
-          showGrid = value === "on";
+          grid.hidden = !value;
         },
       }),
       new ListItemSelect({
         text: "grid size",
         itemColor,
         valueColor: "gold",
-        options: ["8px", "16px"],
-        onSelect: (value, index) => {
-          cursorStep = [1, 2][index];
+        options: [
+          { value: 1, text: "8px" },
+          { value: 2, text: "16px" },
+        ],
+        onSelect: (value) => {
+          cursorStep = value;
+          grid.setCellSize(value);
         },
       }),
       new ListItem({
@@ -225,15 +172,8 @@ export function getEditorScene({ onExit }) {
       case "KeyZ": {
         if (event.repeat) break;
         paintKeyDown = true;
-        //  if (fieldMatrix[cursorPosX][cursorPosY] === currentTool) {
-        if (currentTool === tools.length - 1) {
-          currentTool = 0;
-        } else {
-          currentTool++;
-        }
+        currentToolIndex = (currentToolIndex + 1) % tools.length;
 
-        // currentTool = (currentTool + 1) % tools.length
-        //  }
         break;
       }
 
@@ -241,10 +181,10 @@ export function getEditorScene({ onExit }) {
         if (event.repeat) break;
         paintKeyDown = true;
         // if (fieldMatrix[cursorPosX][cursorPosY] === currentTool) {
-        if (currentTool === 0) {
-          currentTool = tools.length - 1;
+        if (currentToolIndex === 0) {
+          currentToolIndex = tools.length - 1;
         } else {
-          currentTool--;
+          currentToolIndex--;
         }
         //  }
         break;
@@ -274,8 +214,9 @@ export function getEditorScene({ onExit }) {
     if (paintKeyDown) {
       for (let cursorPartX = 0; cursorPartX < cursorSize; cursorPartX++) {
         for (let cursorPartY = 0; cursorPartY < cursorSize; cursorPartY++) {
-          fieldMatrix[cursorPosX + cursorPartX][cursorPosY + cursorPartY] =
-            currentTool;
+          sharedMapData.fieldMatrix[cursorPosX + cursorPartX][
+            cursorPosY + cursorPartY
+          ] = tools[currentToolIndex];
         }
       }
     }
@@ -290,37 +231,15 @@ export function getEditorScene({ onExit }) {
     }
   }
 
-  const fragmentSize = blockSize / 2;
-  const [fieldOffsetX, fieldOffsetY] = [blockSize, blockSize];
-
-  let showGrid = true;
-  function drawGrid(ctx) {
-    if (!showGrid) return;
-
-    ctx.strokeStyle = "rgba(0,0,0,0.2)";
-    ctx.beginPath();
-    //columns
-    for (let col = 0; col <= cols / cursorStep; col++) {
-      ctx.moveTo(col * fragmentSize * cursorStep + fieldOffsetX, fieldOffsetY);
-      ctx.lineTo(
-        col * fragmentSize * cursorStep + fieldOffsetX,
-        cols * fragmentSize + fieldOffsetY
-      );
-    }
-    //rows
-    for (let row = 0; row <= rows / cursorStep; row++) {
-      ctx.moveTo(fieldOffsetX, row * fragmentSize * cursorStep + fieldOffsetY);
-      ctx.lineTo(
-        rows * fragmentSize + fieldOffsetX,
-        row * fragmentSize * cursorStep + fieldOffsetY
-      );
-    }
-
-    ctx.stroke();
-  }
-
+  const grid = new Grid({
+    cols,
+    rows,
+    cellSize: cursorStep,
+    fieldOffsetX,
+    fieldOffsetY,
+  });
   function drawCurrentTool(ctx) {
-    const toolSprite = tools[currentTool];
+    const toolSprite = tileSprites.get(tools[currentToolIndex]);
 
     ctx.strokeStyle = "black";
 
@@ -360,13 +279,6 @@ export function getEditorScene({ onExit }) {
         fragmentSize * cursorSize,
         fragmentSize * cursorSize
       );
-      /* tankSprite3.draw(
-        ctx,
-        cursorPosX * fragmentSize + fieldOffsetX,
-        cursorPosY * fragmentSize + fieldOffsetY,
-        fragmentSize * cursorSize,
-        fragmentSize * cursorSize
-      );*/
     }
   }
 
@@ -389,15 +301,18 @@ export function getEditorScene({ onExit }) {
     contextMenu.draw(ctx, menuPosX, menuPosY);
   }
   //drawing
-
+  const mapDrawer = new MapDrawer({ mapData: sharedMapData });
   const editorParts = [
     drawBg,
-    drawField,
+    (ctx) => mapDrawer.draw(ctx),
     drawCursor,
     drawCurrentTool,
-    drawGrid,
+    (ctx) => {
+      grid.draw(ctx);
+    },
 
     drawContextMenu,
+    drawFg,
   ];
 
   return {
