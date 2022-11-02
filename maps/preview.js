@@ -1,3 +1,4 @@
+
 import { tiles } from "../consts.js";
 
 const colors = {
@@ -20,6 +21,7 @@ const tileColors = new Map([
 ]);
 
 const FallbackColor = colors.Magenta;
+
 
 export function preview(maps) {
   for (const [index, map] of maps.entries()) {
@@ -46,6 +48,7 @@ function createCanvas({ map, scale = 1 }) {
 
   return ctx;
 }
+
 
 function drawMap(ctx, map) {
   const data = new Uint8ClampedArray(
