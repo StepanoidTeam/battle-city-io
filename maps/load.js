@@ -3,7 +3,7 @@ import { colorTile } from "./tileColors.js";
 /** Loads map from an image source */
 export async function loadMap(src) {
   const image = await loadImage(src);
-  const context = creatContext(image);
+  const context = createContext(image);
 
   return {
     width: image.width,
@@ -12,7 +12,7 @@ export async function loadMap(src) {
   };
 }
 
-function creatContext(image) {
+function createContext(image) {
   const canvas = document.createElement("canvas");
   const context = canvas.getContext("2d");
 
