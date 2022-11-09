@@ -1,6 +1,6 @@
 import { AnimationSprite } from "../components/animationSprite.js";
 import { Grid } from "../components/grid.js";
-import { MapDrawer, pathlessBlocks } from "../components/mapData.js";
+import { MapData, MapDrawer, pathlessBlocks } from "../components/mapData.js";
 import {
   bgSprite,
   bulletDown,
@@ -16,9 +16,15 @@ import {
   p1TankMoveUp,
   tankAnimationDurationMs,
 } from "../components/sprite-lib.js";
-import { blockSize, fragmentSize, nesHeight, nesWidth } from "../consts.js";
+import {
+  blockSize,
+  defaultMapSize,
+  fragmentSize,
+  localMapKey,
+  nesHeight,
+  nesWidth,
+} from "../consts.js";
 import { sleep } from "../helpers.js";
-import { sharedMapData } from "./_shared.js";
 
 const Direction = {
   Left: "left",
@@ -47,6 +53,18 @@ const bulletDirectionSize = {
   [Direction.Up]: [2, 1],
   [Direction.Down]: [2, 1],
 };
+
+const directionShift = {
+  [Direction.Up]: [0, -1],
+  [Direction.Down]: [0, 1],
+  [Direction.Left]: [-1, 0],
+  [Direction.Right]: [1, 0],
+};
+
+function vectorSum([x1, y1], [x2, y2]) {
+  return [x1 + x2, y1 + y2];
+}
+
 // todo(vmyshko): extract?
 function posToPx(pos) {
   return pos * fragmentSize + blockSize;
@@ -61,11 +79,18 @@ class MovingObj {
   get isMoving() {
     return this.#isMoving;
   }
-  constructor({ posX = 0, posY = 0, directionSprites, width, height }) {
+  constructor({
+    posX = 0,
+    posY = 0,
+    direction,
+    directionSprites,
+    width,
+    height,
+  }) {
     this.posX = posX;
     this.posY = posY;
     this.directionSprites = directionSprites;
-    this.direction = Direction.Up;
+    this.direction = direction;
     this.isMoving = false;
     this.width = width;
     this.height = height;
@@ -190,14 +215,8 @@ class Controller {
     this.#movableItem.direction = direction;
     // prevent if already moving, wait till end?
 
-    const destShifts = {
-      [Direction.Up]: [0, -1],
-      [Direction.Down]: [0, 1],
-      [Direction.Left]: [-1, 0],
-      [Direction.Right]: [1, 0],
-    };
     // get DEST coords
-    const [dx, dy] = destShifts[direction];
+    const [dx, dy] = directionShift[direction];
 
     const [nextPosX, nextPosY] = [
       this.#movableItem.posX + dx,
@@ -238,7 +257,7 @@ class Controller {
       animFrameIndex++
     ) {
       // anim move
-      const [dx, dy] = destShifts[direction];
+      const [dx, dy] = directionShift[direction];
 
       const [destX, destY] = [this.x + dx * stepPx, this.y + dy * stepPx];
 
@@ -265,11 +284,14 @@ class Controller {
 export function GameScene({ onExit }) {
   const gameParts = new Set();
 
+  const mapData = new MapData({ cols: defaultMapSize, rows: defaultMapSize });
+
   const fieldSize = 26; // todo(vmyshko): get  from actual map
 
   const p1tank = new MovingObj({
     posX: 12,
     posY: 12,
+    direction: Direction.Up,
     directionSprites: p1directionSprites,
     width: 2,
     height: 2,
@@ -277,7 +299,7 @@ export function GameScene({ onExit }) {
 
   const tankCtrl = new Controller({
     movableItem: p1tank,
-    mapData: sharedMapData,
+    mapData: mapData,
     isAnimated: true,
     moveDurationMs: tankAnimationDurationMs / 2,
   });
@@ -294,40 +316,58 @@ export function GameScene({ onExit }) {
           bulletDirectionSize[p1tank.direction];
 
         //create new bullet
-        const bullet1 = new MovingObj({
+        const tankBullet = new MovingObj({
           posX: p1tank.posX,
           posY: p1tank.posY,
+          direction: p1tank.direction,
           directionSprites: bulletDirectionSprites,
           width: bulletWidth,
           height: bulletHeight,
         });
 
         const bulletCtrl = new Controller({
-          movableItem: bullet1,
-          mapData: sharedMapData,
+          movableItem: tankBullet,
+          mapData: mapData,
           isAnimated: false,
           moveDurationMs: 8,
           onCollision: (collisions) => {
             gameParts.delete(drawExactBullet);
-            gameParts.add(drawAnim);
 
             //gen explosion? destroy blocks?
             // console.log(collisions);
+
+            // const [bulletShiftX, bulletShiftY] =
+            //   directionShift[tankBullet.direction];
+
+            // const [expX, expY] = [
+            //   tankBullet.posX + bulletShiftX,
+            //   tankBullet.posY + bulletShiftY,
+            // ];
+
+            function drawExplosion(ctx) {
+              explosion.draw(
+                ctx,
+                ...[tankBullet.posX, tankBullet.posY].map(posToPx)
+              );
+            }
+
+            const explosion = new AnimationSprite({
+              sprites: [
+                explosionStart, // todo(vmyshko): fix bug with 1st frame skip
+                explosionStart,
+                explosionMiddle,
+                explosionEnd,
+              ],
+              durationMs: 500,
+              playOnce: true,
+              onStop: () => {
+                gameParts.delete(drawExplosion);
+              },
+            });
+
+            gameParts.add(drawExplosion);
           },
         });
-
-        const explosion = new AnimationSprite({
-          sprites: [explosionStart, explosionMiddle, explosionEnd],
-          durationMs: 3000,
-        });
-
-        function drawAnim(ctx) {
-          explosion.draw(ctx, bulletCtrl.x, bulletCtrl.y);
-          if (explosion.playOnce) {
-            explosion.stop();
-            gameParts.delete(drawAnim);
-          }
-        }
 
         function drawExactBullet(...args) {
           bulletCtrl.draw(...args);
@@ -399,7 +439,7 @@ export function GameScene({ onExit }) {
     rows: fieldSize,
     cellSize: 1,
   });
-  const mapDrawer = new MapDrawer({ mapData: sharedMapData });
+  const mapDrawer = new MapDrawer({ mapData: mapData });
 
   gameParts.add(drawBg);
   gameParts.add((ctx) => mapDrawer.draw(ctx));
@@ -408,6 +448,17 @@ export function GameScene({ onExit }) {
 
   return {
     load() {
+      // todo(vmyshko): load map from ls? or start level 1?
+      const jsonMap = localStorage.getItem(localMapKey);
+
+      if (jsonMap) {
+        mapData.load(jsonMap);
+      } else {
+        // todo(vmyshko): get 1st level, if no edited level in LS
+        // default empty map
+        mapData.init(defaultMapSize, defaultMapSize);
+      }
+
       document.addEventListener("keyup", onKeyUp);
       document.addEventListener("keydown", onKeyDown);
     },
