@@ -22,3 +22,6 @@ export const tiles = {
   Ice: 0x21,
   Brick: 0x22,
 };
+
+export const defaultMapSize = 26;
+export const localMapKey = "jsonMap";

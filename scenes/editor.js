@@ -1,9 +1,11 @@
 import {
   blockSize,
   cellSize,
+  defaultMapSize,
   fieldOffsetX,
   fieldOffsetY,
   fragmentSize,
+  localMapKey,
   nesHeight,
   nesWidth,
   tiles,
@@ -21,8 +23,10 @@ import {
 } from "../components/sprite-lib.js";
 import { TextSprite } from "../components/textSprite.js";
 import { Grid } from "../components/grid.js";
-import { MapDrawer } from "../components/mapData.js";
-import { sharedMapData } from "./_shared.js";
+import { MapData, MapDrawer } from "../components/mapData.js";
+
+const [cols, rows] = [defaultMapSize, defaultMapSize]; // field size in cells
+const mapData = new MapData({ cols, rows });
 
 export function getEditor({ onExit }) {
   function drawBg(ctx) {
@@ -34,10 +38,8 @@ export function getEditor({ onExit }) {
   }
   //
 
-  const [cols, rows] = [26, 26]; // field size in cells
-
   function saveMap() {
-    const jsonMap = JSON.stringify(sharedMapData.fieldMatrix);
+    const jsonMap = mapData.save();
 
     console.log(jsonMap);
   }
@@ -45,12 +47,7 @@ export function getEditor({ onExit }) {
   function loadMap() {
     const jsonMap = prompt("input map as json array", "null");
     try {
-      const mapObj = JSON.parse(jsonMap);
-
-      if (!Array.isArray(mapObj)) throw Error("not an array");
-
-      sharedMapData.fieldMatrix.splice(0);
-      sharedMapData.fieldMatrix.push(...mapObj);
+      mapData.load(jsonMap);
     } catch (error) {
       alert(`bad data: ${error}`);
     }
@@ -77,7 +74,7 @@ export function getEditor({ onExit }) {
       new ListItem({
         text: "clear",
         itemColor,
-        onSelect: () => sharedMapData.clearMap(),
+        onSelect: () => mapData.clearMap(),
       }),
       new ListItem({
         text: "load",
@@ -214,7 +211,7 @@ export function getEditor({ onExit }) {
     if (paintKeyDown) {
       for (let cursorPartX = 0; cursorPartX < cursorSize; cursorPartX++) {
         for (let cursorPartY = 0; cursorPartY < cursorSize; cursorPartY++) {
-          sharedMapData.fieldMatrix[cursorPosX + cursorPartX][
+          mapData.fieldMatrix[cursorPosX + cursorPartX][
             cursorPosY + cursorPartY
           ] = tools[currentToolIndex];
         }
@@ -301,7 +298,7 @@ export function getEditor({ onExit }) {
     contextMenu.draw(ctx, menuPosX, menuPosY);
   }
   //drawing
-  const mapDrawer = new MapDrawer({ mapData: sharedMapData });
+  const mapDrawer = new MapDrawer({ mapData });
   const editorParts = [
     drawBg,
     (ctx) => mapDrawer.draw(ctx),
@@ -317,11 +314,23 @@ export function getEditor({ onExit }) {
 
   return {
     load() {
+      // load cached map
+      const jsonMap = localStorage.getItem(localMapKey);
+      if (jsonMap) {
+        mapData.load(jsonMap);
+      } else {
+        // default empty map
+        mapData.init(defaultMapSize, defaultMapSize);
+      }
+
       menuIsOpen = false;
       document.addEventListener("keyup", onKeyUp);
       document.addEventListener("keydown", onKeyDown);
     },
     unload() {
+      const jsonMap = mapData.save();
+      localStorage.setItem(localMapKey, jsonMap);
+
       document.removeEventListener("keyup", onKeyUp);
       document.removeEventListener("keydown", onKeyDown);
     },
