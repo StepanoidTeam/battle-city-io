@@ -1,5 +1,7 @@
 import { sleep } from "../helpers.js";
 
+const noop = () => {};
+
 export class AnimationSprite {
   #currentSpriteIndex = 0;
   #isPlaying = false;
@@ -10,12 +12,15 @@ export class AnimationSprite {
     return this.currentSprite.sHeight;
   }
 
-  constructor({ sprites, durationMs = 1000, playOnce = false }) {
+  #onStop;
+
+  constructor({ sprites, durationMs = 1000, playOnce = false, onStop = noop }) {
     this.sprites = sprites;
     this.durationMs = durationMs;
     this.start();
     this.frameDurationMs = this.durationMs / this.sprites.length;
     this.playOnce = playOnce;
+    this.#onStop = onStop;
   }
 
   async start() {
@@ -27,7 +32,10 @@ export class AnimationSprite {
 
         await sleep(this.frameDurationMs);
       }
-      this.playOnce = true;
+      if (this.playOnce) {
+        this.stop();
+      }
+
       // #2 stop-as-is approach
 
       // this.#currentSpriteIndex =
@@ -43,6 +51,7 @@ export class AnimationSprite {
 
   stop() {
     this.#isPlaying = false;
+    this.#onStop();
   }
 
   draw(ctx, x, y, ...args) {
