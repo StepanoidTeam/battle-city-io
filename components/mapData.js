@@ -36,6 +36,24 @@ export class MapData {
   clearMap() {
     this.init(this.cols, this.rows);
   }
+
+  save() {
+    const jsonMap = JSON.stringify(this.fieldMatrix);
+
+    return jsonMap;
+  }
+
+  load(jsonMap) {
+    const mapObj = JSON.parse(jsonMap);
+
+    // todo(vmyshko): add other checks?
+
+    if (!Array.isArray(mapObj))
+      throw Error("invalid map string - not an array");
+
+    this.fieldMatrix.splice(0);
+    this.fieldMatrix.push(...mapObj);
+  }
 }
 
 function forEachTile({ mapData, callback }) {
