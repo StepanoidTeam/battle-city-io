@@ -333,22 +333,17 @@ export function GameScene({ onExit }) {
           onCollision: (collisions) => {
             gameParts.delete(drawExactBullet);
 
-            //gen explosion? destroy blocks?
-            // console.log(collisions);
-
-            // const [bulletShiftX, bulletShiftY] =
-            //   directionShift[tankBullet.direction];
-
-            // const [expX, expY] = [
-            //   tankBullet.posX + bulletShiftX,
-            //   tankBullet.posY + bulletShiftY,
-            // ];
+            const minCol = Math.min(
+              ...collisions.map((collision) => collision.col),
+              tankBullet.posX
+            );
+            const minRow = Math.min(
+              ...collisions.map((collision) => collision.row),
+              tankBullet.posY
+            );
 
             function drawExplosion(ctx) {
-              explosion.draw(
-                ctx,
-                ...[tankBullet.posX, tankBullet.posY].map(posToPx)
-              );
+              explosion.draw(ctx, ...[minCol, minRow].map(posToPx));
             }
 
             const explosion = new AnimationSprite({
