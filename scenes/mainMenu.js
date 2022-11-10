@@ -8,7 +8,6 @@ import {
 import { ListItem, MenuList } from "../components/menuList.js";
 import {
   tankAnimationCursor,
-  tankCursor,
   wallBrickRedFullSprite,
 } from "../components/sprite-lib.js";
 import { TextAlign, TextSprite } from "../components/textSprite.js";
@@ -32,8 +31,53 @@ export function initMainMenu({ onStartGame, onOptions, onEditor }) {
     textAlign: TextAlign.center,
   });
 
+  function getRndGameName() {
+    const origParts = ["battle", "city", "tank", "1990"];
+    const trashParts = [
+      "demo",
+      "demon",
+      "reskin",
+      "javascript",
+      "svetlana",
+      "pavlo",
+      "bob",
+      "metal",
+      "max",
+      "returns",
+      "battalion", //!too long
+      "squad",
+      "nemesis",
+      "another",
+      "colorful",
+      "sequel",
+    ];
+    const parts = [...origParts, ...trashParts];
+
+    function shuffle(array) {
+      // todo(vmyshko): should return shuffled copy of an array
+    }
+
+    function sampleSize(array, count = 1) {
+      // todo(vmyshko): should get random item from array, or multiple items if count > 1
+      const arrCopy = Array.from(array);
+
+      const result = [];
+      for (let i = 0; i < count; i++) {
+        const index = Math.floor(Math.random() * array.length);
+        result.push(arrCopy[index]);
+      }
+
+      return result;
+    }
+
+    return sampleSize(parts, 2).join("\n");
+  }
+
+  const titleText = getRndGameName();
+  console.log(titleText);
+
   const header = new TextSprite({
-    text: `BATTLE\nCITY`,
+    text: titleText,
     lineSpacing: 8,
     fillStyle: wallBrickRedFullSprite.getPattern(),
     multiplyText: 4,
