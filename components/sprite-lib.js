@@ -45,7 +45,7 @@ export const emptySprite = createSprite({ spritemap, x: 21, y: 0 });
 
 export const p1tankSpriteUp1 = createSprite({ spritemap, x: 0, y: 17 });
 export const p1tankSpriteLeft1 = createSprite({ spritemap, x: 2, y: 17 });
-export const p1tankSpriteDown1 = createSprite({ spritemap, x: 4, y: 17});
+export const p1tankSpriteDown1 = createSprite({ spritemap, x: 4, y: 17 });
 export const p1tankSpriteRight1 = createSprite({ spritemap, x: 6, y: 17 });
 
 export const p1tankSpriteUp2 = createSprite({ spritemap, x: 1, y: 17 });
@@ -134,13 +134,8 @@ export const explosionStart = createSprite({ spritemap, x: 18, y: 5 });
 export const explosionMiddle = createSprite({ spritemap, x: 19, y: 5 });
 export const explosionEnd = createSprite({ spritemap, x: 20, y: 5 });
 export const tankAnimationCursor = new AnimationSprite({
-  sprites: [
-    tankCursor,
-    tankCursor2,
-    explosionStart,
-    explosionMiddle,
-    explosionEnd,
-  ],
+  sprites: [tankCursor, tankCursor2],
+  durationMs: 150,
 });
 
 export const tankAnimationDurationMs = 100;
