@@ -360,12 +360,7 @@ export function GameScene({ onExit }) {
             }
 
             const explosion = new AnimationSprite({
-              sprites: [
-                explosionStart, // todo(vmyshko): fix bug with 1st frame skip
-                explosionStart,
-                explosionMiddle,
-                explosionEnd,
-              ],
+              sprites: [explosionStart, explosionMiddle, explosionEnd],
               durationMs: 500,
               playOnce: true,
               onStop: () => {

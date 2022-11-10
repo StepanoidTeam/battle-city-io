@@ -17,10 +17,11 @@ export class AnimationSprite {
   constructor({ sprites, durationMs = 1000, playOnce = false, onStop = noop }) {
     this.sprites = sprites;
     this.durationMs = durationMs;
-    this.start();
     this.frameDurationMs = this.durationMs / this.sprites.length;
     this.playOnce = playOnce;
     this.#onStop = onStop;
+
+    this.start();
   }
 
   async start() {
