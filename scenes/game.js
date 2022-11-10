@@ -23,6 +23,7 @@ import {
   localMapKey,
   nesHeight,
   nesWidth,
+  tiles,
 } from "../consts.js";
 import { sleep } from "../helpers.js";
 
@@ -336,6 +337,14 @@ export function GameScene({ onExit }) {
           moveDurationMs: 8,
           onCollision: (collisions) => {
             gameParts.delete(drawExactBullet);
+
+            // destroy blocks
+            collisions
+              .filter((collision) => collision.tileId)
+              .forEach((collision) => {
+                // todo(vmyshko): check for is destroyable first
+                mapData.fieldMatrix[collision.col][collision.row] = tiles.Void;
+              });
 
             const minCol = Math.min(
               ...collisions.map((collision) => collision.col),
