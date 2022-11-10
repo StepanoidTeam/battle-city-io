@@ -200,7 +200,7 @@ class Controller {
   }
 
   async startMove(direction) {
-    if (this.#movableItem.isMoving) return;
+    if (this.#movableItem.isMoving) return false;
     const toggledAnimation = (value) => {
       if (this.isAnimated) {
         Object.values(this.#movableItem.directionSprites).forEach(
@@ -242,7 +242,7 @@ class Controller {
       this.#movableItem.isMoving = false;
       toggledAnimation(this.#movableItem.isMoving);
       this.onCollision(collisions);
-      return;
+      return false;
     }
 
     // real move
@@ -270,6 +270,7 @@ class Controller {
     //release next move
     this.#movableItem.isMoving = false;
     toggledAnimation(this.#movableItem.isMoving);
+    return true;
   }
 
   update(timestamp) {
@@ -302,6 +303,9 @@ export function GameScene({ onExit }) {
     mapData: mapData,
     isAnimated: true,
     moveDurationMs: tankAnimationDurationMs / 2,
+    onCollision: (collisions) => {
+      console.log(collisions);
+    },
   });
 
   const keysPressed = new Set();
@@ -375,7 +379,8 @@ export function GameScene({ onExit }) {
           const bulletDirection = p1tank.direction;
           // todo(vmyshko): until collide or timeout?
           for (let i = 0; i <= 30; i++) {
-            await bulletCtrl.startMove(bulletDirection);
+            const isColided = await bulletCtrl.startMove(bulletDirection);
+            if (!isColided) break;
           }
         })();
         break;
