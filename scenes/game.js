@@ -361,7 +361,7 @@ export function GameScene({ onExit }) {
 
             const explosion = new AnimationSprite({
               sprites: [explosionStart, explosionMiddle, explosionEnd],
-              durationMs: 500,
+              durationMs: 300,
               playOnce: true,
               onStop: () => {
                 gameParts.delete(drawExplosion);
