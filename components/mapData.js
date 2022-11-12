@@ -68,6 +68,12 @@ function forEachTile({ mapData, callback }) {
 }
 
 export const pathlessBlocks = [null, tiles.Brick, tiles.Concrete, tiles.Water];
+export const destroyableBlocks = [
+  null,
+  tiles.Brick,
+  tiles.Concrete,
+  tiles.Forest,
+];
 
 export class MapDrawer {
   constructor({ mapData }) {

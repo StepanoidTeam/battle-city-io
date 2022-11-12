@@ -1,6 +1,11 @@
 import { AnimationSprite } from "../components/animationSprite.js";
 import { Grid } from "../components/grid.js";
-import { MapData, MapDrawer, pathlessBlocks } from "../components/mapData.js";
+import {
+  destroyableBlocks,
+  MapData,
+  MapDrawer,
+  pathlessBlocks,
+} from "../components/mapData.js";
 import {
   bgSprite,
   bulletDown,
@@ -161,16 +166,19 @@ class Sleeper {
 class Controller {
   #movableItem = null;
   #mapData = null;
+  #collidesWith = null;
 
   constructor({
     movableItem,
     mapData,
     isAnimated,
     moveDurationMs,
+    collidesWith,
     onCollision = () => {},
   }) {
     this.#movableItem = movableItem;
     this.#mapData = mapData;
+    this.#collidesWith = collidesWith;
     this.x = posToPx(this.#movableItem.posX);
     this.y = posToPx(this.#movableItem.posY);
     this.isAnimated = isAnimated;
@@ -188,7 +196,7 @@ class Controller {
 
         // todo(vmyshko): return collided col,row?
 
-        if (pathlessBlocks.includes(tileId)) {
+        if (this.#collidesWith.includes(tileId)) {
           collisions.push({ tileId, col, row });
         }
       }
@@ -304,6 +312,7 @@ export function GameScene({ onExit }) {
     mapData: mapData,
     isAnimated: true,
     moveDurationMs: tankAnimationDurationMs / 2,
+    collidesWith: pathlessBlocks,
     onCollision: (collisions) => {
       console.log(collisions);
     },
@@ -332,6 +341,7 @@ export function GameScene({ onExit }) {
 
         const bulletCtrl = new Controller({
           movableItem: tankBullet,
+          collidesWith: destroyableBlocks,
           mapData: mapData,
           isAnimated: false,
           moveDurationMs: 8,
