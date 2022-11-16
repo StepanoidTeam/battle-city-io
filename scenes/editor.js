@@ -24,6 +24,7 @@ import {
 import { TextSprite } from "../components/textSprite.js";
 import { Grid } from "../components/grid.js";
 import { MapData, MapDrawer } from "../components/mapData.js";
+import MapBackground from "../components/mapBackground.js";
 
 const [cols, rows] = [defaultMapSize, defaultMapSize]; // field size in cells
 const mapData = new MapData({ cols, rows });
@@ -299,29 +300,37 @@ export function getEditor({ onExit }) {
   }
   //drawing
   const mapDrawer = new MapDrawer({ mapData });
-  const editorParts = [
-    drawBg,
-    (ctx) => mapDrawer.draw(ctx),
-    drawCursor,
-    drawCurrentTool,
-    (ctx) => {
-      grid.draw(ctx);
-    },
 
-    drawContextMenu,
-    drawFg,
-  ];
+  const editorParts = [];
 
   return {
     load() {
       // load cached map
       const jsonMap = localStorage.getItem(localMapKey);
+
+      const mapBg = new MapBackground({ mapData });
+
       if (jsonMap) {
         mapData.load(jsonMap);
       } else {
         // default empty map
         mapData.init(defaultMapSize, defaultMapSize);
       }
+
+      editorParts.splice(0);
+      editorParts.push(
+        drawBg,
+        (ctx) => mapBg.draw(ctx),
+        (ctx) => mapDrawer.draw(ctx),
+        drawCursor,
+        drawCurrentTool,
+        (ctx) => {
+          grid.draw(ctx);
+        },
+
+        drawContextMenu,
+        drawFg
+      );
 
       menuIsOpen = false;
       document.addEventListener("keyup", onKeyUp);

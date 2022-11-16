@@ -1,5 +1,6 @@
 import { AnimationSprite } from "../components/animationSprite.js";
 import { Grid } from "../components/grid.js";
+import MapBackground from "../components/mapBackground.js";
 import {
   destroyableBlocks,
   forEachTile,
@@ -18,6 +19,7 @@ import {
   explosionEnd,
   explosionMiddle,
   explosionStart,
+  fgShadowSprite,
   p1TankMoveDown,
   p1TankMoveLeft,
   p1TankMoveRight,
@@ -451,86 +453,8 @@ export function GameScene({ onExit }) {
     keysPressed.delete(event.code);
   }
 
-  function initBg() {
-    const ctx = document.createElement("canvas").getContext("2d");
-
-    ctx.canvas.width = nesWidth;
-    ctx.canvas.height = nesHeight;
-
-    forEachTile({
-      mapData,
-      callback: ({ tileId, row, col }) => {
-        //
-
-        if ([tiles.Concrete].includes(tileId)) {
-          //
-
-          const tileType = [
-            mapData.getTileId({ col, row: row - 1 }), //top
-            mapData.getTileId({ col: col + 1, row }), //right
-            mapData.getTileId({ col, row: row + 1 }), //bottom
-            mapData.getTileId({ col: col - 1, row }), //left
-          ]
-            .map((tileId) => +[tiles.Concrete].includes(tileId))
-            .join("");
-
-          const tileTypeSprites = {
-            ["1111"]: bgParts.full,
-            ["0000"]: bgParts.solid,
-
-            ["0111"]: bgParts.top,
-            ["1011"]: bgParts.right,
-            ["1101"]: bgParts.bottom,
-            ["1110"]: bgParts.left,
-
-            ["0011"]: bgParts.topRight,
-            ["1001"]: bgParts.bottomRight,
-            ["1100"]: bgParts.bottomLeft,
-            ["0110"]: bgParts.topLeft,
-
-            ["0101"]: bgParts.topBottom,
-            ["1010"]: bgParts.leftRight,
-
-            ["1000"]: bgParts.notTop,
-            ["0100"]: bgParts.notRight,
-            ["0010"]: bgParts.notBottom,
-            ["0001"]: bgParts.notLeft,
-          };
-
-          const currentSprite = tileTypeSprites[tileType];
-
-          if (!currentSprite) {
-            bgParts.pink.draw(
-              ctx,
-              col * fragmentSize + fieldOffsetX,
-              row * fragmentSize + fieldOffsetY,
-              fragmentSize,
-              fragmentSize
-            );
-
-            return;
-          }
-
-          currentSprite.draw(
-            ctx,
-            col * fragmentSize + fieldOffsetX,
-            row * fragmentSize + fieldOffsetY,
-            fragmentSize,
-            fragmentSize
-          );
-        } else {
-          bgParts.empty.draw(
-            ctx,
-            col * fragmentSize + fieldOffsetX,
-            row * fragmentSize + fieldOffsetY,
-            fragmentSize,
-            fragmentSize
-          );
-        }
-      },
-    });
-
-    return ctx.canvas;
+  function drawFg(ctx) {
+    fgShadowSprite.draw(ctx, 0, 0, nesWidth, nesHeight);
   }
 
   const grid = new Grid({
@@ -553,21 +477,18 @@ export function GameScene({ onExit }) {
         mapData.init(defaultMapSize, defaultMapSize);
       }
 
-      const bgSpriteDynamic = new Sprite({
-        spritemap: initBg(),
-      });
+      const mapBg = new MapBackground({ mapData });
 
       gameParts.clear();
 
       gameParts.add((ctx) => bgFrameSprite.draw(ctx, 0, 0));
 
-      gameParts.add((ctx) =>
-        bgSpriteDynamic.draw(ctx, 0, 0, nesWidth, nesHeight)
-      );
-
+      gameParts.add((ctx) => mapBg.draw(ctx));
       gameParts.add((ctx) => mapDrawer.draw(ctx));
       gameParts.add((ctx) => grid.draw(ctx));
       gameParts.add((...args) => tankCtrl.draw(...args));
+
+      gameParts.add(drawFg);
 
       document.addEventListener("keyup", onKeyUp);
       document.addEventListener("keydown", onKeyDown);
