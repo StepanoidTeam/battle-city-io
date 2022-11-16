@@ -17,7 +17,7 @@ import {
   onOff,
 } from "../components/menuList.js";
 import {
-  bgSprite,
+  bgFrameSprite,
   fgShadowSprite,
   tileSprites,
 } from "../components/sprite-lib.js";
@@ -30,7 +30,7 @@ const mapData = new MapData({ cols, rows });
 
 export function getEditor({ onExit }) {
   function drawBg(ctx) {
-    bgSprite.draw(ctx, 0, 0, nesWidth, nesHeight);
+    bgFrameSprite.draw(ctx, 0, 0, nesWidth, nesHeight);
   }
 
   function drawFg(ctx) {

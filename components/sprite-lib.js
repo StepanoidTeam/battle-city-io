@@ -1,4 +1,4 @@
-import { blockSize, tiles } from "../consts.js";
+import { blockSize, fragmentSize, tiles } from "../consts.js";
 import { AnimationSprite } from "./animationSprite.js";
 import { Sprite } from "./sprite.js";
 
@@ -14,8 +14,10 @@ function loadImage(src) {
 
 // load images
 export const spritemap = await loadImage("sprites/spritemap2.png");
-const background = await loadImage("sprites/reskin/bg_no-shadow.png");
+const background = await loadImage("sprites/reskin/bg01.png");
 const foreground = await loadImage("sprites/reskin/fg_shadow.png");
+const bgSpritemap = await loadImage("sprites/bg-sprite.png");
+const bgFrame = await loadImage("sprites/bg-frame.png");
 
 // create sprites
 
@@ -32,6 +34,10 @@ function createSprite({ spritemap, x, y, size = blockSize }) {
     height: size,
   });
 }
+
+export const bgFrameSprite = new Sprite({
+  spritemap: bgFrame,
+});
 
 export const bgSprite = new Sprite({
   spritemap: background,
