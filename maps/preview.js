@@ -1,4 +1,3 @@
-
 import { tiles } from "../consts.js";
 
 const colors = {
@@ -22,7 +21,6 @@ const tileColors = new Map([
 
 const FallbackColor = colors.Magenta;
 
-
 export function preview(maps) {
   for (const [index, map] of maps.entries()) {
     const ctxBuffer = createCanvas({ map });
@@ -39,16 +37,14 @@ export function preview(maps) {
 }
 
 function createCanvas({ map, scale = 1 }) {
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-  canvas.width = map.width * scale;
-  canvas.height = map.height * scale;
+  const ctx = document.createElement("canvas").getContext("2d");
+  ctx.canvas.width = map.width * scale;
+  ctx.canvas.height = map.height * scale;
   ctx.scale(scale, scale);
   ctx.imageSmoothingEnabled = false; // pixelated
 
   return ctx;
 }
-
 
 function drawMap(ctx, map) {
   const data = new Uint8ClampedArray(
