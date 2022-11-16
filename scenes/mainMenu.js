@@ -15,6 +15,7 @@ import { sleep } from "../helpers.js";
 
 export function initMainMenu({ onStartGame, onOptions, onEditor }) {
   const hightScores = new TextSprite({
+    // todo(vmyshko): use text alignment left/right or pad with spaces
     text: "I-     00  HI-  20000",
     textAlign: TextAlign.center,
   });
