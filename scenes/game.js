@@ -198,7 +198,7 @@ class Controller {
     const collisions = [];
     for (let col = destX; col < destX + sizeX; col++) {
       for (let row = destY; row < destY + sizeY; row++) {
-        const tileId = this.#mapData.getTileId(col, row);
+        const tileId = this.#mapData.getTileId({ col, row });
 
         // todo(vmyshko): return collided col,row?
 
@@ -359,7 +359,7 @@ export function GameScene({ onExit }) {
               .filter((collision) => collision.tileId)
               .forEach((collision) => {
                 // todo(vmyshko): check for is destroyable first
-                mapData.fieldMatrix[collision.col][collision.row] = tiles.Void;
+                mapData.fieldMatrix[collision.row][collision.col] = tiles.Void;
               });
 
             const minCol = Math.min(
@@ -459,24 +459,24 @@ export function GameScene({ onExit }) {
 
     forEachTile({
       mapData,
-      callback: (tileId, row, col) => {
+      callback: ({ tileId, row, col }) => {
         //
 
         if ([tiles.Brick, tiles.Concrete, tiles.Water].includes(tileId)) {
           //
 
-          bgParts.full.draw(
+          currentSprite.draw(
             ctx,
-            row * fragmentSize + fieldOffsetX,
-            col * fragmentSize + fieldOffsetY,
+            col * fragmentSize + fieldOffsetX,
+            row * fragmentSize + fieldOffsetY,
             fragmentSize,
             fragmentSize
           );
         } else {
           bgParts.empty.draw(
             ctx,
-            row * fragmentSize + fieldOffsetX,
-            col * fragmentSize + fieldOffsetY,
+            col * fragmentSize + fieldOffsetX,
+            row * fragmentSize + fieldOffsetY,
             fragmentSize,
             fragmentSize
           );

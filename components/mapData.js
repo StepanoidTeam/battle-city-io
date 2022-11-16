@@ -8,12 +8,12 @@ export class MapData {
    * @param {*} row
    * @returns tileId, or null - if out of bounds
    */
-  getTileId(col, row) {
-    const column = this.fieldMatrix[col];
+  getTileId({ col, row }) {
+    const fieldRow = this.fieldMatrix[row];
 
-    if (!column) return null;
+    if (!fieldRow) return null;
 
-    return column[row] ?? null;
+    return fieldRow[col] ?? null;
   }
 
   fieldMatrix = null;
@@ -62,7 +62,7 @@ export function forEachTile({ mapData, callback }) {
     for (let col = 0; col < cols; col++) {
       const tileId = fieldMatrix[row][col];
 
-      callback(tileId, row, col);
+      callback({ tileId, row, col });
     }
   }
 }
@@ -85,14 +85,14 @@ export class MapDrawer {
   #drawField(ctx) {
     forEachTile({
       mapData: this.mapData,
-      callback: (tileId, row, col) => {
+      callback: ({ tileId, row, col }) => {
         const tileSprite = tileSprites.get(tileId);
 
         if (!tileSprite) return;
         tileSprite.draw(
           ctx,
-          row * fragmentSize + fieldOffsetX,
-          col * fragmentSize + fieldOffsetY,
+          col * fragmentSize + fieldOffsetX,
+          row * fragmentSize + fieldOffsetY,
           fragmentSize,
           fragmentSize
         );
@@ -104,19 +104,19 @@ export class MapDrawer {
     if (globalThis.debug === false) return;
     forEachTile({
       mapData: this.mapData,
-      callback: (tileId, row, col) => {
+      callback: ({ tileId, row, col }) => {
         if (!pathlessBlocks.includes(tileId)) return;
         ctx.strokeStyle = "magenta";
         ctx.strokeRect(
-          row * fragmentSize + fieldOffsetX,
-          col * fragmentSize + fieldOffsetY,
+          col * fragmentSize + fieldOffsetX,
+          row * fragmentSize + fieldOffsetY,
           fragmentSize,
           fragmentSize
         );
         ctx.fillStyle = "rgba(255,0,255,0.2)";
         ctx.fillRect(
-          row * fragmentSize + fieldOffsetX,
-          col * fragmentSize + fieldOffsetY,
+          col * fragmentSize + fieldOffsetX,
+          row * fragmentSize + fieldOffsetY,
           fragmentSize,
           fragmentSize
         );

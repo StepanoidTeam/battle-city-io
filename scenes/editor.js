@@ -177,7 +177,7 @@ export function getEditor({ onExit }) {
       case "KeyX": {
         if (event.repeat) break;
         paintKeyDown = true;
-        // if (fieldMatrix[cursorPosX][cursorPosY] === currentTool) {
+
         if (currentToolIndex === 0) {
           currentToolIndex = tools.length - 1;
         } else {
@@ -211,8 +211,8 @@ export function getEditor({ onExit }) {
     if (paintKeyDown) {
       for (let cursorPartX = 0; cursorPartX < cursorSize; cursorPartX++) {
         for (let cursorPartY = 0; cursorPartY < cursorSize; cursorPartY++) {
-          mapData.fieldMatrix[cursorPosX + cursorPartX][
-            cursorPosY + cursorPartY
+          mapData.fieldMatrix[cursorPosY + cursorPartY][
+            cursorPosX + cursorPartX
           ] = tools[currentToolIndex];
         }
       }
