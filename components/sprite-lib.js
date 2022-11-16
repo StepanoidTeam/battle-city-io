@@ -47,6 +47,111 @@ export const fgShadowSprite = new Sprite({
   spritemap: foreground,
 });
 
+export const bgParts = {
+  //
+  top: createSprite({
+    spritemap: bgSpritemap,
+    size: fragmentSize,
+    x: 0,
+    y: 0,
+  }),
+  right: createSprite({
+    spritemap: bgSpritemap,
+    size: fragmentSize,
+    x: 1,
+    y: 0,
+  }),
+  down: createSprite({
+    spritemap: bgSpritemap,
+    size: fragmentSize,
+    x: 2,
+    y: 0,
+  }),
+  left: createSprite({
+    spritemap: bgSpritemap,
+    size: fragmentSize,
+    x: 3,
+    y: 0,
+  }),
+  //
+  topLeft: createSprite({
+    spritemap: bgSpritemap,
+    size: fragmentSize,
+    x: 0,
+    y: 2,
+  }),
+  downRight: createSprite({
+    spritemap: bgSpritemap,
+    size: fragmentSize,
+    x: 1,
+    y: 2,
+  }),
+  downLeft: createSprite({
+    spritemap: bgSpritemap,
+    size: fragmentSize,
+    x: 2,
+    y: 2,
+  }),
+  topRight: createSprite({
+    spritemap: bgSpritemap,
+    size: fragmentSize,
+    x: 3,
+    y: 2,
+  }),
+  //
+  topDown: createSprite({
+    spritemap: bgSpritemap,
+    size: fragmentSize,
+    x: 0,
+    y: 4,
+  }),
+  leftRight: createSprite({
+    spritemap: bgSpritemap,
+    size: fragmentSize,
+    x: 1,
+    y: 4,
+  }),
+  //
+  empty: createSprite({
+    spritemap: bgSpritemap,
+    size: fragmentSize,
+    x: 2,
+    y: 4,
+  }),
+  //
+  full: createSprite({
+    spritemap: bgSpritemap,
+    size: fragmentSize,
+    x: 3,
+    y: 4,
+  }),
+  //
+  notTop: createSprite({
+    spritemap: bgSpritemap,
+    size: fragmentSize,
+    x: 0,
+    y: 6,
+  }),
+  notBottom: createSprite({
+    spritemap: bgSpritemap,
+    size: fragmentSize,
+    x: 1,
+    y: 6,
+  }),
+  notRight: createSprite({
+    spritemap: bgSpritemap,
+    size: fragmentSize,
+    x: 2,
+    y: 6,
+  }),
+  notLeft: createSprite({
+    spritemap: bgSpritemap,
+    size: fragmentSize,
+    x: 3,
+    y: 6,
+  }),
+};
+
 export const emptySprite = createSprite({ spritemap, x: 21, y: 0 });
 
 export const p1tankSpriteUp1 = createSprite({ spritemap, x: 0, y: 17 });
