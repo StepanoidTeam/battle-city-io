@@ -462,8 +462,54 @@ export function GameScene({ onExit }) {
       callback: ({ tileId, row, col }) => {
         //
 
-        if ([tiles.Brick, tiles.Concrete, tiles.Water].includes(tileId)) {
+        if ([tiles.Concrete].includes(tileId)) {
           //
+
+          const tileType = [
+            mapData.getTileId({ col, row: row - 1 }), //top
+            mapData.getTileId({ col: col + 1, row }), //right
+            mapData.getTileId({ col, row: row + 1 }), //bottom
+            mapData.getTileId({ col: col - 1, row }), //left
+          ]
+            .map((tileId) => +[tiles.Concrete].includes(tileId))
+            .join("");
+
+          const tileTypeSprites = {
+            ["1111"]: bgParts.full,
+            ["0000"]: bgParts.solid,
+
+            ["0111"]: bgParts.top,
+            ["1011"]: bgParts.right,
+            ["1101"]: bgParts.bottom,
+            ["1110"]: bgParts.left,
+
+            ["0011"]: bgParts.topRight,
+            ["1001"]: bgParts.bottomRight,
+            ["1100"]: bgParts.bottomLeft,
+            ["0110"]: bgParts.topLeft,
+
+            ["0101"]: bgParts.topBottom,
+            ["1010"]: bgParts.leftRight,
+
+            ["1000"]: bgParts.notTop,
+            ["0100"]: bgParts.notRight,
+            ["0010"]: bgParts.notBottom,
+            ["0001"]: bgParts.notLeft,
+          };
+
+          const currentSprite = tileTypeSprites[tileType];
+
+          if (!currentSprite) {
+            bgParts.pink.draw(
+              ctx,
+              col * fragmentSize + fieldOffsetX,
+              row * fragmentSize + fieldOffsetY,
+              fragmentSize,
+              fragmentSize
+            );
+
+            return;
+          }
 
           currentSprite.draw(
             ctx,

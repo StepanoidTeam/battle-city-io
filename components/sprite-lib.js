@@ -48,6 +48,12 @@ export const fgShadowSprite = new Sprite({
 });
 
 export const bgParts = {
+  pink: createSprite({
+    spritemap: bgSpritemap,
+    size: fragmentSize,
+    x: 0,
+    y: 1,
+  }),
   //
   top: createSprite({
     spritemap: bgSpritemap,
@@ -61,7 +67,7 @@ export const bgParts = {
     x: 1,
     y: 0,
   }),
-  down: createSprite({
+  bottom: createSprite({
     spritemap: bgSpritemap,
     size: fragmentSize,
     x: 2,
@@ -80,13 +86,13 @@ export const bgParts = {
     x: 0,
     y: 2,
   }),
-  downRight: createSprite({
+  bottomRight: createSprite({
     spritemap: bgSpritemap,
     size: fragmentSize,
     x: 1,
     y: 2,
   }),
-  downLeft: createSprite({
+  bottomLeft: createSprite({
     spritemap: bgSpritemap,
     size: fragmentSize,
     x: 2,
@@ -99,7 +105,7 @@ export const bgParts = {
     y: 2,
   }),
   //
-  topDown: createSprite({
+  topBottom: createSprite({
     spritemap: bgSpritemap,
     size: fragmentSize,
     x: 0,
@@ -124,6 +130,12 @@ export const bgParts = {
     size: fragmentSize,
     x: 3,
     y: 4,
+  }),
+  solid: createSprite({
+    spritemap: bgSpritemap,
+    size: fragmentSize,
+    x: 1,
+    y: 1,
   }),
   //
   notTop: createSprite({
