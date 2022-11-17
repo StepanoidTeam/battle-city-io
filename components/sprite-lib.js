@@ -121,9 +121,35 @@ export const bgParts = {
   empty: createSprite({
     spritemap: bgSpritemap,
     size: fragmentSize,
-    x: 2,
-    y: 4,
+    x: 0,
+    y: 3,
   }),
+  emptyDirts: [
+    createSprite({
+      spritemap: bgSpritemap,
+      size: fragmentSize,
+      x: 1,
+      y: 3,
+    }),
+    createSprite({
+      spritemap: bgSpritemap,
+      size: fragmentSize,
+      x: 2,
+      y: 3,
+    }),
+    createSprite({
+      spritemap: bgSpritemap,
+      size: fragmentSize,
+      x: 3,
+      y: 3,
+    }),
+    createSprite({
+      spritemap: bgSpritemap,
+      size: fragmentSize,
+      x: 4,
+      y: 3,
+    }),
+  ],
   //
   full: createSprite({
     spritemap: bgSpritemap,

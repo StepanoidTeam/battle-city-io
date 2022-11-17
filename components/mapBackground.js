@@ -86,13 +86,31 @@ export default class MapBackground {
             fragmentSize
           );
         } else {
-          bgParts.empty.draw(
-            ctx,
-            col * fragmentSize,
-            row * fragmentSize,
-            fragmentSize,
-            fragmentSize
-          );
+          // 1% to gen dirt
+
+          const dirtProbability = Math.floor((Math.random() * 100) / 3);
+          if (dirtProbability === 0) {
+            const dirtIndex = Math.floor(
+              Math.random() * bgParts.emptyDirts.length
+            );
+            const randomDirt = bgParts.emptyDirts[dirtIndex];
+
+            randomDirt.draw(
+              ctx,
+              col * fragmentSize,
+              row * fragmentSize,
+              fragmentSize,
+              fragmentSize
+            );
+          } else {
+            bgParts.empty.draw(
+              ctx,
+              col * fragmentSize,
+              row * fragmentSize,
+              fragmentSize,
+              fragmentSize
+            );
+          }
         }
       },
     });
