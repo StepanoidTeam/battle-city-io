@@ -3,15 +3,12 @@ import { Grid } from "../components/grid.js";
 import MapBackground from "../components/mapBackground.js";
 import {
   destroyableBlocks,
-  forEachTile,
   MapData,
   MapDrawer,
   pathlessBlocks,
 } from "../components/mapData.js";
 import {
   bgFrameSprite,
-  bgParts,
-  bgSprite,
   bulletDown,
   bulletLeft,
   bulletRight,
@@ -26,12 +23,10 @@ import {
   p1TankMoveUp,
   tankAnimationDurationMs,
 } from "../components/sprite-lib.js";
-import { Sprite } from "../components/sprite.js";
+
 import {
   blockSize,
   defaultMapSize,
-  fieldOffsetX,
-  fieldOffsetY,
   fragmentSize,
   localMapKey,
   nesHeight,

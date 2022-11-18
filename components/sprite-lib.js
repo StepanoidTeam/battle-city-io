@@ -16,12 +16,13 @@ function loadImage(src) {
 export const spritemap = await loadImage("sprites/spritemap2.png");
 const background = await loadImage("sprites/reskin/bg01.png");
 const foreground = await loadImage("sprites/reskin/fg_shadow.png");
-const bgSpritemap = await loadImage("sprites/bg-sprite.png");
+export const bgDirt = await loadImage("sprites/bg-dirt.png");
+export const bgWater = await loadImage("sprites/bg-water.png");
 const bgFrame = await loadImage("sprites/bg-frame.png");
 
 // create sprites
 
-function createSprite({ spritemap, x, y, size = blockSize }) {
+export function createSprite({ spritemap, x, y, size = blockSize }) {
   return new Sprite({
     // spritemap
     spritemap,
@@ -46,149 +47,6 @@ export const bgSprite = new Sprite({
 export const fgShadowSprite = new Sprite({
   spritemap: foreground,
 });
-
-export const bgParts = {
-  pink: createSprite({
-    spritemap: bgSpritemap,
-    size: fragmentSize,
-    x: 0,
-    y: 1,
-  }),
-  //
-  top: createSprite({
-    spritemap: bgSpritemap,
-    size: fragmentSize,
-    x: 0,
-    y: 0,
-  }),
-  right: createSprite({
-    spritemap: bgSpritemap,
-    size: fragmentSize,
-    x: 1,
-    y: 0,
-  }),
-  bottom: createSprite({
-    spritemap: bgSpritemap,
-    size: fragmentSize,
-    x: 2,
-    y: 0,
-  }),
-  left: createSprite({
-    spritemap: bgSpritemap,
-    size: fragmentSize,
-    x: 3,
-    y: 0,
-  }),
-  //
-  topLeft: createSprite({
-    spritemap: bgSpritemap,
-    size: fragmentSize,
-    x: 0,
-    y: 2,
-  }),
-  bottomRight: createSprite({
-    spritemap: bgSpritemap,
-    size: fragmentSize,
-    x: 1,
-    y: 2,
-  }),
-  bottomLeft: createSprite({
-    spritemap: bgSpritemap,
-    size: fragmentSize,
-    x: 2,
-    y: 2,
-  }),
-  topRight: createSprite({
-    spritemap: bgSpritemap,
-    size: fragmentSize,
-    x: 3,
-    y: 2,
-  }),
-  //
-  topBottom: createSprite({
-    spritemap: bgSpritemap,
-    size: fragmentSize,
-    x: 0,
-    y: 4,
-  }),
-  leftRight: createSprite({
-    spritemap: bgSpritemap,
-    size: fragmentSize,
-    x: 1,
-    y: 4,
-  }),
-  //
-  empty: createSprite({
-    spritemap: bgSpritemap,
-    size: fragmentSize,
-    x: 0,
-    y: 3,
-  }),
-  emptyDirts: [
-    createSprite({
-      spritemap: bgSpritemap,
-      size: fragmentSize,
-      x: 1,
-      y: 3,
-    }),
-    createSprite({
-      spritemap: bgSpritemap,
-      size: fragmentSize,
-      x: 2,
-      y: 3,
-    }),
-    createSprite({
-      spritemap: bgSpritemap,
-      size: fragmentSize,
-      x: 3,
-      y: 3,
-    }),
-    createSprite({
-      spritemap: bgSpritemap,
-      size: fragmentSize,
-      x: 4,
-      y: 3,
-    }),
-  ],
-  //
-  full: createSprite({
-    spritemap: bgSpritemap,
-    size: fragmentSize,
-    x: 3,
-    y: 4,
-  }),
-  solid: createSprite({
-    spritemap: bgSpritemap,
-    size: fragmentSize,
-    x: 1,
-    y: 1,
-  }),
-  //
-  notTop: createSprite({
-    spritemap: bgSpritemap,
-    size: fragmentSize,
-    x: 0,
-    y: 6,
-  }),
-  notBottom: createSprite({
-    spritemap: bgSpritemap,
-    size: fragmentSize,
-    x: 1,
-    y: 6,
-  }),
-  notRight: createSprite({
-    spritemap: bgSpritemap,
-    size: fragmentSize,
-    x: 2,
-    y: 6,
-  }),
-  notLeft: createSprite({
-    spritemap: bgSpritemap,
-    size: fragmentSize,
-    x: 3,
-    y: 6,
-  }),
-};
 
 export const emptySprite = createSprite({ spritemap, x: 21, y: 0 });
 
