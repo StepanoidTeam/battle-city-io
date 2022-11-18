@@ -320,8 +320,9 @@ export function getEditor({ onExit }) {
       editorParts.splice(0);
       editorParts.push(
         drawBg,
-        (ctx) => mapBg.draw(ctx),
+        (ctx) => mapBg.drawBg(ctx),
         (ctx) => mapDrawer.draw(ctx),
+        // (ctx) => mapBg.drawFg(ctx),
         drawCursor,
         drawCurrentTool,
         (ctx) => {

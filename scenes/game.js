@@ -478,8 +478,10 @@ export function GameScene({ onExit }) {
 
       gameParts.add((ctx) => bgFrameSprite.draw(ctx, 0, 0));
 
-      gameParts.add((ctx) => mapBg.draw(ctx));
+      gameParts.add((ctx) => mapBg.drawBg(ctx));
       gameParts.add((ctx) => mapDrawer.draw(ctx));
+      gameParts.add((ctx) => mapBg.drawFg(ctx));
+
       gameParts.add((ctx) => grid.draw(ctx));
       gameParts.add((...args) => tankCtrl.draw(...args));
 
