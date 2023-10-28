@@ -50,6 +50,9 @@ https://www.youtube.com/watch?v=T_i_vENznC4
 https://www.spriters-resource.com/snes/metalmaxreturns/
 https://www.youtube.com/watch?v=HAscqgYaYoY
 
+## more inspiration
+
+https://tic80.com/play?cart=930
 ## one more - battalion modern / battalion nemesis
 
 https://www.spriters-resource.com/pc_computer/battalionmodern/
